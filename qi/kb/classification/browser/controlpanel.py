@@ -47,6 +47,6 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
         return self.classifer.noNounRanksToKeep
     
     def set_no_noun_ranks(self,no_ranks):
-        pass
+        self.classifer.noNounRanksToKeep = no_ranks
         
     no_noun_ranks = property(get_no_noun_ranks,set_no_noun_ranks)
