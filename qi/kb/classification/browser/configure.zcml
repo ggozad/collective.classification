@@ -10,4 +10,13 @@
         permission="cmf.ModifyPortalContent"
     />
 
+    <!--Control panel-->
+    <browser:page
+        name="classifier-settings-controlpanel"
+        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+        class=".controlpanel.ClassifierSettings"
+        permission="cmf.ManagePortal"
+        />
+    <adapter factory=".controlpanel.ClassifierSettingsAdapter"/>
+
 </configure>

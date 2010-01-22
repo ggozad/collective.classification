@@ -9,7 +9,7 @@ from plone.intelligenttext.transforms import \
     convertHtmlToWebIntelligentPlainText
 from Products.Five.formlib import formbase
 from qi.kb.classification.interfaces import IContentClassifier
-from qi.kb.classification import TermExtractMessageFactory as _
+from qi.kb.classification import ClassificationMessageFactory as _
 
 class ISuggestSubject(Interface):
     """
