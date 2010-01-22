@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<componentregistry>
+ <utilities>    
+  <utility
+     interface="qi.kb.classification.interfaces.IContentClassifier"
+     factory="qi.kb.classification.classifiers.nounbayesclassifier.NounBayesClassifier"
+     />
+ </utilities>
+</componentregistry>

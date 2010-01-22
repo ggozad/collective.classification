@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<import-steps>
+    <import-step id="qi_kb_classification_various" version="20100121-01"
+        handler="qi.kb.classification.setuphandlers.downloadNLTKData"
+        title="qi.kb.classification NLTK Data download">
+    </import-step>
+</import-steps>

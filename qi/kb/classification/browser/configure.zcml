@@ -1,0 +1,13 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="qi.kb.classification">
+
+    <browser:page
+        for="Products.ATContentTypes.interface.IATContentType"
+        name="subjectsuggest"
+        class=".subjectsuggest.SubjectSuggestView"
+        permission="cmf.ModifyPortalContent"
+    />
+
+</configure>
