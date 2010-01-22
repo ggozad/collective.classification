@@ -28,11 +28,10 @@ setup(name='qi.kb.classification',
       install_requires=[
           'setuptools',
           'nltk',
-	  'numpy',
+          'numpy'
       ],
       entry_points="""
       [z3c.autoinclude.plugin]
       target = plone
-      
       """,
       )

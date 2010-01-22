@@ -6,7 +6,7 @@
     
     <five:registerPackage package="." initialize=".initialize" />
 
-    <include package='.nltk' />
+    <include package='.nltkutilities' />
     <include package='.browser' />
     
     <subscriber for="Products.ATContentTypes.interface.IATContentType
