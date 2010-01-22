@@ -2,6 +2,7 @@ from zope.interface import Interface
 from zope.interface import implements
 from zope.component import adapts
 from zope.component import getUtility
+from plone.app.form.validators import null_validator
 
 from zope.formlib import form
 from zope import schema
@@ -32,6 +33,12 @@ class ClassifierSettings(ControlPanelForm):
     description = _("Settings for the content classifier.")
     form_name = _("Classifier settings")
 
+    @form.action(_(u'Re-train classifier'))
+    def retrain_action(self,action,data):
+        form.applyChanges(self.context, self.form_fields, data, self.adapters)
+        classifier = getUtility(IContentClassifier)
+        classifier.train()
+        self.status=_(u"Classifier trained.")
 
 class ClassifierSettingsAdapter(SchemaAdapterBase):
     """
@@ -41,12 +48,12 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
     
     def __init__(self, context):
         super(ClassifierSettingsAdapter, self).__init__(context)
-        self.classifer = getUtility(IContentClassifier)
+        self.classifier = getUtility(IContentClassifier)
     
     def get_no_noun_ranks(self):
-        return self.classifer.noNounRanksToKeep
+        return self.classifier.noNounRanksToKeep
     
     def set_no_noun_ranks(self,no_ranks):
-        self.classifer.noNounRanksToKeep = no_ranks
+        self.classifier.noNounRanksToKeep = no_ranks
         
     no_noun_ranks = property(get_no_noun_ranks,set_no_noun_ranks)

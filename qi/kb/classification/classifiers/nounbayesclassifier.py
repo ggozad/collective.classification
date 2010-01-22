@@ -52,8 +52,8 @@ class NounBayesClassifier(Persistent):
                 nounPresence[noun] = 1
             for tag in tags:
                 trainingData.append((nounPresence,tag,))
-                
-        self.classifier = NaiveBayesClassifier.train(trainingData)
+        if trainingData:
+            self.classifier = NaiveBayesClassifier.train(trainingData)
 
     @instance.memoize
     def classify(self,text):
