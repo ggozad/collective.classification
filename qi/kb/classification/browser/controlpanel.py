@@ -9,6 +9,7 @@ from zope import schema
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFDefault.formlib.schema import SchemaAdapterBase
 from qi.kb.classification.interfaces import IContentClassifier
+from Products.CMFCore.utils import getToolByName
 
 from plone.app.controlpanel.form import ControlPanelForm
 from qi.kb.classification import ClassificationMessageFactory as _
@@ -37,6 +38,15 @@ class ClassifierSettings(ControlPanelForm):
     def retrain_action(self,action,data):
         form.applyChanges(self.context, self.form_fields, data, self.adapters)
         classifier = getUtility(IContentClassifier)
+        catalog = getToolByName(self.context, 'portal_catalog')
+        trainContent = catalog.searchResults()
+        for item in trainContent:
+            if item.Subject:
+                # NOTE: Why can't I obtain item.SearchableText?
+                classifier.addTrainingDocument(
+                    item['UID'],
+                    item.getObject().SearchableText(),
+                    item['Subject'])
         classifier.train()
         self.status=_(u"Classifier trained.")
 

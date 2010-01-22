@@ -35,8 +35,9 @@ class NounBayesClassifier(Persistent):
         """
         """
         importantNouns = self._extractImportantNouns(text)
-        self.trainingSet[doc_id] = (importantNouns,tags,)
-        self.allNouns = union(self.allNouns,OOSet(importantNouns))
+        if importantNouns:
+            self.trainingSet[doc_id] = (importantNouns,tags,)
+            self.allNouns = union(self.allNouns,OOSet(importantNouns))
         
     def train(self):
         """
@@ -87,6 +88,12 @@ class NounBayesClassifier(Persistent):
             if noun in presentNouns.keys():
                 presentNouns[noun] = 1
         return self.classifier.prob_classify(presentNouns)
+
+    def clear(self):
+        """Wipes the classifier's data.
+        """
+        self.allNouns.clear()
+        self.trainingData.clear()
         
     def tags(self):
         if not self.classifier:
