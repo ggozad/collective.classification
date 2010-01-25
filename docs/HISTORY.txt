@@ -4,4 +4,4 @@ Changelog
 0.1b2
 -------------------
 
-- Initial release [ggozad]
+- Unreleased. [ggozad]

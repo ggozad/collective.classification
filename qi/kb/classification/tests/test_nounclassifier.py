@@ -1,9 +1,8 @@
 from nltk.corpus import brown
+from zope.component import getUtility
 from qi.kb.classification.tests.base import ClassificationTestCase
 from qi.kb.classification.classifiers.nounbayesclassifier \
     import NounBayesClassifier
-from qi.kb.classification.tests.util import readData
-from zope.component import getUtility
 from qi.kb.classification.interfaces import IPOSTagger
 
 
@@ -26,20 +25,20 @@ class TestNounClassification(ClassificationTestCase):
         """
         """
         classifier = NounBayesClassifier(tagger=self.tagger)
-        news_ids = ["ca%.2i.txt"%i for i in range(1,26)]
-        editorial_ids = ["cb%.2i.txt"%i for i in range(1,26)]        
-        hobbies_ids = ["ce%.2i.txt"%i for i in range(1,26)]
+        news_ids = brown.fileids(categories='news')[:25]
+        editorial_ids = brown.fileids(categories='editorial')[:25]        
+        hobbies_ids = brown.fileids(categories='hobbies')[:25]
 
         for articleid in news_ids[:20]:
-            text = readData(articleid)
+            text = " ".join(brown.words(articleid))
             classifier.addTrainingDocument(articleid,text,['news'])
         
         for articleid in editorial_ids[:20]:
-            text = readData(articleid)
+            text = " ".join(brown.words(articleid))
             classifier.addTrainingDocument(articleid,text,['editorial'])
         
         for articleid in hobbies_ids[:20]:
-            text = readData(articleid)
+            text = " ".join(brown.words(articleid))
             classifier.addTrainingDocument(articleid,text,['hobbies'])
         classifier.train()
 
@@ -49,7 +48,7 @@ class TestNounClassification(ClassificationTestCase):
         for articleid in editorial_ids[20:25] + \
                         hobbies_ids[20:25] + \
                         news_ids[20:25]:
-            text = readData(articleid)
+            text = " ".join(brown.words(articleid))
             classificationResult.append(classifier.classify(text))
         self.failUnless(classificationResult == 
             ['editorial', 'editorial', 'editorial', 'editorial', 'editorial', 
