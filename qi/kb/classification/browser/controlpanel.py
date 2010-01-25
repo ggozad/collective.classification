@@ -30,20 +30,19 @@ class IClassifierSettingsSchema(Interface):
     no_noun_ranks = schema.Int(
         title=_(u"Important nouns to keep"),
         description=_(u"Indicates how many nouns to keep when building the" \
-                       "list of most frequent nouns in the text."),
+            "list of most frequent nouns in the text."),
         default=10,
         required=True)
 
 class ITermExtractorSchema(Interface):
-    """
+    """Term extractor settings
     """
     tagger_type = schema.Choice(
         title=_(u"Tagger type"),
         description=_(u"Choose the tagger type. By default the generic " \
-                       "Pen Treebank  is used, however the N-gram tagger " \
-                       "is more performant and gives better results."),
+            "Pen Treebank  is used, however the N-gram tagger is more " \
+            "performant and gives better results."),
         vocabulary=taggers,
-        default='Pen TreeBank',
         required=True)
     
     brown_categories = schema.List(
@@ -55,11 +54,13 @@ class ITermExtractorSchema(Interface):
         required=True)
                             
 class IClassificationSchema(IClassifierSettingsSchema, ITermExtractorSchema):
-    """
+    """Just a combination of IClassifierSettingsSchema and 
+    ITermExtractorSchema
     """
     
 class ClassifierSettingsAdapter(SchemaAdapterBase):
-    """
+    """TODO: Fill in the properties that 'pass' saving and retrieving tagger
+    properties
     """
     adapts(IPloneSiteRoot)
     implements(IClassificationSchema)
@@ -118,6 +119,7 @@ class ClassifierSettings(ControlPanelForm):
         for item in trainContent:
             if item.Subject:
                 # NOTE: Why can't I obtain item.SearchableText?
+                # Is it too big to be returned in catalog brains?
                 classifier.addTrainingDocument(
                     item['UID'],
                     item.getObject().SearchableText(),
@@ -128,7 +130,7 @@ class ClassifierSettings(ControlPanelForm):
     @form.action(_(u"Re-train term extractor"))
     def retrain_termextractor_action(self,action,data):
         tagger = None
-        if data['tagger_type'] == 'N-gram':
+        if data['tagger_type'] == 'N-Gram':
             tagged_sents = brown.tagged_sents(
                 categories=data['brown_categories'])
             tagger = getUtility(IPOSTagger,
@@ -140,11 +142,10 @@ class ClassifierSettings(ControlPanelForm):
         extractor = NPExtractor(tagger=tagger)
         classifier = getUtility(IContentClassifier)
         classifier.extractor = extractor
-        self.status = _(u"Term extractor trained. You will need to re-train" \
-        "the classifier as well.")
+        self.status = _(u"Term extractor trained. You will need to" \
+            "re-trainthe classifier as well.")
 
-    @form.action(_(u"Cancel"),
-                 validator=null_validator)
+    @form.action(_(u"Cancel"),validator=null_validator)
     def cancel_action(self, action, data):
         self.status = _(u"Changes cancelled.")
         url = getMultiAdapter((self.context, self.request),
