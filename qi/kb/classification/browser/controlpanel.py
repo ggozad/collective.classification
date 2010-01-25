@@ -2,17 +2,26 @@ from zope.interface import Interface
 from zope.interface import implements
 from zope.component import adapts
 from zope.component import getUtility
-from plone.app.form.validators import null_validator
-
+from zope.component import getMultiAdapter
 from zope.formlib import form
 from zope import schema
-from Products.CMFPlone.interfaces import IPloneSiteRoot
-from Products.CMFDefault.formlib.schema import SchemaAdapterBase
-from qi.kb.classification.interfaces import IContentClassifier
-from Products.CMFCore.utils import getToolByName
+from zope.schema.vocabulary import SimpleVocabulary
 
 from plone.app.controlpanel.form import ControlPanelForm
+from plone.app.form.validators import null_validator
+from plone.fieldsets.fieldsets import FormFieldsets
+from Products.CMFPlone.interfaces import IPloneSiteRoot
+from Products.CMFDefault.formlib.schema import SchemaAdapterBase
+
+from Products.CMFCore.utils import getToolByName
+from qi.kb.classification.interfaces import IContentClassifier
 from qi.kb.classification import ClassificationMessageFactory as _
+from nltk.corpus import brown
+from qi.kb.classification.interfaces import IPOSTagger
+from qi.kb.classification.classifiers.npextractor import NPExtractor
+
+brownCategories = SimpleVocabulary.fromValues(brown.categories())
+taggers = SimpleVocabulary.fromValues(['Pen TreeBank','N-Gram'])
 
 class IClassifierSettingsSchema(Interface):
     """Classifier settings
@@ -20,22 +29,88 @@ class IClassifierSettingsSchema(Interface):
 
     no_noun_ranks = schema.Int(
         title=_(u"Important nouns to keep"),
-        description=_(u"The port of your XMLRPC server"),
+        description=_(u"Indicates how many nouns to keep when building the" \
+                       "list of most frequent nouns in the text."),
         default=10,
         required=True)
+
+class ITermExtractorSchema(Interface):
+    """
+    """
+    tagger_type = schema.Choice(
+        title=_(u"Tagger type"),
+        description=_(u"Choose the tagger type. By default the generic " \
+                       "Pen Treebank  is used, however the N-gram tagger " \
+                       "is more performant and gives better results."),
+        vocabulary=taggers,
+        default='Pen TreeBank',
+        required=True)
+    
+    brown_categories = schema.List(
+        title=_(u"Brown corpus categories used for N-gram training"),
+        description=_(u"Choose the categories among the available in the " \
+            "Brown corpus that you think correspond most to your content. " \
+            "Only applies if you have chosen the N-gram tagger above."),
+        value_type=schema.Choice(vocabulary = brownCategories),
+        required=True)
+                            
+class IClassificationSchema(IClassifierSettingsSchema, ITermExtractorSchema):
+    """
+    """
+    
+class ClassifierSettingsAdapter(SchemaAdapterBase):
+    """
+    """
+    adapts(IPloneSiteRoot)
+    implements(IClassificationSchema)
+
+    def __init__(self, context):
+        super(ClassifierSettingsAdapter, self).__init__(context)
+        self.classifier = getUtility(IContentClassifier)
+
+    def get_no_noun_ranks(self):
+        return self.classifier.noNounRanksToKeep
+
+    def set_no_noun_ranks(self,no_ranks):
+        self.classifier.noNounRanksToKeep = no_ranks
+
+    no_noun_ranks = property(get_no_noun_ranks,set_no_noun_ranks)
+        
+    def get_tagger_type(self):
+        return 'Pen TreeBank'
+
+    def set_tagger_type(self):
+        pass
+
+    tagger_type = property(get_tagger_type,set_tagger_type)
+
+    def set_brown_categories(self):
+        pass
+
+    def get_brown_categories(self):
+        return ['news']
+
+    brown_categories = property(get_brown_categories,set_brown_categories)
+    
+classifierset = FormFieldsets(IClassifierSettingsSchema)
+classifierset.id = 'classifier'
+classifierset.label = u"Classifier settings"
+termextractorset = FormFieldsets(ITermExtractorSchema)
+termextractorset.id = 'termextractor'
+termextractorset.label = U"Term Extraction settings"
 
 class ClassifierSettings(ControlPanelForm):
     """
     """
 
-    form_fields = form.FormFields(IClassifierSettingsSchema)
+    form_fields = FormFieldsets(classifierset,termextractorset)
 
     label = _("Classifier settings")
     description = _("Settings for the content classifier.")
     form_name = _("Classifier settings")
-
-    @form.action(_(u'Re-train classifier'))
-    def retrain_action(self,action,data):
+    
+    @form.action(_(u"Re-train classifier"))
+    def retrain_classifier_action(self,action,data):
         form.applyChanges(self.context, self.form_fields, data, self.adapters)
         classifier = getUtility(IContentClassifier)
         catalog = getToolByName(self.context, 'portal_catalog')
@@ -48,22 +123,34 @@ class ClassifierSettings(ControlPanelForm):
                     item.getObject().SearchableText(),
                     item['Subject'])
         classifier.train()
-        self.status=_(u"Classifier trained.")
+        self.status = _(u"Classifier trained.")
 
-class ClassifierSettingsAdapter(SchemaAdapterBase):
-    """
-    """
-    adapts(IPloneSiteRoot)
-    implements(IClassifierSettingsSchema)
+    @form.action(_(u"Re-train term extractor"))
+    def retrain_termextractor_action(self,action,data):
+        tagger = None
+        if data['tagger_type'] == 'N-gram':
+            tagged_sents = brown.tagged_sents(
+                categories=data['brown_categories'])
+            tagger = getUtility(IPOSTagger,
+                name="qi.kb.termextraxt.taggers.NgramTagger")
+            tagger.train(tagged_sents)
+        else:
+            tagger = getUtility(IPOSTagger,
+                name="qi.kb.termextraxt.taggers.PennTreebankTagger")
+        extractor = NPExtractor(tagger=tagger)
+        classifier = getUtility(IContentClassifier)
+        classifier.extractor = extractor
+        self.status = _(u"Term extractor trained. You will need to re-train" \
+        "the classifier as well.")
+
+    @form.action(_(u"Cancel"),
+                 validator=null_validator)
+    def cancel_action(self, action, data):
+        self.status = _(u"Changes cancelled.")
+        url = getMultiAdapter((self.context, self.request),
+                              name='absolute_url')()
+        self.request.response.redirect(url + '/plone_control_panel')
+        return ''
+
     
-    def __init__(self, context):
-        super(ClassifierSettingsAdapter, self).__init__(context)
-        self.classifier = getUtility(IContentClassifier)
     
-    def get_no_noun_ranks(self):
-        return self.classifier.noNounRanksToKeep
-    
-    def set_no_noun_ranks(self,no_ranks):
-        self.classifier.noNounRanksToKeep = no_ranks
-        
-    no_noun_ranks = property(get_no_noun_ranks,set_no_noun_ranks)
