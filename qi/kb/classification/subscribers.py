@@ -11,4 +11,5 @@ def updateClassifier(obj,event):
             obj.SearchableText())
         classifier = getUtility(IContentClassifier)
         classifier.addTrainingDocument(uid,text,subjects)
-        classifier.train()    
+        if classifier.trainAfterUpdate:
+            classifier.train()

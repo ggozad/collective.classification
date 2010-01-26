@@ -15,7 +15,7 @@ class TestIntegration(ClassificationFunctionalTestCase):
         """
         """
         self.classifier = getUtility(IContentClassifier)
-    
+        
     def test_tags(self):    
         self.login()
         news_ids = [
@@ -31,6 +31,7 @@ class TestIntegration(ClassificationFunctionalTestCase):
             self.folder.invokeFactory('Document',articleid,
                                       text=text,
                                       subject=subject)
+        self.classifier.train()
         self.assertEquals(self.classifier.tags(),['editorial','news'])
         
         for (articleid,subject) in news_ids[5:6]+editorial_ids[5:6]:

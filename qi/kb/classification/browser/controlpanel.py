@@ -34,6 +34,14 @@ class IClassifierSettingsSchema(Interface):
         default=10,
         required=True)
 
+    train_after_update = schema.Bool(
+        title=_(u"Train after update"),
+        description=_(u"Enabling this will trigger training the classifier " \
+            "every time tagged content is added, modified or deleted. " \
+            "Disabling it means you will have to periodically manually " \
+            "train the classifier.")
+    )
+
 class ITermExtractorSchema(Interface):
     """Term extractor settings
     """
@@ -44,7 +52,7 @@ class ITermExtractorSchema(Interface):
             "performant and gives better results."),
         vocabulary=taggers,
         required=True)
-    
+
     brown_categories = schema.List(
         title=_(u"Brown corpus categories used for N-gram training"),
         description=_(u"Choose the categories among the available in the " \
@@ -57,7 +65,7 @@ class IClassificationSchema(IClassifierSettingsSchema, ITermExtractorSchema):
     """Just a combination of IClassifierSettingsSchema and 
     ITermExtractorSchema
     """
-    
+
 class ClassifierSettingsAdapter(SchemaAdapterBase):
     """TODO: Fill in the properties that 'pass' saving and retrieving tagger
     properties
@@ -76,7 +84,16 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
         self.classifier.noNounRanksToKeep = no_ranks
 
     no_noun_ranks = property(get_no_noun_ranks,set_no_noun_ranks)
-        
+    
+    def get_train_after_update(self):
+        return self.classifier.trainAfterUpdate
+    
+    def set_train_after_update(self,train_after_update):
+        self.classifier.trainAfterUpdate = train_after_update
+    
+    train_after_update = property(get_train_after_update,
+        set_train_after_update)
+    
     def get_tagger_type(self):
         return 'Pen TreeBank'
 
@@ -110,6 +127,11 @@ class ClassifierSettings(ControlPanelForm):
     description = _("Settings for the content classifier.")
     form_name = _("Classifier settings")
     
+    @form.action(_(u"Save"))
+    def save_action(self,action,data):
+        form.applyChanges(self.context, self.form_fields, data, self.adapters)
+        self.status = _(u"Changes saved.")
+                
     @form.action(_(u"Re-train classifier"))
     def retrain_classifier_action(self,action,data):
         form.applyChanges(self.context, self.form_fields, data, self.adapters)

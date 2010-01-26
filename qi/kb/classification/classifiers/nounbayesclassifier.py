@@ -22,6 +22,7 @@ class NounBayesClassifier(Persistent):
         self.allNouns = OOSet()
         self.classifier = None
         self.extractor = NPExtractor(tagger=tagger)
+        self.trainAfterUpdate = False
 
     def _extractImportantNouns(self,text):
         nounDict = self.extractor.extract(text)[0]
@@ -99,4 +100,4 @@ class NounBayesClassifier(Persistent):
         if not self.classifier:
             return []
         return self.classifier.labels()
-    
+        
