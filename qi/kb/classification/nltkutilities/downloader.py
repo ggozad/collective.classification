@@ -1,7 +1,7 @@
 from nltk.downloader import download
 import logging
 
-def downloadNLTKData(context):
+def downloadNLTKData():
     """
     """
     logger = logging.getLogger('qi.kb.classification')    
@@ -11,4 +11,3 @@ def downloadNLTKData(context):
     download('brown')
     logger.info("Downloading NLTK's Treebank POS Tagger (Max entropy)")
     download('maxent_treebank_pos_tagger')
-        
