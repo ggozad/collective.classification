@@ -6,7 +6,6 @@ Here, we'll test the classifier using a sample of the Brown corpus. The Brown co
 
 Let us setup the tagger first. You can do this by means of using the control panel, here we do it manually. First we fetch the N-gram tagger.
 
-    >>> from nltk.corpus import brown
     >>> from zope.component import getUtility
     >>> from qi.kb.classification.interfaces import IPOSTagger
     >>> tagger = getUtility(IPOSTagger,
@@ -14,4 +13,96 @@ Let us setup the tagger first. You can do this by means of using the control pan
     >>> tagger
     <qi.kb.classification.nltkutilities.tagger.NgramTagger ...>
 
-asd.
+Now we can train the tagger with the tagged sentences from the Brown corpus corresponding to the categories we have chosen:
+
+    >>> from nltk.corpus import brown
+    >>> tagged_sents =  brown.tagged_sents(
+    ...     categories=['editorial','hobbies','news'])
+    >>> tagged_sents
+    [[('The', 'AT'), ('Fulton', 'NP-TL'), ('County', 'NN-TL'), ...],...]
+    >>> tagger.train(tagged_sents)
+
+Let's assign the tagger to the NP-extractor and assign the extractor to the classifier:
+
+    >>> from qi.kb.classification.classifiers.npextractor import NPExtractor
+    >>> extractor = NPExtractor(tagger=tagger)
+    >>> from qi.kb.classification.interfaces import IContentClassifier
+    >>> classifier = getUtility(IContentClassifier)
+    >>> classifier.extractor = extractor
+
+We can now start adding documents, starting with the first 20 documents in Brown categorized as 'news'.
+
+    >>> for articleid in brown.fileids(categories='news')[:20]:
+    ...     text = " ".join(brown.words(articleid))
+    ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    text=text,
+    ...                                    subject='news')
+
+Continuing with 20 documents categorized as 'editorial':
+
+    >>> for articleid in brown.fileids(categories='editorial')[:20]:
+    ...     text = " ".join(brown.words(articleid))
+    ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    text=text,
+    ...                                    subject='editorial')
+
+And finally 20 documents categorized as 'hobbies':
+
+    >>> for articleid in brown.fileids(categories='hobbies')[:20]:
+    ...     text = " ".join(brown.words(articleid))
+    ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    text=text,
+    ...                                    subject='hobbies')
+
+Time to train the classifier:
+
+    >>> classifier.train()
+    >>> classifier.tags()
+    ['editorial', 'hobbies', 'news']
+
+For a start, the classifier should be pretty certain when asked about text already classifier:
+
+    >>> browser = self.getBrowser()
+    >>> browser.open(self.folder.absolute_url()+'/ca01/@@subjectsuggest')
+    >>> browser.contents
+    '...news 100.0%...editorial 0.0%...hobbies 0.0%...'
+
+So let's see where this gets us, by asking the classifier to categorize 5 more documents for which we know the category. We will use the classifier's functions this time instead of adding the documents to plone. 'News' first:
+
+    >>> classificationResult = []
+    >>> for articleid in brown.fileids(categories='news')[20:25]:
+    ...     text = " ".join(brown.words(articleid))
+    ...     classificationResult.append(classifier.classify(text))
+    >>> classificationResult
+    ['editorial', 'news', 'news', 'news', 'news']
+
+4/5 right... Not so bad! How close was the one we missed?
+
+    >>> id = brown.fileids(categories='news')[20]
+    >>> text = " ".join(brown.words(id))
+    >>> probabilities = classifier.probabilityClassify(text)
+    >>> "%.1f"%probabilities.prob('news')
+    '0.3'
+
+Let's see how we do with 'editorials'  
+
+    >>> classificationResult = []
+    >>> for articleid in brown.fileids(categories='editorial')[20:25]:
+    ...     text = " ".join(brown.words(articleid))
+    ...     classificationResult.append(classifier.classify(text))
+    >>> classificationResult
+    ['editorial', 'editorial', 'editorial', 'editorial', 'editorial']
+
+That's better! What about 'hobbies'?
+
+    >>> classificationResult = []
+    >>> for articleid in brown.fileids(categories='hobbies')[20:25]:
+    ...     text = " ".join(brown.words(articleid))
+    ...     classificationResult.append(classifier.classify(text))
+    >>> classificationResult
+    ['hobbies', 'editorial', 'editorial', 'hobbies', 'hobbies']
+
+Not so good, we missed 2 out of 3. Overall: we got 12/15 right...
+
+
+
