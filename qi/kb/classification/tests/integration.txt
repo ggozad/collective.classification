@@ -1,0 +1,17 @@
+================
+Integration test
+================
+
+Here, we'll test the classifier using a sample of the Brown corpus. The Brown corpus has a list of POS-tagged english articles which are also conveniently categorized. The test consists of training the classifier using 20 documents from each of the categories 'news','editorial' and 'hobbies'. Then we'll ask the classifier to classify 5 more documents from each category and see what happens.
+
+Let us setup the tagger first. You can do this by means of using the control panel, here we do it manually. First we fetch the N-gram tagger.
+
+    >>> from nltk.corpus import brown
+    >>> from zope.component import getUtility
+    >>> from qi.kb.classification.interfaces import IPOSTagger
+    >>> tagger = getUtility(IPOSTagger,
+    ...     name="qi.kb.termextraxt.taggers.NgramTagger")
+    >>> tagger
+    <qi.kb.classification.nltkutilities.tagger.NgramTagger ...>
+
+asd.
