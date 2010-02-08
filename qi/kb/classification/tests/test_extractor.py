@@ -17,7 +17,7 @@ class TestExtractor(ClassificationTestCase):
         text = readData('alicereview.txt')
         extractor = NPExtractor()
         (simple_terms,np_terms)  =  extractor.extract(text)
-
+        print sorted(simple_terms,key=itemgetter(1),reverse=True)
         important_terms = sorted(
             simple_terms.items(),
             key = itemgetter(1),

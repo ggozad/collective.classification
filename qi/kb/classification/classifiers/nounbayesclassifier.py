@@ -1,11 +1,10 @@
+from zope.interface import implements
 from persistent import Persistent
 from persistent.mapping import PersistentMapping
 from BTrees.OOBTree import OOSet, union
-from zope.interface import implements
 from nltk.metrics import ranks_from_scores
 from nltk import NaiveBayesClassifier
 from plone.memoize import instance
-
 from qi.kb.classification.classifiers.npextractor import NPExtractor
 from qi.kb.classification.interfaces import IContentClassifier
 

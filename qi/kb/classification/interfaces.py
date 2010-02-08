@@ -33,6 +33,10 @@ class ITermExtractor(Interface):
         """Extracts terms from text.
         """
 
+class INounPhraseStorage(Interface):
+    """
+    """
+    
 class IContentClassifier(Interface):
     """
     """
