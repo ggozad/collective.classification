@@ -1,10 +1,7 @@
 from zope.component import getUtility
 from qi.kb.classification.tests.base import ClassificationTestCase
-from qi.kb.classification.classifiers.npextractor import NPExtractor
 from qi.kb.classification.tests.util import readData
 from qi.kb.classification.interfaces import INounPhraseStorage
-
-from operator import itemgetter
 
 class TestNPStorage(ClassificationTestCase):
     """Tests the Noun-phrase storage
@@ -38,7 +35,11 @@ class TestNPStorage(ClassificationTestCase):
         self.failUnless(storage.rankedNPs['alice'] == 
             [('white rabbit', 0), ('mock turtle', 0), ('cheshire cat', 2), 
              ('march hare', 3), ('mad hatter', 4)])
-        
+             
+        self.failUnless(list(storage.allNouns) == 
+            ['alice', 'cat', 'chapter', 'door', 'duchess', 'hatter', 'king', 
+             'queen', 'rabbit', 'turtle'])
+
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()

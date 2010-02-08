@@ -14,12 +14,14 @@ class NounPhraseStorage(Persistent):
     
     implements(INounPhraseStorage)
     
-    def __init__(self,tagger=None):
+    def __init__(self,tagger=None,noNounRanksToKeep = 10):
         """
         """
+        self.noNounRanksToKeep = noNounRanksToKeep
         self.rankedNouns = PersistentMapping()
         self.rankedNPs = PersistentMapping()
         self.extractor = NPExtractor(tagger=tagger)
+        self.allNouns = OOSet()
 
     def _scoresToRanks(self,rankdict):
         scored_items = sorted(rankdict.items(),key=itemgetter(1),reverse=True) 
@@ -36,6 +38,13 @@ class NounPhraseStorage(Persistent):
         if noun_scores:
             ranked_nouns = self._scoresToRanks(noun_scores)
             self.rankedNouns[doc_id] = ranked_nouns
+            
+            importantNouns = []
+            for (noun,score) in ranked_nouns:
+                if score < self.noNounRanksToKeep:
+                    importantNouns.append(noun)
+            self.allNouns = union(self.allNouns,OOSet(importantNouns))
+            
         if noun_phrase_scores:
             ranked_nps = self._scoresToRanks(noun_phrase_scores)
             self.rankedNPs[doc_id] = ranked_nps
