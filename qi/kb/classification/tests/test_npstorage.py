@@ -35,11 +35,12 @@ class TestNPStorage(ClassificationTestCase):
         self.failUnless(storage.rankedNPs['alice'] == 
             [('white rabbit', 0), ('mock turtle', 0), ('cheshire cat', 2), 
              ('march hare', 3), ('mad hatter', 4)])
-             
-        self.failUnless(list(storage.allNouns) == 
-            ['alice', 'cat', 'chapter', 'door', 'duchess', 'hatter', 'king', 
-             'queen', 'rabbit', 'turtle'])
-
+        self.failUnless(storage.getTerms('alice',5) == 
+          ([('alice', 0), ('queen', 1), ('rabbit', 2), ('hatter', 3), 
+            ('door', 3), ('cat', 3)], 
+           [('white rabbit', 0), ('mock turtle', 0), ('cheshire cat', 2), 
+            ('march hare', 3), ('mad hatter', 4)]))
+            
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()

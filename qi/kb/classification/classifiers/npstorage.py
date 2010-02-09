@@ -48,3 +48,22 @@ class NounPhraseStorage(Persistent):
         if noun_phrase_scores:
             ranked_nps = self._scoresToRanks(noun_phrase_scores)
             self.rankedNPs[doc_id] = ranked_nps
+    
+    def getTerms(self,doc_id,ranksToKeep=0):
+        """
+        """
+        ranked_nouns = self.rankedNouns[doc_id]
+        ranked_nps = self.rankedNPs[doc_id]
+        if ranksToKeep:
+            ranked_nouns = [
+                (noun,score) 
+                for (noun,score) in ranked_nouns 
+                if score < ranksToKeep]
+            ranked_nps = [
+                (np,score) 
+                for (np,score) in ranked_nps
+                if score < ranksToKeep]
+
+        return (ranked_nouns,ranked_nps)
+        
+            
