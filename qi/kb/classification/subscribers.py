@@ -1,15 +1,29 @@
-from qi.kb.classification.interfaces import IContentClassifier
 from zope.component import getUtility
 from plone.intelligenttext.transforms \
     import convertHtmlToWebIntelligentPlainText
 
+from qi.kb.classification.interfaces import IContentClassifier
+from qi.kb.classification.interfaces import INounPhraseStorage
+from zope.component.interfaces import ComponentLookupError
+
 def updateClassifier(obj,event):
+
+    try:
+        termstorage = getUtility(INounPhraseStorage)
+    except ComponentLookupError:
+        return
+    
+    
+    classifier = getUtility(IContentClassifier)
+    termstorage = getUtility(INounPhraseStorage)
+    uid = obj.UID()
+    text = convertHtmlToWebIntelligentPlainText(
+        obj.SearchableText())
+    termstorage.addDocument(uid,text)
     subjects = obj.Subject()
+    
     if subjects:
-        uid = obj.UID()
-        text = convertHtmlToWebIntelligentPlainText(
-            obj.SearchableText())
         classifier = getUtility(IContentClassifier)
-        classifier.addTrainingDocument(uid,text,subjects)
+        classifier.addTrainingDocument(uid,subjects)
         if classifier.trainAfterUpdate:
             classifier.train()

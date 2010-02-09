@@ -16,7 +16,7 @@ class TestTaggers(ClassificationTestCase):
         n-gram tagger.
         """
         tokenizer = getUtility(ITokenizer,
-            name="qi.kb.termextraxt.tokenizers.NLTKTokenizer")
+            name="qi.kb.classification.tokenizers.NLTKTokenizer")
         text = "The quick brown fox jumped over the lazy dog."
         self.tokens = tokenizer.tokenize(text)
         self.tagged_sents = brown.tagged_sents(categories='news')
@@ -25,7 +25,7 @@ class TestTaggers(ClassificationTestCase):
         """Tests the n-gram tagger.
         """
         tagger = getUtility(IPOSTagger,
-            name="qi.kb.termextraxt.taggers.NgramTagger")
+            name="qi.kb.classification.taggers.NgramTagger")
         tagger.train(self.tagged_sents)
 
         self.failUnless(tagger.tag(self.tokens) == 
@@ -37,7 +37,7 @@ class TestTaggers(ClassificationTestCase):
         """Tests the Pen TreeBank tagger.
         """
         tagger = getUtility(IPOSTagger,
-            name="qi.kb.termextraxt.taggers.PennTreebankTagger")
+            name="qi.kb.classification.taggers.PennTreebankTagger")
 
         self.failUnless(tagger.tag(self.tokens) == 
             [('The', 'DT'), ('quick', 'NN'), ('brown', 'NN'), ('fox', 'NN'), 

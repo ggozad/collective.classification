@@ -1,12 +1,12 @@
+from zope.component import getUtility
 from zope.interface import implements
 from persistent import Persistent
 from persistent.mapping import PersistentMapping
 from BTrees.OOBTree import OOSet, union
-from nltk.metrics import ranks_from_scores
 from nltk import NaiveBayesClassifier
 from plone.memoize import instance
-from qi.kb.classification.classifiers.npextractor import NPExtractor
 from qi.kb.classification.interfaces import IContentClassifier
+from qi.kb.classification.interfaces import INounPhraseStorage
 
 class NounBayesClassifier(Persistent):
     """
@@ -17,37 +17,31 @@ class NounBayesClassifier(Persistent):
         """
         """
         self.noNounRanksToKeep = noNounRanksToKeep
-        self.trainingSet = PersistentMapping()
+        self.trainingDocs = PersistentMapping()
         self.allNouns = OOSet()
+
         self.classifier = None
-        self.extractor = NPExtractor(tagger=tagger)
         self.trainAfterUpdate = False
 
-    def _extractImportantNouns(self,text):
-        nounDict = self.extractor.extract(text)[0]
-        importantNouns = []
-        for (noun,score) in ranks_from_scores(nounDict.items()):
-            if score < self.noNounRanksToKeep:
-                importantNouns.append(noun)
-        return importantNouns
+    def addTrainingDocument(self,doc_id,tags):
+        """
+        """
+        storage = getUtility(INounPhraseStorage)        
+        importantNouns = storage.getTerms(doc_id,self.noNounRanksToKeep)[0]
         
-    def addTrainingDocument(self,doc_id,text,tags):
-        """
-        """
-        importantNouns = self._extractImportantNouns(text)
-        if importantNouns:
-            self.trainingSet[doc_id] = (importantNouns,tags,)
-            self.allNouns = union(self.allNouns,OOSet(importantNouns))
+        self.trainingDocs[doc_id] = (importantNouns,tags)
+        self.allNouns = union(self.allNouns,OOSet(importantNouns))
         
     def train(self):
         """
         """
+        presentNouns = dict()        
         trainingData = []
-        presentNouns = dict()
+        
         for item in self.allNouns:
             presentNouns.setdefault(item,0)
         
-        for (nouns,tags) in self.trainingSet.values():
+        for (nouns,tags) in self.trainingDocs.values():
             nounPresence = presentNouns.copy()
             for noun in nouns:
                 nounPresence[noun] = 1
@@ -56,8 +50,7 @@ class NounBayesClassifier(Persistent):
         if trainingData:
             self.classifier = NaiveBayesClassifier.train(trainingData)
 
-    @instance.memoize
-    def classify(self,text):
+    def classify(self,doc_id):
         """
         """
         if not self.classifier:
@@ -67,7 +60,7 @@ class NounBayesClassifier(Persistent):
         for item in self.allNouns:
             presentNouns.setdefault(item,0)
 
-        importantNouns = self._extractImportantNouns(text)
+        importantNouns = self.getTerms(doc_id)[0]
         for noun in importantNouns:
             if noun in presentNouns.keys():
                 presentNouns[noun] = 1

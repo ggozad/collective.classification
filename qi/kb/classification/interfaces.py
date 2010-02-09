@@ -36,8 +36,9 @@ class ITermExtractor(Interface):
 class INounPhraseStorage(Interface):
     """
     """
-    
+
+
 class IContentClassifier(Interface):
     """
     """
-    
+

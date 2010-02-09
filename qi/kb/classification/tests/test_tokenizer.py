@@ -8,7 +8,7 @@ class TestNLTKTokenizer(ClassificationTestCase):
         """Tests whether the tokenizer utility performs its job properly.
         """
         tokenizer = getUtility(ITokenizer,
-            name="qi.kb.termextraxt.tokenizers.NLTKTokenizer")
+            name="qi.kb.classification.tokenizers.NLTKTokenizer")
         text = """
             Alice opened the door and found that it led into a small passage,
             not much larger than a rat-hole: she knelt down and looked along

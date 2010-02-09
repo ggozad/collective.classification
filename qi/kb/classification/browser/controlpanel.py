@@ -156,11 +156,11 @@ class ClassifierSettings(ControlPanelForm):
             tagged_sents = brown.tagged_sents(
                 categories=data['brown_categories'])
             tagger = getUtility(IPOSTagger,
-                name="qi.kb.termextraxt.taggers.NgramTagger")
+                name="qi.kb.classification.taggers.NgramTagger")
             tagger.train(tagged_sents)
         else:
             tagger = getUtility(IPOSTagger,
-                name="qi.kb.termextraxt.taggers.PennTreebankTagger")
+                name="qi.kb.classification.taggers.PennTreebankTagger")
         extractor = NPExtractor(tagger=tagger)
         classifier = getUtility(IContentClassifier)
         classifier.extractor = extractor

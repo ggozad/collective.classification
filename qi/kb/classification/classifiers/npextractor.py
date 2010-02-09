@@ -2,7 +2,7 @@ from zope.component import getUtility
 from qi.kb.classification.interfaces import IPOSTagger, ITokenizer
 from qi.kb.classification.classifiers.utils import singularize
 from nltk import RegexpParser
-from nltk.chunk.util import tree2conllstr, tree2conlltags
+from nltk.chunk.util import tree2conlltags
 
 def permissiveFilter(word, occur):
     return True
@@ -25,12 +25,12 @@ class NPExtractor(object):
             self.filter = DefaultFilter()
 
         self.tokenizer = getUtility(ITokenizer,
-            name="qi.kb.termextraxt.tokenizers.NLTKTokenizer")
+            name="qi.kb.classification.tokenizers.NLTKTokenizer")
         if tagger:
             self.tagger = tagger
         else:
             self.tagger = getUtility(IPOSTagger,
-                name="qi.kb.termextraxt.taggers.PennTreebankTagger")
+                name="qi.kb.classification.taggers.PennTreebankTagger")
         self.np_grammar = r"""
             NP: {<JJ>*<NN>}         # chunk determiners, adjectives and nouns
                 {<NNP>+}            # chunk proper nouns

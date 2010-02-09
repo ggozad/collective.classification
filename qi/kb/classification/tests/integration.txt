@@ -9,7 +9,7 @@ Let us setup the tagger first. You can do this by means of using the control pan
     >>> from zope.component import getUtility
     >>> from qi.kb.classification.interfaces import IPOSTagger
     >>> tagger = getUtility(IPOSTagger,
-    ...     name="qi.kb.termextraxt.taggers.NgramTagger")
+    ...     name="qi.kb.classification.taggers.NgramTagger")
     >>> tagger
     <qi.kb.classification.nltkutilities.tagger.NgramTagger ...>
 
@@ -22,13 +22,13 @@ Now we can train the tagger with the tagged sentences from the Brown corpus corr
     [[('The', 'AT'), ('Fulton', 'NP-TL'), ('County', 'NN-TL'), ...],...]
     >>> tagger.train(tagged_sents)
 
-Let's assign the tagger to the NP-extractor and assign the extractor to the classifier:
+Let's assign the tagger to the NP-extractor and assign the extractor to the storage:
 
     >>> from qi.kb.classification.classifiers.npextractor import NPExtractor
     >>> extractor = NPExtractor(tagger=tagger)
-    >>> from qi.kb.classification.interfaces import IContentClassifier
-    >>> classifier = getUtility(IContentClassifier)
-    >>> classifier.extractor = extractor
+    >>> from qi.kb.classification.interfaces import INounPhraseStorage
+    >>> npstorage = getUtility(INounPhraseStorage)
+    >>> npstorage.extractor = extractor
 
 We can now start adding documents, starting with the first 20 documents in Brown categorized as 'news'.
 
@@ -55,7 +55,8 @@ And finally 20 documents categorized as 'hobbies':
     ...                                    subject='hobbies')
 
 Time to train the classifier:
-
+    >>> from qi.kb.classification.interfaces import IContentClassifier
+    >>> classifier = getUtility(INounPhraseStorage)
     >>> classifier.train()
     >>> classifier.tags()
     ['editorial', 'hobbies', 'news']
