@@ -60,23 +60,25 @@ class NounBayesClassifier(Persistent):
         for item in self.allNouns:
             presentNouns.setdefault(item,0)
 
-        importantNouns = self.getTerms(doc_id)[0]
+        storage = getUtility(INounPhraseStorage)        
+        importantNouns = storage.getTerms(doc_id,self.noNounRanksToKeep)[0]
         for noun in importantNouns:
             if noun in presentNouns.keys():
                 presentNouns[noun] = 1
         return self.classifier.classify(presentNouns)
 
     @instance.memoize
-    def probabilityClassify(self,text):
+    def probabilityClassify(self,doc_id):
         """
         """
         if not self.classifier:
             return []
+
         presentNouns = dict()
         for item in self.allNouns:
             presentNouns.setdefault(item,0)
-
-        importantNouns = self._extractImportantNouns(text)
+        storage = getUtility(INounPhraseStorage)        
+        importantNouns = storage.getTerms(doc_id,self.noNounRanksToKeep)[0]
         for noun in importantNouns:
             if noun in presentNouns.keys():
                 presentNouns[noun] = 1

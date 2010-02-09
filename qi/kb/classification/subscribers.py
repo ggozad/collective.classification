@@ -9,13 +9,10 @@ from zope.component.interfaces import ComponentLookupError
 def updateClassifier(obj,event):
 
     try:
-        termstorage = getUtility(INounPhraseStorage)
+        termstorage = getUtility(INounPhraseStorage)    
+        classifier = getUtility(IContentClassifier)
     except ComponentLookupError:
         return
-    
-    
-    classifier = getUtility(IContentClassifier)
-    termstorage = getUtility(INounPhraseStorage)
     uid = obj.UID()
     text = convertHtmlToWebIntelligentPlainText(
         obj.SearchableText())

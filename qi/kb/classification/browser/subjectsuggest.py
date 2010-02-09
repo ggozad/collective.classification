@@ -23,18 +23,17 @@ class ISuggestSubject(Interface):
 class SubjectSuggestView(formbase.PageForm):
     """Suggest subjects to the user and let him set them.
     """
+    
     implements(IPlonePageForm)
     label = _(u"Suggested subjects")
     description = _(u"Choose among the proposed subjects. Clicking on apply" \
-        " will add the chosen subjects to the existing ones.")
+        "will add the chosen subjects to the existing ones.")
 
     def getSuggestedSubjects(self):
         """
         """
         classifier = getUtility(IContentClassifier)
-        searchable_text = convertHtmlToWebIntelligentPlainText(
-            self.context.SearchableText())
-        return classifier.probabilityClassify(searchable_text)
+        return classifier.probabilityClassify(self.context.UID())
 
     @property
     def form_fields(self):

@@ -7,7 +7,6 @@
     <five:registerPackage package="." initialize=".initialize" />
 
     <include package=".nltkutilities" />
-    <include package=".classifiers" />
     <include package=".browser" />
     
     <subscriber for="Products.ATContentTypes.interface.IATContentType
