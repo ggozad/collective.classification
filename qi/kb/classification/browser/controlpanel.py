@@ -19,6 +19,7 @@ from qi.kb.classification import ClassificationMessageFactory as _
 from nltk.corpus import brown
 from qi.kb.classification.interfaces import IPOSTagger
 from qi.kb.classification.classifiers.npextractor import NPExtractor
+from qi.kb.classification.interfaces import INounPhraseStorage
 
 brownCategories = SimpleVocabulary.fromValues(brown.categories())
 taggers = SimpleVocabulary.fromValues(['Pen TreeBank','N-Gram'])
@@ -31,7 +32,7 @@ class IClassifierSettingsSchema(Interface):
         title=_(u"Important nouns to keep"),
         description=_(u"Indicates how many nouns to keep when building the" \
             "list of most frequent nouns in the text."),
-        default=10,
+        default=20,
         required=True)
 
     train_after_update = schema.Bool(
@@ -136,6 +137,7 @@ class ClassifierSettings(ControlPanelForm):
     def retrain_classifier_action(self,action,data):
         form.applyChanges(self.context, self.form_fields, data, self.adapters)
         classifier = getUtility(IContentClassifier)
+        classifier.clear()
         catalog = getToolByName(self.context, 'portal_catalog')
         trainContent = catalog.searchResults()
         for item in trainContent:
@@ -144,7 +146,6 @@ class ClassifierSettings(ControlPanelForm):
                 # Is it too big to be returned in catalog brains?
                 classifier.addTrainingDocument(
                     item['UID'],
-                    item.getObject().SearchableText(),
                     item['Subject'])
         classifier.train()
         self.status = _(u"Classifier trained.")
@@ -162,10 +163,10 @@ class ClassifierSettings(ControlPanelForm):
             tagger = getUtility(IPOSTagger,
                 name="qi.kb.classification.taggers.PennTreebankTagger")
         extractor = NPExtractor(tagger=tagger)
-        classifier = getUtility(IContentClassifier)
-        classifier.extractor = extractor
-        self.status = _(u"Term extractor trained. You will need to" \
-            "re-trainthe classifier as well.")
+        storage = getUtility(INounPhraseStorage)
+        storage.extractor = extractor
+        self.status = _(u"Term extractor trained. You will need to " \
+            "re-train the classifier as well.")
 
     @form.action(_(u"Cancel"),validator=null_validator)
     def cancel_action(self, action, data):

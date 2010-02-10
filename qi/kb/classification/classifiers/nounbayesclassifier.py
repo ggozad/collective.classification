@@ -36,7 +36,13 @@ class NounBayesClassifier(Persistent):
         """
         presentNouns = dict()        
         trainingData = []
-        
+        if not self.allNouns:
+            storage = getUtility(INounPhraseStorage)   
+            for key in self.trainingDocs.keys():
+                importantNouns = storage.getNounTerms(
+                    key,
+                    self.noNounRanksToKeep)
+                self.allNouns = union(self.allNouns,OOSet(importantNouns))
         for item in self.allNouns:
             presentNouns.setdefault(item,0)
         
@@ -86,7 +92,7 @@ class NounBayesClassifier(Persistent):
         """Wipes the classifier's data.
         """
         self.allNouns.clear()
-        self.trainingData.clear()
+        self.trainingDocs.clear()
         
     def tags(self):
         if not self.classifier:
