@@ -12,3 +12,5 @@ Notes to self.
     done even with lots of docs.
   * Clean up and make things consistent. Probably after decisions about arch. 
     are more stable.
+
+

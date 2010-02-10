@@ -4,7 +4,6 @@ from persistent import Persistent
 from persistent.mapping import PersistentMapping
 from BTrees.OOBTree import OOSet, union
 from nltk import NaiveBayesClassifier
-from plone.memoize import instance
 from qi.kb.classification.interfaces import IContentClassifier
 from qi.kb.classification.interfaces import INounPhraseStorage
 
@@ -13,7 +12,7 @@ class NounBayesClassifier(Persistent):
     """
     implements(IContentClassifier)
     
-    def __init__(self,tagger=None,noNounRanksToKeep = 10):
+    def __init__(self,tagger=None,noNounRanksToKeep = 20):
         """
         """
         self.noNounRanksToKeep = noNounRanksToKeep
@@ -21,14 +20,14 @@ class NounBayesClassifier(Persistent):
         self.allNouns = OOSet()
 
         self.classifier = None
-        self.trainAfterUpdate = False
+        self.trainAfterUpdate = True
 
     def addTrainingDocument(self,doc_id,tags):
         """
         """
         storage = getUtility(INounPhraseStorage)        
-        importantNouns = storage.getTerms(doc_id,self.noNounRanksToKeep)[0]
-        
+        importantNouns = storage.getNounTerms(doc_id,self.noNounRanksToKeep)
+
         self.trainingDocs[doc_id] = (importantNouns,tags)
         self.allNouns = union(self.allNouns,OOSet(importantNouns))
         
@@ -61,13 +60,12 @@ class NounBayesClassifier(Persistent):
             presentNouns.setdefault(item,0)
 
         storage = getUtility(INounPhraseStorage)        
-        importantNouns = storage.getTerms(doc_id,self.noNounRanksToKeep)[0]
+        importantNouns = storage.getNounTerms(doc_id,self.noNounRanksToKeep)
         for noun in importantNouns:
             if noun in presentNouns.keys():
                 presentNouns[noun] = 1
         return self.classifier.classify(presentNouns)
 
-    @instance.memoize
     def probabilityClassify(self,doc_id):
         """
         """
@@ -78,7 +76,7 @@ class NounBayesClassifier(Persistent):
         for item in self.allNouns:
             presentNouns.setdefault(item,0)
         storage = getUtility(INounPhraseStorage)        
-        importantNouns = storage.getTerms(doc_id,self.noNounRanksToKeep)[0]
+        importantNouns = storage.getNounTerms(doc_id,self.noNounRanksToKeep)
         for noun in importantNouns:
             if noun in presentNouns.keys():
                 presentNouns[noun] = 1

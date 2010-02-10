@@ -75,3 +75,4 @@ After installation, you should have a control panel entry to configure the produ
     a site without a lot of content, or if you want to experiment with the
     classifier) you can set the classifier to train automatically in the 
     control panel.
+
