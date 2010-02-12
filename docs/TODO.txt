@@ -5,8 +5,7 @@ Notes to self.
   * Add a *ILanguage* interface, so that we can have classifiers for english,
     greek whatever.
   * Check out clustering techniques. Support vectors looks like the thing to 
-    do... This could also provide "related items". Look into LIBSVM, seems 
-    robust, fast and supports python.
+    do... Look into LIBSVM, seems robust, fast and supports python.
   * Check out performance of what is already there. POS tagging is slow. Bayes 
     should be ok, it might be even possible to retrain every time an update is 
     done even with lots of docs.

@@ -1,5 +1,5 @@
-from nltk.downloader import download
 import logging
+from nltk.downloader import download
 
 def downloadNLTKData():
     """

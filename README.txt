@@ -25,7 +25,7 @@ How it works?
 
 At the moment there exist the following type of utilities:
 
-  * *POS taggers*, utilities for classifying words in a document 
+  * *POS taggers*, utilities for classifying words in a document
     as `Parts Of Speech`_. Two are provided at the moment, a Penn TreeBank
     tagger and a trigram tagger. Both can be trained with some other language
     than english which is what we do here.
@@ -40,6 +40,9 @@ At the moment there exist the following type of utilities:
     trains itself using the terms and tags as an input. Then, for new content,
     the classifier will provide suggestions for tags according to the
     extracted terms of the content.
+  * *Clusterers*, utilities that without prior knowledge of content
+    classification can group content into groups according to feature
+    similarity. At the moment NLTK's k-means clusterer is used.
 
 
   .. _`Parts Of Speech`: http://en.wikipedia.org/wiki/Part-of-speech_tagging
@@ -60,7 +63,7 @@ not for the faint at disk space.**
 How to use it?
 ==============
 
-After installation, you should have a control panel entry to configure the product. 
+After installation, you should have a control panel entry to configure the product.
   * By default the product uses the Pen TreeBank tagger who is not very
     performant. It is a good idea to go to the term extractor configuration
     and change it so as to use an N-Gram tagger. Among the brown corpus
@@ -73,6 +76,6 @@ After installation, you should have a control panel entry to configure the produ
     added or updated. This means that you should periodically retrain the
     classifier. If you want this to happen automatically (that is if you have
     a site without a lot of content, or if you want to experiment with the
-    classifier) you can set the classifier to train automatically in the 
+    classifier) you can set the classifier to train automatically in the
     control panel.
 

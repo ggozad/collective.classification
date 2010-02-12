@@ -1,17 +1,17 @@
 from zope.component import getUtility
-from qi.kb.classification.interfaces import IPOSTagger, ITokenizer
-from qi.kb.classification.classifiers.utils import singularize
 from nltk import RegexpParser
 from nltk.chunk.util import tree2conlltags
+from qi.kb.classification.interfaces import IPOSTagger, ITokenizer
+from qi.kb.classification.classifiers.utils import singularize
 
 def permissiveFilter(word, occur):
     return True
 
 class DefaultFilter(object):
-
-    def __init__(self, minOccur=3): 
+    
+    def __init__(self, minOccur=3):
         self.minOccur = minOccur
-
+    
     def __call__(self, word, occur):
         return occur >= self.minOccur
 
@@ -23,7 +23,7 @@ class NPExtractor(object):
         """
         if filter is None:
             self.filter = DefaultFilter()
-
+        
         self.tokenizer = getUtility(ITokenizer,
             name="qi.kb.classification.tokenizers.NLTKTokenizer")
         if tagger:
@@ -36,11 +36,11 @@ class NPExtractor(object):
                 {<NNP>+}            # chunk proper nouns
                 """
         self.np_finder = RegexpParser(self.np_grammar)
-        
+    
     def _add(self,norm, terms):
         terms.setdefault(norm, 0)
         terms[norm] += 1
-        
+    
     def extract(self,text):
         """
         """
@@ -48,9 +48,9 @@ class NPExtractor(object):
         tagged_terms = self.tagger.tag(tokens)
         terms = {}
         np_terms = {}
-
+        
         noun_phrases = [
-            node 
+            node
             for node in self.np_finder.parse(tagged_terms)
             if not isinstance(node,tuple)]
         
@@ -58,8 +58,8 @@ class NPExtractor(object):
             coll_tag = tree2conlltags(node)
             if len(coll_tag) > 1:
                 mterm = [
-                    term.lower() 
-                    for (term,tag,temp) in coll_tag 
+                    term.lower()
+                    for (term,tag,temp) in coll_tag
                     if len(term)>1
                     ]
                 
@@ -68,15 +68,15 @@ class NPExtractor(object):
             for (term,tag,temp) in coll_tag:
                 if tag.startswith('N') and len(term)>1:
                     if tag in ['NNS','NNPS']:
-                        term = singularize(term)                    
+                        term = singularize(term)
                     self._add(term.lower(),terms)
-
+        
         for term in terms.keys():
             if not self.filter(term,terms[term]):
                 del terms[term]
-
+        
         for term in np_terms.keys():
             if not self.filter(term,np_terms[term]):
                 del np_terms[term]
-                                
+        
         return (terms,np_terms)

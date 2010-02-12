@@ -1,19 +1,22 @@
 import numpy
-from zope.component import getUtility
-from nltk.cluster import KMeansClusterer, GAAClusterer
-from nltk.cluster.util import euclidean_distance, cosine_distance
 from operator import indexOf
+from zope.interface import implements
+from zope.component import getUtility
+from nltk.cluster import KMeansClusterer
+#from nltk.cluster.util import euclidean_distance, cosine_distance
 from qi.kb.classification.classifiers.utils import pearson
 from qi.kb.classification.interfaces import INounPhraseStorage
-
+from qi.kb.classification.interfaces import IContentClusterer
 class KMeans(object):
     """
     """
     
+    implements(IContentClusterer)
+    
     def clusterize(self,noClusters,noNouranksToKeep,**kwargs):
         """
         """
-        storage = getUtility(INounPhraseStorage)  
+        storage = getUtility(INounPhraseStorage)
         
         docids = storage.rankedNouns.keys()
         docnouns = []
@@ -33,14 +36,12 @@ class KMeans(object):
         
         clusterer = KMeansClusterer(noClusters,pearson,**kwargs)
         clusters = clusterer.cluster(vectors,True)
-        #clusterer = GAAClusterer(2)
-        #clusters = clusterer.cluster(vectors, True)
         
         result = {}
         for i in range(noClusters):
             result[i] = []
         for docid in docids:
             index = indexOf(docids,docid)
-            result[clusters[index]] = result[clusters[index]] + [docid]        
+            result[clusters[index]] = result[clusters[index]] + [docid]
         return result
     

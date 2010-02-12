@@ -17,7 +17,7 @@ class ISuggestSubject(Interface):
     suggestions = schema.List(
         title = _(u"Suggestions"),
         description = _(u""),
-        default = [] 
+        default = []
     )
 
 class SubjectSuggestView(formbase.PageForm):
@@ -28,13 +28,13 @@ class SubjectSuggestView(formbase.PageForm):
     label = _(u"Suggested subjects")
     description = _(u"Choose among the proposed subjects. Clicking on apply" \
         "will add the chosen subjects to the existing ones.")
-
+    
     def getSuggestedSubjects(self):
         """
         """
         classifier = getUtility(IContentClassifier)
         return classifier.probabilityClassify(self.context.UID())
-
+    
     @property
     def form_fields(self):
         """
@@ -45,7 +45,7 @@ class SubjectSuggestView(formbase.PageForm):
             (suggestions.prob(subject),subject)
             for subject in suggestions.samples()
         ]
-        subject_prob_list = sorted(subject_prob_list,reverse=True)    
+        subject_prob_list = sorted(subject_prob_list,reverse=True)
         vocab_terms = []
         for (probability,subject) in subject_prob_list:
             label = "%s %2.1f%%"%(subject,probability*100)
@@ -55,7 +55,7 @@ class SubjectSuggestView(formbase.PageForm):
         choice = schema.Choice(vocabulary=SimpleVocabulary(vocab_terms))
         ff['suggestions'].field.value_type = choice
         return ff
-
+    
     @form.action(_(u"Apply"))
     def action_submit(self, action, data):
         """

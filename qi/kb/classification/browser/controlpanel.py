@@ -27,14 +27,14 @@ taggers = SimpleVocabulary.fromValues(['Pen TreeBank','N-Gram'])
 class IClassifierSettingsSchema(Interface):
     """Classifier settings
     """
-
+    
     no_noun_ranks = schema.Int(
         title=_(u"Important nouns to keep"),
         description=_(u"Indicates how many nouns to keep when building the" \
             "list of most frequent nouns in the text."),
         default=20,
         required=True)
-
+    
     train_after_update = schema.Bool(
         title=_(u"Train after update"),
         description=_(u"Enabling this will trigger training the classifier " \
@@ -53,7 +53,7 @@ class ITermExtractorSchema(Interface):
             "performant and gives better results."),
         vocabulary=taggers,
         required=True)
-
+    
     brown_categories = schema.List(
         title=_(u"Brown corpus categories used for N-gram training"),
         description=_(u"Choose the categories among the available in the " \
@@ -61,9 +61,9 @@ class ITermExtractorSchema(Interface):
             "Only applies if you have chosen the N-gram tagger above."),
         value_type=schema.Choice(vocabulary = brownCategories),
         required=True)
-                            
+
 class IClassificationSchema(IClassifierSettingsSchema, ITermExtractorSchema):
-    """Just a combination of IClassifierSettingsSchema and 
+    """Just a combination of IClassifierSettingsSchema and
     ITermExtractorSchema
     """
 
@@ -73,17 +73,17 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
     """
     adapts(IPloneSiteRoot)
     implements(IClassificationSchema)
-
+    
     def __init__(self, context):
         super(ClassifierSettingsAdapter, self).__init__(context)
         self.classifier = getUtility(IContentClassifier)
-
+    
     def get_no_noun_ranks(self):
         return self.classifier.noNounRanksToKeep
-
+    
     def set_no_noun_ranks(self,no_ranks):
         self.classifier.noNounRanksToKeep = no_ranks
-
+    
     no_noun_ranks = property(get_no_noun_ranks,set_no_noun_ranks)
     
     def get_train_after_update(self):
@@ -97,20 +97,20 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
     
     def get_tagger_type(self):
         return 'Pen TreeBank'
-
+    
     def set_tagger_type(self):
         pass
-
+    
     tagger_type = property(get_tagger_type,set_tagger_type)
-
+    
     def set_brown_categories(self):
         pass
-
+    
     def get_brown_categories(self):
         return ['news']
-
-    brown_categories = property(get_brown_categories,set_brown_categories)
     
+    brown_categories = property(get_brown_categories,set_brown_categories)
+
 classifierset = FormFieldsets(IClassifierSettingsSchema)
 classifierset.id = 'classifier'
 classifierset.label = u"Classifier settings"
@@ -121,9 +121,9 @@ termextractorset.label = U"Term Extraction settings"
 class ClassifierSettings(ControlPanelForm):
     """
     """
-
+    
     form_fields = FormFieldsets(classifierset,termextractorset)
-
+    
     label = _("Classifier settings")
     description = _("Settings for the content classifier.")
     form_name = _("Classifier settings")
@@ -132,7 +132,7 @@ class ClassifierSettings(ControlPanelForm):
     def save_action(self,action,data):
         form.applyChanges(self.context, self.form_fields, data, self.adapters)
         self.status = _(u"Changes saved.")
-                
+    
     @form.action(_(u"Re-train classifier"))
     def retrain_classifier_action(self,action,data):
         form.applyChanges(self.context, self.form_fields, data, self.adapters)
@@ -149,7 +149,7 @@ class ClassifierSettings(ControlPanelForm):
                     item['Subject'])
         classifier.train()
         self.status = _(u"Classifier trained.")
-
+    
     @form.action(_(u"Re-train term extractor"))
     def retrain_termextractor_action(self,action,data):
         tagger = None
@@ -167,7 +167,7 @@ class ClassifierSettings(ControlPanelForm):
         storage.extractor = extractor
         self.status = _(u"Term extractor trained. You will need to " \
             "re-train the classifier as well.")
-
+    
     @form.action(_(u"Cancel"),validator=null_validator)
     def cancel_action(self, action, data):
         self.status = _(u"Changes cancelled.")
@@ -175,6 +175,6 @@ class ClassifierSettings(ControlPanelForm):
                               name='absolute_url')()
         self.request.response.redirect(url + '/plone_control_panel')
         return ''
-
+    
     
     
