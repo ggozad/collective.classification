@@ -1,11 +1,12 @@
 Introduction
 ============
 
-*qi.kb.classification* aims to provide a set of tools for automatic document
-classification. Currently it makes use of the `Natural Language Toolkit`_ and
-features a trainable document classifier based on Part Of Speech (POS)
-tagging, heavily influenced by `topia.termextract`_. This is not a finished
-product and is intended to be used for experimentation and development.
+*collective.classification* aims to provide a set of tools for automatic
+document classification. Currently it makes use of the
+`Natural Language Toolkit`_ and features a trainable document classifier based
+on Part Of Speech (POS) tagging, heavily influenced by `topia.termextract`_.
+This is not a finished product and is intended to be used for experimentation
+and development.
 
   .. _`Natural Language Toolkit`: http://www.nltk.org
   .. _`topia.termextract`: http://pypi.python.org/pypi/topia.termextract/
@@ -55,8 +56,8 @@ Installation & Setup
 
 To get started you will simply need to add the package to your "eggs" and
 "zcml" sections, run buildout, restart your Plone instance and install the
-"qi.kb.classification" package using the quick-installer or via the "Add-on
-Products" section in "Site Setup".
+"collective.classification" package using the quick-installer or via the
+"Add-on Products" section in "Site Setup".
 
 **WARNING: Upon first time installation linguistic data will be fetched from
 NLTK's repository and stored locally on your filesystem. It's about 225Mb, so
