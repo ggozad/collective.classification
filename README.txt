@@ -14,7 +14,8 @@ What is this all about?
 =======================
 
 It's mostly about having fun! The package is in a very early experimental
-stage and awaits eagerly contributions. But you might be able to do some
+stage and awaits eagerly contributions. You will get a good understanding of
+what works or not by looking at the tests. You might also be able to do some
 useful things with it: On a large site with a lot of content and tags (or
 subjects in the plone lingo) it might be difficult to assign tags to new
 content. In this case, a trained classifier could provide useful suggestions
@@ -49,8 +50,8 @@ At the moment there exist the following type of utilities:
   .. _`naive Bayes`: http://en.wikipedia.org/wiki/Naive_Bayes_classifier
   .. _`k-means`: http://en.wikipedia.org/wiki/K-means_clustering
 
-Installation
-============
+Installation & Setup
+====================
 
 To get started you will simply need to add the package to your "eggs" and
 "zcml" sections, run buildout, restart your Plone instance and install the
@@ -61,22 +62,31 @@ Products" section in "Site Setup".
 NLTK's repository and stored locally on your filesystem. It's about 225Mb, so
 not for the faint at disk space.**
 
-How to use it?
-==============
-
 After installation, you should have a control panel entry to configure the product.
+
   * By default the product uses the Pen TreeBank tagger who is not very
     performant. It is a good idea to go to the term extractor configuration
     and change it so as to use an N-Gram tagger. Among the brown corpus
     categories choose the ones that seem to fit better with your content.
-    Train the tagger.
+    Train the tagger. This will look for *all* content and perform term
+    extraction. So go grab yourself something to drink, it will take a while.
   * After training the tagger, train the classifier. This will look for any
-    content that is tagged, perform term extraction and train the classifier.
-    So go grab yourself something to drink, it will take a while.
-  * By default the classifier does not get re-trained every time content is
-    added or updated. This means that you should periodically retrain the
-    classifier. If you want this to happen automatically (that is if you have
-    a site without a lot of content, or if you want to experiment with the
-    classifier) you can set the classifier to train automatically in the
-    control panel.
+    content that is tagged and train the Bayes classifier.
+  * By default the classifier does get re-trained every time content is
+    added or updated. If you do not want this to happen automatically (that is
+    if you have a site with a lot of content, and things get slow), in the
+    control panel you can disable auto-training.
+
+How to use it?
+==============
+
+  * In order to use the classifier and get suggested tags for some content,
+    you can call *@@subjectsuggest* on the content. This comes down to
+    appending @@subjectsuggest to the url in your browser. A form will come up
+    with
+    suggestions, choose the ones that seem appropriate and apply. You will
+    need to have the right to edit the document in order to call the view.
+  * For clustering you can just call the *@@clusterize* view from anywhere.
+    The result is not deterministic but hopefully helpful;). You need manager
+    rights for this so as to not allow your users to DOS your site!
 

@@ -1,7 +1,7 @@
 ==============
 Notes to self.
 ==============
-
+  * Restrict the content types for which to perform term extraction.
   * Add a *ILanguage* interface, so that we can have classifiers for english,
     greek whatever.
   * Check out clustering techniques. Support vectors looks like the thing to

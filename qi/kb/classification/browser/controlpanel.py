@@ -1,3 +1,4 @@
+from plone.intelligenttext.transforms import convertHtmlToWebIntelligentPlainText
 from zope.interface import Interface
 from zope.interface import implements
 from zope.component import adapts
@@ -142,8 +143,6 @@ class ClassifierSettings(ControlPanelForm):
         trainContent = catalog.searchResults()
         for item in trainContent:
             if item.Subject:
-                # NOTE: Why can't I obtain item.SearchableText?
-                # Is it too big to be returned in catalog brains?
                 classifier.addTrainingDocument(
                     item['UID'],
                     item['Subject'])
@@ -165,8 +164,19 @@ class ClassifierSettings(ControlPanelForm):
         extractor = NPExtractor(tagger=tagger)
         storage = getUtility(INounPhraseStorage)
         storage.extractor = extractor
-        self.status = _(u"Term extractor trained. You will need to " \
-            "re-train the classifier as well.")
+        storage.clear()
+        catalog = getToolByName(self.context, 'portal_catalog')
+        trainContent = catalog.searchResults()
+        for item in trainContent:
+            # NOTE: Why can't I obtain item.SearchableText?
+            # Is it too big to be returned in catalog brains?
+            obj = item.getObject()
+            uid = obj.UID()
+            text = convertHtmlToWebIntelligentPlainText(
+                obj.SearchableText())
+            storage.addDocument(uid,text)
+        self.status = _(u"Term extractor trained and NP storage updated." \
+        " You will need to re-train the classifier as well.")
     
     @form.action(_(u"Cancel"),validator=null_validator)
     def cancel_action(self, action, data):
@@ -175,6 +185,3 @@ class ClassifierSettings(ControlPanelForm):
                               name='absolute_url')()
         self.request.response.redirect(url + '/plone_control_panel')
         return ''
-    
-    
-    
