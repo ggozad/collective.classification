@@ -4,12 +4,14 @@ Notes to self.
 
   * Add a *ILanguage* interface, so that we can have classifiers for english,
     greek whatever.
-  * Check out clustering techniques. Support vectors looks like the thing to 
+  * Check out clustering techniques. Support vectors looks like the thing to
     do... Look into LIBSVM, seems robust, fast and supports python.
-  * Check out performance of what is already there. POS tagging is slow. Bayes 
-    should be ok, it might be even possible to retrain every time an update is 
+  * Check out performance of what is already there. POS tagging is slow. Bayes
+    should be ok, it might be even possible to retrain every time an update is
     done even with lots of docs.
-  * Clean up and make things consistent. Probably after decisions about arch. 
+  * Clean up and make things consistent. Probably after decisions about arch.
     are more stable.
+  * For k-means cluster add the ability to provide initial conditions for the
+    centroids by means of selecting documents.
 
 

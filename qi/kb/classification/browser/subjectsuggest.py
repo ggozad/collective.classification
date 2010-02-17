@@ -5,8 +5,6 @@ from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.formlib import form
 from plone.app.form.interfaces import IPlonePageForm
-from plone.intelligenttext.transforms import \
-    convertHtmlToWebIntelligentPlainText
 from Products.Five.formlib import formbase
 from qi.kb.classification.interfaces import IContentClassifier
 from qi.kb.classification import ClassificationMessageFactory as _

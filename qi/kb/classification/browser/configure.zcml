@@ -10,6 +10,13 @@
         permission="cmf.ModifyPortalContent"
     />
 
+    <browser:page
+        for="*"
+        name="clusterize"
+        class=".clusterize.ClusterizeView"
+        permission="cmf.ManagePortal"
+    />
+
     <!--Control panel-->
     <browser:page
         name="classifier-settings-controlpanel"

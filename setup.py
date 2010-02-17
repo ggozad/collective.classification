@@ -36,7 +36,7 @@ setup(name='qi.kb.classification',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'nltk',
+          'nltk < 2.0b8',
           'numpy'
       ],
       entry_points="""

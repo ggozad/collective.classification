@@ -4,41 +4,51 @@ from qi.kb.classification.tests.base import ClassificationTestCase
 from qi.kb.classification.classifiers.clustering \
     import KMeans
 from qi.kb.classification.interfaces import IPOSTagger
+from qi.kb.classification.classifiers.npextractor import NPExtractor
 from qi.kb.classification.interfaces import INounPhraseStorage
 
-
 class TestKMeansClustering(ClassificationTestCase):
-    """Test the Naive Bayes document classifier using only the most frequent
-    nouns as input. As sample test we train the classifier with a few articles
-    from nltk's brown corpus categorised as 'editorial'  and a few others 
-    categorised as 'hobbies'. Then, we test the classifier with 15 additional 
-    documents, getting 12/15 right.
+    """Test the KMeans clusterer.
     """
     
-    def afterSetUp(self):
+    def test_clusterer(self):
+        """Here we take 10 documents categorized as 'government' and
+        'mystery' from the brown corpus, and perform k-means clustering on
+        these. Optimally we would like the clusterer to divide them in two
+        clusters.
+        The clusterer generates clusters depending on random initial
+        conditions, so the result can be different in different test runs.
+        In order to account for that that we run a lot of iterations
+        (50) which hopefully will generate a good result. The success
+        condition is that a max of  1 out of 10 documents will fall in the 
+        wrong cluster.
+        """
+        
         tagged_sents =  brown.tagged_sents(
-            categories=['editorial','hobbies'])
-        self.tagger = getUtility(IPOSTagger,
+            categories=['government','mystery'])
+        tagger = getUtility(IPOSTagger,
             name="qi.kb.classification.taggers.NgramTagger")
-        self.tagger.train(tagged_sents)
+        tagger.train(tagged_sents)
+        extractor = NPExtractor(tagger=tagger)
+        storage = getUtility(INounPhraseStorage)
+        storage.extractor = extractor
         
-    def test_extractor(self):
-        """
-        """
         clusterer = KMeans()
-        storage = getUtility(INounPhraseStorage) 
-        editorial_ids = brown.fileids(categories='editorial')[:25]        
-        hobbies_ids = brown.fileids(categories='hobbies')[:25]
+        government_ids = brown.fileids(categories='government')[:10]        
+        mystery_ids = brown.fileids(categories='mystery')[:10]
         
-        for articleid in editorial_ids:
+        for articleid in government_ids:
             text = " ".join(brown.words(articleid))
             storage.addDocument(articleid,text)
         
-        for articleid in hobbies_ids:
+        for articleid in mystery_ids:
             text = " ".join(brown.words(articleid))
             storage.addDocument(articleid,text)
-
-        print clusterer.clusterize(2,20,repeats=20)
+        result = clusterer.clusterize(2,20,repeats=50)
+        cluster1 = set(result[0])
+        missed = min(len(cluster1-set(government_ids)),
+                     len(cluster1-set(mystery_ids)))
+        self.failUnless(missed<2)
 
 def test_suite():
     from unittest import TestSuite, makeSuite

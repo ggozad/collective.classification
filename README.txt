@@ -42,11 +42,12 @@ At the moment there exist the following type of utilities:
     extracted terms of the content.
   * *Clusterers*, utilities that without prior knowledge of content
     classification can group content into groups according to feature
-    similarity. At the moment NLTK's k-means clusterer is used.
+    similarity. At the moment NLTK's `k-means`_ clusterer is used.
 
 
   .. _`Parts Of Speech`: http://en.wikipedia.org/wiki/Part-of-speech_tagging
   .. _`naive Bayes`: http://en.wikipedia.org/wiki/Naive_Bayes_classifier
+  .. _`k-means`: http://en.wikipedia.org/wiki/K-means_clustering
 
 Installation
 ============
