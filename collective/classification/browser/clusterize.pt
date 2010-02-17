@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+xmlns:tal="http://xml.zope.org/namespaces/tal"
+xmlns:metal="http://xml.zope.org/namespaces/metal"
+xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+metal:use-macro="here/main_template/macros/master"
+i18n:domain="collective.classification">
+  <body>
+    <metal:main metal:fill-slot="main">
+      <tal:main-macro metal:define-macro="main">
+        <div metal:use-macro="context/@@base-pageform.html/macros/form">
+            <div metal:fill-slot="extra_info">
+                <tal:result tal:define="clusters view/clusters|nothing"
+                    tal:condition="clusters">
+                    <tal:clusters tal:repeat="cluster clusters">
+                        <dl>
+                            <dt tal:content="string: Cluster ${repeat/cluster/index}">
+                                Cluster N
+                            </dt>
+                            <tal:items tal:repeat="item cluster">
+                                <dd>
+                                    <a href="#"
+                                        tal:attributes="href python:item[0];
+                                            title python:item[2]"
+                                        tal:content="python:item[1]">
+                                        Title
+                                    </a>
+                                </dd>
+                            </tal:items>
+                        </dl>
+
+                    </tal:clusters>
+                </tal:result>
+            </div>
+        </div>
+      </tal:main-macro>
+    </metal:main>
+  </body>
+</html>

@@ -3,9 +3,9 @@ import os
 
 version = '0.1a1'
 
-setup(name='qi.kb.classification',
+setup(name='collective.classification',
       version=version,
-      description="Content classification/tagging through " \
+      description="Content classification/clustering through " \
                   "language processing",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
@@ -27,11 +27,11 @@ setup(name='qi.kb.classification',
       keywords='term-extract,semantic,classification,Parts-Of-Speech ' \
       'tagging,plone',
       author='Yiorgis Gozadinos',
-      author_email='ggozad@qiweb.net',
-      url='http://github.org/ggozad/qi.kb.classification',
+      author_email='ggozad@jarn.com',
+      url='http://github.org/ggozad/collective.classification',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),
-      namespace_packages=['qi', 'qi.kb'],
+      namespace_packages=['collective'],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
