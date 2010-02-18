@@ -54,6 +54,11 @@ At the moment there exist the following type of utilities:
 Installation & Setup
 ====================
 
+Before running buildout, make sure you have yaml and its python bindings
+installed (use macports on osx, or your package installer on linux). If nltk
+exists for your OS you might as well install that, otherwise it will be
+fetched when you run buildout.
+
 To get started you will simply need to add the package to your "eggs" and
 "zcml" sections, run buildout, restart your Plone instance and install the
 "collective.classification" package using the quick-installer or via the

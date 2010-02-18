@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1a2
+-------------------
+
+- Updated documentation and dependencies to warn about yaml [ggozad]
+
 0.1a1
 -------------------
 
