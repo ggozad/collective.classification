@@ -1,4 +1,5 @@
 from zope.component import getUtility
+from plone.memoize import instance
 from nltk import RegexpParser
 from nltk.chunk.util import tree2conlltags
 from collective.classification.interfaces import IPOSTagger, ITokenizer
@@ -23,7 +24,6 @@ class NPExtractor(object):
         """
         if filter is None:
             self.filter = DefaultFilter()
-        
         self.tokenizer = getUtility(ITokenizer,
             name="collective.classification.tokenizers.NLTKTokenizer")
         if tagger:
@@ -41,9 +41,11 @@ class NPExtractor(object):
         terms.setdefault(norm, 0)
         terms[norm] += 1
     
+    @instance.memoize
     def extract(self,text):
         """
         """
+        print "Extracting"
         tokens = self.tokenizer.tokenize(text)
         tagged_terms = self.tagger.tag(tokens)
         terms = {}
