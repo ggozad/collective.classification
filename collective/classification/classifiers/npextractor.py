@@ -45,7 +45,6 @@ class NPExtractor(object):
     def extract(self,text):
         """
         """
-        print "Extracting"
         tokens = self.tokenizer.tokenize(text)
         tagged_terms = self.tagger.tag(tokens)
         terms = {}

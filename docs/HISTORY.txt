@@ -3,8 +3,9 @@ Changelog
 
 0.1a2
 -------------------
-
-- Updated documentation and dependencies to warn about yaml [ggozad]
+- "memoized" term extractor. [ggozad]
+- Added friendly types to the control panel. [ggozad]
+- Updated documentation and dependencies to warn about yaml. [ggozad]
 
 0.1a1
 -------------------
