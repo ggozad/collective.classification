@@ -2,6 +2,7 @@ from operator import itemgetter
 from zope.interface import implements
 from persistent import Persistent
 from persistent.mapping import PersistentMapping
+from persistent.list import PersistentList
 from nltk.metrics import ranks_from_scores
 from collective.classification.classifiers.npextractor import NPExtractor
 from collective.classification.interfaces import INounPhraseStorage
@@ -18,6 +19,7 @@ class NounPhraseStorage(Persistent):
         self.rankedNouns = PersistentMapping()
         self.rankedNPs = PersistentMapping()
         self.extractor = NPExtractor(tagger=tagger)
+        self.friendlyTypes = PersistentList()
     
     def _scoresToRanks(self,rankdict):
         scored_items = sorted(rankdict.items(),key=itemgetter(1),reverse=True)
