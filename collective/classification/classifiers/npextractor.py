@@ -1,9 +1,12 @@
 from zope.component import getUtility
-from plone.memoize import instance
+from plone.memoize import ram
 from nltk import RegexpParser
 from nltk.chunk.util import tree2conlltags
 from collective.classification.interfaces import IPOSTagger, ITokenizer
 from collective.classification.classifiers.utils import singularize
+
+def _extractor_cachekey(method, self, text):
+    return (self.tagger, text)
 
 def permissiveFilter(word, occur):
     return True
@@ -41,7 +44,7 @@ class NPExtractor(object):
         terms.setdefault(norm, 0)
         terms[norm] += 1
     
-    @instance.memoize
+    @ram.cache(_extractor_cachekey)
     def extract(self,text):
         """
         """
