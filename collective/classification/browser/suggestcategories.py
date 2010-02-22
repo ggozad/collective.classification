@@ -9,7 +9,7 @@ from Products.Five.formlib import formbase
 from collective.classification.interfaces import IContentClassifier
 from collective.classification import ClassificationMessageFactory as _
 
-class ISuggestSubject(Interface):
+class ISuggestCategories(Interface):
     """
     """
     suggestions = schema.List(
@@ -18,14 +18,14 @@ class ISuggestSubject(Interface):
         default = []
     )
 
-class SubjectSuggestView(formbase.PageForm):
-    """Suggest subjects to the user and let him set them.
+class SuggestCategoriesView(formbase.PageForm):
+    """Suggest categories to the user and let him set them.
     """
     
     implements(IPlonePageForm)
-    label = _(u"Suggested subjects")
+    label = _(u"Suggested categories")
     description = _(u"Choose among the proposed subjects. Clicking on apply" \
-        "will add the chosen subjects to the existing ones.")
+        "will add the chosen categories to the existing ones.")
     
     def getSuggestedSubjects(self):
         """
@@ -37,7 +37,7 @@ class SubjectSuggestView(formbase.PageForm):
     def form_fields(self):
         """
         """
-        ff = form.Fields(ISuggestSubject)
+        ff = form.Fields(ISuggestCategories)
         suggestions = self.getSuggestedSubjects()
         subject_prob_list = [
             (suggestions.prob(subject),subject)

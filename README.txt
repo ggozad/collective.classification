@@ -87,11 +87,11 @@ How to use it?
 ==============
 
   * In order to use the classifier and get suggested tags for some content,
-    you can call *@@subjectsuggest* on the content. This comes down to
-    appending @@subjectsuggest to the url in your browser. A form will come up
-    with
-    suggestions, choose the ones that seem appropriate and apply. You will
-    need to have the right to edit the document in order to call the view.
+    you can call *@@suggest-categories* on the content. This comes down to
+    appending @@suggest-categories to the url in your browser. A form will
+    come up with suggestions, choose the ones that seem appropriate and apply.
+    You will need to have the right to edit the document in order to call the
+    view.
   * For clustering you can just call the *@@clusterize* view from anywhere.
     The result is not deterministic but hopefully helpful;). You need manager
     rights for this so as to not allow your users to DOS your site!

@@ -3,6 +3,7 @@ Changelog
 
 0.1a2
 -------------------
+- Renamed @@subjectsuggest to @@suggest-categories. Fixes #2.[ggozad]
 - "memoized" term extractor. [ggozad]
 - Added friendly types to the control panel. [ggozad]
 - Updated documentation and dependencies to warn about yaml. [ggozad]
