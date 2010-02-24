@@ -3,6 +3,7 @@ Changelog
 
 0.1a2
 -------------------
+- Made control panel more sane. Fixes #1. [ggozad]
 - Renamed @@subjectsuggest to @@suggest-categories. Fixes #2.[ggozad]
 - "memoized" term extractor. [ggozad]
 - Added friendly types to the control panel. [ggozad]
