@@ -107,7 +107,7 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
     
     def get_tagger_type(self):
         return 'Pen TreeBank'
-    def set_tagger_type(self):
+    def set_tagger_type(self,value):
         pass
     tagger_type = property(get_tagger_type,set_tagger_type)
     
@@ -137,7 +137,8 @@ class ClassifierSettings(ControlPanelForm):
     @form.action(_(u"Save"))
     def save_action(self,action,data):
         form.applyChanges(self.context, self.form_fields, data, self.adapters)
-        self.status = _(u"Changes saved.")
+        self.status = _(u"Changes saved. You will need to re-train the " \
+            "term extractor/classifier if you changed their settings.")
     
     @form.action(_(u"Re-train classifier"))
     def retrain_classifier_action(self,action,data):
