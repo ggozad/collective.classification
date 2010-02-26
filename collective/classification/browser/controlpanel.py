@@ -3,20 +3,22 @@ from zope.component import adapts, getUtility, getMultiAdapter
 from zope.formlib import form
 from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary
+
 from plone.app.controlpanel.form import ControlPanelForm
 from plone.app.form.validators import null_validator
 from plone.fieldsets.fieldsets import FormFieldsets
 from plone.intelligenttext.transforms import \
     convertHtmlToWebIntelligentPlainText
+
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFDefault.formlib.schema import SchemaAdapterBase
 from Products.CMFCore.utils import getToolByName
-from collective.classification.interfaces import IContentClassifier
-from collective.classification import ClassificationMessageFactory as _
+
 from nltk.corpus import brown
-from collective.classification.interfaces import IPOSTagger
-from collective.classification.interfaces import INounPhraseStorage, \
-    ITermExtractor
+
+from collective.classification.interfaces import IContentClassifier, \
+    IPOSTagger, INounPhraseStorage, ITermExtractor
+from collective.classification import ClassificationMessageFactory as _
 
 brownCategories = SimpleVocabulary.fromValues(brown.categories())
 taggers = SimpleVocabulary.fromValues(['Pen TreeBank','N-Gram'])
@@ -167,10 +169,13 @@ class ClassifierSettings(ControlPanelForm):
         else:
             tagger = getUtility(IPOSTagger,
                 name="collective.classification.taggers.PennTreebankTagger")
+        
         extractor = getUtility(ITermExtractor)
         extractor.tagger = tagger
+        
         storage = getUtility(INounPhraseStorage)
         storage.clear()
+        
         catalog = getToolByName(self.context, 'portal_catalog')
         trainContent = catalog.searchResults()
         for item in trainContent:

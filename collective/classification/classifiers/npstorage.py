@@ -14,7 +14,7 @@ class NounPhraseStorage(Persistent):
     
     implements(INounPhraseStorage)
     
-    def __init__(self,tagger=None):
+    def __init__(self):
         """
         """
         self.rankedNouns = PersistentMapping()
