@@ -1,11 +1,12 @@
 from operator import itemgetter
 from zope.interface import implements
+from zope.component import getUtility
 from persistent import Persistent
 from persistent.mapping import PersistentMapping
 from persistent.list import PersistentList
 from nltk.metrics import ranks_from_scores
-from collective.classification.classifiers.npextractor import NPExtractor
-from collective.classification.interfaces import INounPhraseStorage
+from collective.classification.interfaces import INounPhraseStorage, \
+    ITermExtractor
 
 class NounPhraseStorage(Persistent):
     """A storage utility to keep noun-phrases in the ZODB.
@@ -18,7 +19,7 @@ class NounPhraseStorage(Persistent):
         """
         self.rankedNouns = PersistentMapping()
         self.rankedNPs = PersistentMapping()
-        self.extractor = NPExtractor(tagger=tagger)
+        self.extractor = getUtility(ITermExtractor)
         self.friendlyTypes = PersistentList()
     
     def _scoresToRanks(self,rankdict):

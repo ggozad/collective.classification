@@ -15,8 +15,8 @@ from collective.classification.interfaces import IContentClassifier
 from collective.classification import ClassificationMessageFactory as _
 from nltk.corpus import brown
 from collective.classification.interfaces import IPOSTagger
-from collective.classification.classifiers.npextractor import NPExtractor
-from collective.classification.interfaces import INounPhraseStorage
+from collective.classification.interfaces import INounPhraseStorage, \
+    ITermExtractor
 
 brownCategories = SimpleVocabulary.fromValues(brown.categories())
 taggers = SimpleVocabulary.fromValues(['Pen TreeBank','N-Gram'])
@@ -167,9 +167,9 @@ class ClassifierSettings(ControlPanelForm):
         else:
             tagger = getUtility(IPOSTagger,
                 name="collective.classification.taggers.PennTreebankTagger")
-        extractor = NPExtractor(tagger=tagger)
+        extractor = getUtility(ITermExtractor)
+        extractor.tagger = tagger
         storage = getUtility(INounPhraseStorage)
-        storage.extractor = extractor
         storage.clear()
         catalog = getToolByName(self.context, 'portal_catalog')
         trainContent = catalog.searchResults()
