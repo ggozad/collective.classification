@@ -111,7 +111,7 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
         pass
     tagger_type = property(get_tagger_type,set_tagger_type)
     
-    def set_brown_categories(self):
+    def set_brown_categories(self,value):
         pass
     def get_brown_categories(self):
         return ['news']
