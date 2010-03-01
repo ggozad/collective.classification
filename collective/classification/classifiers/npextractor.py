@@ -9,7 +9,7 @@ from collective.classification.interfaces import IPOSTagger, ITokenizer, \
 from collective.classification.classifiers.utils import singularize
 
 def _extractor_cachekey(method, self, text):
-    return (self.tagger, text)
+    return (self.tagger_metadata, text)
 
 def permissiveFilter(word, occur):
     return True
