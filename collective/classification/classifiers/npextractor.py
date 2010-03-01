@@ -36,6 +36,7 @@ class NPExtractor(Persistent):
             name="collective.classification.tokenizers.NLTKTokenizer")
         self.tagger = getUtility(IPOSTagger,
                 name="collective.classification.taggers.PennTreebankTagger")
+        self.tagger_metadata = {'type':'Pen TreeBank','categories':[]}
         self.np_grammar = r"""
             NP: {<JJ>*<NN>}         # chunk determiners, adjectives and nouns
                 {<NNP>+}            # chunk proper nouns
@@ -87,5 +88,9 @@ class NPExtractor(Persistent):
         
         return (terms,np_terms)
     
-    def setTagger(self,tagger):
+    def setTagger(self,tagger,tagger_metadata={}):
         self.tagger = tagger
+        if not tagger_metadata:
+            self.tagger_metadata['type']='unknown'
+        else:
+            self.tagger_metadata = tagger_metadata

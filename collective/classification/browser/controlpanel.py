@@ -39,7 +39,7 @@ class IClassifierSettingsSchema(Interface):
         description=_(u"Enabling this will trigger training the classifier " \
             "every time tagged content is added, modified or deleted. " \
             "Disabling it means you will have to periodically manually " \
-            "train the classifier.")
+            "retrain the classifier.")
     )
     friendly_types = schema.List(
         required = False,
@@ -108,7 +108,8 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
         set_friendly_types)
     
     def get_tagger_type(self):
-        return 'Pen TreeBank'
+        npextractor = getUtility(ITermExtractor)
+        return npextractor.tagger_metadata['type']
     def set_tagger_type(self,value):
         pass
     tagger_type = property(get_tagger_type,set_tagger_type)
@@ -116,7 +117,8 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
     def set_brown_categories(self,value):
         pass
     def get_brown_categories(self):
-        return ['news']
+        npextractor = getUtility(ITermExtractor)
+        return npextractor.tagger_metadata.get('categories')
     brown_categories = property(get_brown_categories,set_brown_categories)
 
 classifierset = FormFieldsets(IClassifierSettingsSchema)
@@ -139,40 +141,30 @@ class ClassifierSettings(ControlPanelForm):
     @form.action(_(u"Save"))
     def save_action(self,action,data):
         form.applyChanges(self.context, self.form_fields, data, self.adapters)
-        self.status = _(u"Changes saved. You will need to re-train the " \
-            "term extractor/classifier if you changed their settings.")
-    
-    @form.action(_(u"Re-train classifier"))
-    def retrain_classifier_action(self,action,data):
-        form.applyChanges(self.context, self.form_fields, data, self.adapters)
-        classifier = getUtility(IContentClassifier)
-        classifier.clear()
-        catalog = getToolByName(self.context, 'portal_catalog')
-        trainContent = catalog.searchResults()
-        for item in trainContent:
-            if item.Subject:
-                classifier.addTrainingDocument(
-                    item['UID'],
-                    item['Subject'])
-        classifier.train()
-        self.status = _(u"Classifier trained.")
-    
-    @form.action(_(u"Re-train term extractor"))
-    def retrain_termextractor_action(self,action,data):
-        tagger = None
-        if data['tagger_type'] == 'N-Gram':
-            tagged_sents = brown.tagged_sents(
-                categories=data['brown_categories'])
-            tagger = getUtility(IPOSTagger,
-                name="collective.classification.taggers.NgramTagger")
-            tagger.train(tagged_sents)
-        else:
-            tagger = getUtility(IPOSTagger,
-                name="collective.classification.taggers.PennTreebankTagger")
-        
         extractor = getUtility(ITermExtractor)
-        extractor.tagger = tagger
         
+        # Check if user has changed the tagger...
+        ttype = data['tagger_type']
+        tcategories = data['brown_categories']
+        if extractor.tagger_metadata['type'] != ttype or \
+            extractor.tagger_metadata['categories'] != tcategories:
+            if ttype == 'N-Gram':
+                tagged_sents = brown.tagged_sents(categories=tcategories)
+                tagger = getUtility(IPOSTagger,
+                    name="collective.classification.taggers.NgramTagger")
+                tagger.train(tagged_sents)
+                extractor.setTagger(tagger,
+                    {'type':'N-Gram','categories':tcategories})
+            else:
+                tagger = getUtility(IPOSTagger,
+                name="collective.classification.taggers.PennTreebankTagger")
+                extractor.setTagger(tagger,
+                    {'type':'Pen TreeBank','categories':[]})
+        self.status = _(u"Changes saved. You will need to reparse the " \
+            "content and then retrain the classifier.")
+    
+    @form.action(_(u"Reparse all documents"))
+    def retrain_termextractor_action(self,action,data):        
         storage = getUtility(INounPhraseStorage)
         storage.clear()
         
@@ -188,6 +180,21 @@ class ClassifierSettings(ControlPanelForm):
             storage.addDocument(uid,text)
         self.status = _(u"Term extractor trained and NP storage updated." \
         " You will need to re-train the classifier as well.")
+    
+    @form.action(_(u"Retrain classifier"))
+    def retrain_classifier_action(self,action,data):
+        form.applyChanges(self.context, self.form_fields, data, self.adapters)
+        classifier = getUtility(IContentClassifier)
+        classifier.clear()
+        catalog = getToolByName(self.context, 'portal_catalog')
+        trainContent = catalog.searchResults()
+        for item in trainContent:
+            if item.Subject:
+                classifier.addTrainingDocument(
+                    item['UID'],
+                    item['Subject'])
+        classifier.train()
+        self.status = _(u"Classifier trained.")
     
     @form.action(_(u"Cancel"),validator=null_validator)
     def cancel_action(self, action, data):
