@@ -5,8 +5,8 @@
 
     <browser:page
         for="Products.ATContentTypes.interface.IATContentType"
-        name="subjectsuggest"
-        class=".subjectsuggest.SubjectSuggestView"
+        name="suggest-categories"
+        class=".suggestcategories.SuggestCategoriesView"
         permission="cmf.ModifyPortalContent"
     />
 

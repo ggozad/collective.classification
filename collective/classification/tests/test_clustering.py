@@ -3,9 +3,8 @@ from zope.component import getUtility
 from collective.classification.tests.base import ClassificationTestCase
 from collective.classification.classifiers.clustering \
     import KMeans
-from collective.classification.interfaces import IPOSTagger
-from collective.classification.classifiers.npextractor import NPExtractor
-from collective.classification.interfaces import INounPhraseStorage
+from collective.classification.interfaces import IPOSTagger, ITermExtractor, \
+    INounPhraseStorage
 
 class TestKMeansClustering(ClassificationTestCase):
     """Test the KMeans clusterer.
@@ -29,9 +28,9 @@ class TestKMeansClustering(ClassificationTestCase):
         tagger = getUtility(IPOSTagger,
             name="collective.classification.taggers.NgramTagger")
         tagger.train(tagged_sents)
-        extractor = NPExtractor(tagger=tagger)
+        extractor = getUtility(ITermExtractor)
+        extractor.setTagger(tagger)
         storage = getUtility(INounPhraseStorage)
-        storage.extractor = extractor
         
         clusterer = KMeans()
         government_ids = brown.fileids(categories='government')[:10]        

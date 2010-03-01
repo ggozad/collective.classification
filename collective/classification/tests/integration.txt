@@ -22,13 +22,11 @@ Now we can train the tagger with the tagged sentences from the Brown corpus corr
     [[('The', 'AT'), ('Fulton', 'NP-TL'), ('County', 'NN-TL'), ...],...]
     >>> tagger.train(tagged_sents)
 
-Let's assign the tagger to the NP-extractor and assign the extractor to the storage:
+Let's assign the tagger to the NP-extractor:
 
-    >>> from collective.classification.classifiers.npextractor import NPExtractor
-    >>> extractor = NPExtractor(tagger=tagger)
-    >>> from collective.classification.interfaces import INounPhraseStorage
-    >>> npstorage = getUtility(INounPhraseStorage)
-    >>> npstorage.extractor = extractor
+    >>> from collective.classification.interfaces import ITermExtractor
+    >>> extractor = getUtility(ITermExtractor)
+    >>> extractor.tagger = tagger
 
 We can now start adding documents, starting with the first 20 documents in Brown categorized as 'news'.
 
@@ -64,7 +62,7 @@ Time to train the classifier:
 For a start, the classifier should be pretty certain when asked about text already classified:
 
     >>> browser = self.getBrowser()
-    >>> browser.open(self.folder.absolute_url()+'/ca01/@@subjectsuggest')
+    >>> browser.open(self.folder.absolute_url()+'/ca01/@@suggest-categories')
     >>> browser.contents
     '...news 100.0%...editorial 0.0%...hobbies 0.0%...'
 
@@ -80,7 +78,7 @@ So let's see where this gets us, by asking the classifier to categorize 5 more d
     >>> classificationResult
     ['news', 'news', 'news', 'news', 'news']
 
-Let's see how we do with 'editorials'  
+Let's see how we do with 'editorials'
 
     >>> classificationResult = []
     >>> for articleid in brown.fileids(categories='editorial')[20:25]:

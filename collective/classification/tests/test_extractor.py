@@ -1,7 +1,8 @@
-from collective.classification.tests.base import ClassificationTestCase
-from collective.classification.classifiers.npextractor import NPExtractor
-from collective.classification.tests.util import readData
 from operator import itemgetter
+from zope.component import getUtility
+from collective.classification.tests.base import ClassificationTestCase
+from collective.classification.tests.util import readData
+from collective.classification.interfaces import ITermExtractor
 
 class TestExtractor(ClassificationTestCase):
     """Tests the Noun-phrase term extractor. Reads a review of Alice in 
@@ -15,7 +16,8 @@ class TestExtractor(ClassificationTestCase):
         """
         
         text = readData('alicereview.txt')
-        extractor = NPExtractor()
+        
+        extractor = getUtility(ITermExtractor)
         (simple_terms,np_terms)  =  extractor.extract(text)
         important_terms = sorted(
             simple_terms.items(),

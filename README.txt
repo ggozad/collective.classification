@@ -35,7 +35,6 @@ At the moment there exist the following type of utilities:
     terms from some document. The extractor we use here, assumes that in a
     document only nouns matter and uses a POS tagger to find those mostly used
     in a document. For details please look at the code and the tests.
-
   * *Content classifiers*, utilities that can tag content in predefined
     categories. Here, a `naive Bayes`_ classifier is used. Basically, the
     classifier looks at already tagged content, performs term extraction and
@@ -53,6 +52,11 @@ At the moment there exist the following type of utilities:
 
 Installation & Setup
 ====================
+
+Before running buildout, make sure you have yaml and its python bindings
+installed (use macports on osx, or your package installer on linux). If nltk
+exists for your OS you might as well install that, otherwise it will be
+fetched when you run buildout.
 
 To get started you will simply need to add the package to your "eggs" and
 "zcml" sections, run buildout, restart your Plone instance and install the
@@ -82,11 +86,11 @@ How to use it?
 ==============
 
   * In order to use the classifier and get suggested tags for some content,
-    you can call *@@subjectsuggest* on the content. This comes down to
-    appending @@subjectsuggest to the url in your browser. A form will come up
-    with
-    suggestions, choose the ones that seem appropriate and apply. You will
-    need to have the right to edit the document in order to call the view.
+    you can call *@@suggest-categories* on the content. This comes down to
+    appending @@suggest-categories to the url in your browser. A form will
+    come up with suggestions, choose the ones that seem appropriate and apply.
+    You will need to have the right to edit the document in order to call the
+    view.
   * For clustering you can just call the *@@clusterize* view from anywhere.
     The result is not deterministic but hopefully helpful;). You need manager
     rights for this so as to not allow your users to DOS your site!

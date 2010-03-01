@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1a1'
+version = '0.1a2'
 
 setup(name='collective.classification',
       version=version,
@@ -24,7 +24,7 @@ setup(name='collective.classification',
       'Topic :: Text Processing :: General',
       'Topic :: Text Processing :: Indexing',
       ],
-      keywords='term-extract,semantic,classification,Parts-Of-Speech ' \
+      keywords='term-extract,semantic,classification,Parts-Of-Speech,' \
       'tagging,plone',
       author='Yiorgis Gozadinos',
       author_email='ggozad@jarn.com',
@@ -36,7 +36,7 @@ setup(name='collective.classification',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'nltk < 2.0b8',
+          'nltk',
           'numpy'
       ],
       entry_points="""

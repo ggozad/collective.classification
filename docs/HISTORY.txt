@@ -1,6 +1,15 @@
 Changelog
 =========
 
+0.1a2
+-------------------
+- Made control panel more sane. Fixes #1. [ggozad]
+- NP-extractor has become a local persistent utility. [ggozad]
+- Renamed @@subjectsuggest to @@suggest-categories. Fixes #2. [ggozad]
+- "memoized" term extractor. [ggozad]
+- Added friendly types to the control panel. [ggozad]
+- Updated documentation and dependencies to warn about yaml. [ggozad]
+
 0.1a1
 -------------------
 
