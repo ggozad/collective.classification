@@ -1,5 +1,6 @@
 from zope.interface import implements,Interface
 from zope.component import adapts, getUtility, getMultiAdapter
+from zope.app.schema.vocabulary import IVocabularyFactory
 from zope.formlib import form
 from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary
@@ -169,7 +170,10 @@ class ClassifierSettings(ControlPanelForm):
         storage.clear()
         
         catalog = getToolByName(self.context, 'portal_catalog')
-        trainContent = catalog.searchResults()
+        types_to_search = storage.friendlyTypes or \
+            self._friendlyContentTypes()
+        trainContent = catalog.searchResults(
+            portal_type=types_to_search)
         for item in trainContent:
             # NOTE: Why can't I obtain item.SearchableText?
             # Is it too big to be returned in catalog brains?
@@ -183,11 +187,14 @@ class ClassifierSettings(ControlPanelForm):
     
     @form.action(_(u"Retrain classifier"))
     def retrain_classifier_action(self,action,data):
-        form.applyChanges(self.context, self.form_fields, data, self.adapters)
+        storage = getUtility(INounPhraseStorage)
         classifier = getUtility(IContentClassifier)
         classifier.clear()
         catalog = getToolByName(self.context, 'portal_catalog')
-        trainContent = catalog.searchResults()
+        types_to_search = storage.friendlyTypes or \
+            self._friendlyContentTypes()
+        trainContent = catalog.searchResults(
+            portal_type=types_to_search)        
         for item in trainContent:
             if item.Subject:
                 classifier.addTrainingDocument(
@@ -203,3 +210,8 @@ class ClassifierSettings(ControlPanelForm):
                               name='absolute_url')()
         self.request.response.redirect(url + '/plone_control_panel')
         return ''
+    
+    def _friendlyContentTypes(self):
+        friendlyTypesVoc = getUtility(IVocabularyFactory,
+            'plone.app.vocabularies.ReallyUserFriendlyTypes')
+        return [item.value for item in friendlyTypesVoc(self.context)]

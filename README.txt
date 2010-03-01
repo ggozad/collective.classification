@@ -35,7 +35,6 @@ At the moment there exist the following type of utilities:
     terms from some document. The extractor we use here, assumes that in a
     document only nouns matter and uses a POS tagger to find those mostly used
     in a document. For details please look at the code and the tests.
-
   * *Content classifiers*, utilities that can tag content in predefined
     categories. Here, a `naive Bayes`_ classifier is used. Basically, the
     classifier looks at already tagged content, performs term extraction and
