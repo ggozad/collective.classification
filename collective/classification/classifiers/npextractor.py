@@ -1,8 +1,11 @@
+from persistent import Persistent
+from zope.interface import implements
 from zope.component import getUtility
 from plone.memoize import ram
 from nltk import RegexpParser
 from nltk.chunk.util import tree2conlltags
-from collective.classification.interfaces import IPOSTagger, ITokenizer
+from collective.classification.interfaces import IPOSTagger, ITokenizer, \
+    ITermExtractor
 from collective.classification.classifiers.utils import singularize
 
 def _extractor_cachekey(method, self, text):
@@ -19,21 +22,21 @@ class DefaultFilter(object):
     def __call__(self, word, occur):
         return occur >= self.minOccur
 
-class NPExtractor(object):
+class NPExtractor(Persistent):
     """
     """
-    def __init__(self,tagger=None,filter=None):
+    
+    implements(ITermExtractor)
+    
+    def __init__(self):
         """
         """
-        if filter is None:
-            self.filter = DefaultFilter()
+        self.filter = DefaultFilter()
         self.tokenizer = getUtility(ITokenizer,
             name="collective.classification.tokenizers.NLTKTokenizer")
-        if tagger:
-            self.tagger = tagger
-        else:
-            self.tagger = getUtility(IPOSTagger,
+        self.tagger = getUtility(IPOSTagger,
                 name="collective.classification.taggers.PennTreebankTagger")
+        self.tagger_metadata = {'type':'Pen TreeBank','categories':[]}
         self.np_grammar = r"""
             NP: {<JJ>*<NN>}         # chunk determiners, adjectives and nouns
                 {<NNP>+}            # chunk proper nouns
@@ -84,3 +87,10 @@ class NPExtractor(object):
                 del np_terms[term]
         
         return (terms,np_terms)
+    
+    def setTagger(self,tagger,tagger_metadata={}):
+        self.tagger = tagger
+        if not tagger_metadata:
+            self.tagger_metadata['type']='unknown'
+        else:
+            self.tagger_metadata = tagger_metadata
