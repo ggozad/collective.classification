@@ -24,7 +24,7 @@ setup(name='collective.classification',
       'Topic :: Text Processing :: General',
       'Topic :: Text Processing :: Indexing',
       ],
-      keywords='term-extract,semantic,classification,Parts-Of-Speech ' \
+      keywords='term-extract,semantic,classification,Parts-Of-Speech,' \
       'tagging,plone',
       author='Yiorgis Gozadinos',
       author_email='ggozad@jarn.com',
