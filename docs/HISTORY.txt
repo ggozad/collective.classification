@@ -3,6 +3,8 @@ Changelog
 
 0.1a3
 -------------------
+- Added @@terms view, allowing a user to inspect the identified terms for some
+  content. [ggozad]
 - Have to specify corpus categories when training n-gram tagger. Fixes #3 [ggozad]
 
 0.1a2

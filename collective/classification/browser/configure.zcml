@@ -11,6 +11,15 @@
     />
 
     <browser:page
+        for="Products.ATContentTypes.interface.IATContentType"
+        name="terms"
+        class=".terms.TermsView"
+        template="terms.pt"
+        permission="zope2.View"
+    />
+
+
+    <browser:page
         for="*"
         name="clusterize"
         class=".clusterize.ClusterizeView"

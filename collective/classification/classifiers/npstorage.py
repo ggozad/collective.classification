@@ -92,14 +92,12 @@ class NounPhraseStorage(Persistent):
         return ranked_nps
     
     def getNounTerms(self,doc_id,ranksToKeep=0):
-        ranked_nouns = self.getRankedTerms(doc_id,ranksToKeep)[0]
-        ranked_nouns = self._derankTerms(ranked_nouns)
-        return ranked_nouns
+        ranked_nouns = self.getRankedNounTerms(doc_id,ranksToKeep)
+        return self._derankTerms(ranked_nouns)
     
     def getNPTerms(self,doc_id,ranksToKeep=0):
-        ranked_nps = self.getRankedTerms(doc_id,ranksToKeep)[1]
-        ranked_nps = self._derankTerms(ranked_nps)
-        return ranked_nps
+        ranked_nps = self.getRankedNPTerms(doc_id,ranksToKeep)
+        return self._derankTerms(ranked_nps)
     
     def clear(self):
         """Wipes the storage
