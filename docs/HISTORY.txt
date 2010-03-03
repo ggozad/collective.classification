@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.1a3
+-------------------
+- Have to specify corpus categories when training n-gram tagger. Fixes #3 [ggozad]
+
 0.1a2
 -------------------
 - Made control panel more sane. Fixes #1. [ggozad]

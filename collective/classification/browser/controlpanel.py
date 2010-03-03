@@ -14,6 +14,7 @@ from plone.intelligenttext.transforms import \
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFDefault.formlib.schema import SchemaAdapterBase
 from Products.CMFCore.utils import getToolByName
+from Products.statusmessages.interfaces import IStatusMessage
 
 from nltk.corpus import brown
 
@@ -150,6 +151,9 @@ class ClassifierSettings(ControlPanelForm):
         if extractor.tagger_metadata['type'] != ttype or \
             extractor.tagger_metadata['categories'] != tcategories:
             if ttype == 'N-Gram':
+                if not tcategories:
+                    IStatusMessage(self.request).addStatusMessage(_(u"Please choose some categories to train the N-Gram tagger with."), type='error')
+                    return
                 tagged_sents = brown.tagged_sents(categories=tcategories)
                 tagger = getUtility(IPOSTagger,
                     name="collective.classification.taggers.NgramTagger")
