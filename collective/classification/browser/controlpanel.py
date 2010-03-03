@@ -71,9 +71,22 @@ class ITermExtractorSchema(Interface):
         value_type=schema.Choice(vocabulary = brownCategories),
         required=True)
 
-class IClassificationSchema(IClassifierSettingsSchema, ITermExtractorSchema):
-    """Just a combination of IClassifierSettingsSchema and
-    ITermExtractorSchema
+class IStatisticsSchema(Interface):
+    """Term extractor settings
+    """
+    no_documents = schema.Int(
+        title=_(u"Number of documents in term storage"),
+        readonly=True
+    )
+    most_useful_terms = schema.Text(
+        title=_(u"Most useful terms"),
+        readonly=True
+    )
+
+
+class IClassificationSchema(IClassifierSettingsSchema, ITermExtractorSchema, 
+                            IStatisticsSchema):
+    """Just a combination of the above schemata
     """
 
 class ClassifierSettingsAdapter(SchemaAdapterBase):
@@ -116,12 +129,25 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
         pass
     tagger_type = property(get_tagger_type,set_tagger_type)
     
-    def set_brown_categories(self,value):
-        pass
     def get_brown_categories(self):
         npextractor = getUtility(ITermExtractor)
         return npextractor.tagger_metadata.get('categories')
+    def set_brown_categories(self,value):
+        pass
     brown_categories = property(get_brown_categories,set_brown_categories)
+    
+    def get_no_documents(self):
+        return len(self.storage.rankedNouns)
+    no_documents = property(get_no_documents)
+    
+    def get_most_useful_terms(self):
+        """Fetches the most useful terms from the classifier.
+        """
+        try:
+            return str(self.classifier.classifier.most_informative_features(20))
+        except AttributeError:
+            return _(u"The classifier has no data on most useful features")       
+    most_useful_terms = property(get_most_useful_terms)
 
 classifierset = FormFieldsets(IClassifierSettingsSchema)
 classifierset.id = 'classifier'
@@ -129,16 +155,19 @@ classifierset.label = u"Classifier settings"
 termextractorset = FormFieldsets(ITermExtractorSchema)
 termextractorset.id = 'termextractor'
 termextractorset.label = U"Term Extraction settings"
+statisticsset = FormFieldsets(IStatisticsSchema)
+statisticsset.id = 'statistics'
+statisticsset.label = u"Statistics"
 
 class ClassifierSettings(ControlPanelForm):
     """
     """
     
-    form_fields = FormFieldsets(classifierset,termextractorset)
+    form_fields = FormFieldsets(classifierset,termextractorset,statisticsset)
     
-    label = _("Classifier settings")
-    description = _("Settings for the content classifier.")
-    form_name = _("Classifier settings")
+    label = _("Classification settings")
+    description = _("Settings for the term extractors, classifiers.")
+    form_name = _("Classification settings")
     
     @form.action(_(u"Save"))
     def save_action(self,action,data):
