@@ -186,8 +186,8 @@ class ClassifierSettings(ControlPanelForm):
             text = convertHtmlToWebIntelligentPlainText(
                 obj.SearchableText())
             storage.addDocument(uid,text)
-        self.status = _(u"Term extractor trained and NP storage updated." \
-        " You will need to re-train the classifier as well.")
+        self.status = _(u"Documents reparsed. You will need to re-train the" \
+            " classifier as well.")
     
     @form.action(_(u"Retrain classifier"))
     def retrain_classifier_action(self,action,data):
