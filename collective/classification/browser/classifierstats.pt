@@ -5,29 +5,34 @@ xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
 metal:use-macro="here/main_template/macros/master"
 i18n:domain="collective.classification">
   <body>
-    <metal:main metal:fill-slot="main"
-        tal:define="informativeFeatures view/informativeFeatures">
-        <table class="listing" tal:condition="informativeFeatures">
-            <thead>
-                <tr>
-                    <th i18n:translate="label_term">Term</th>
-                    <th i18n:translate="label_presence">Presence</th>
-                    <th i18n:translate="label_tagratio">Tag ratio</th>
-                    <th i18n:translate="label_ratio">Ratio</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tal:features tal:repeat="term informativeFeatures">
-                    <tr tal:define="oddrow repeat/term/odd;"
-                        tal:attributes="class python:oddrow and 'odd' or 'even'">
-                        <td tal:content="python: term[0]"/>
-                        <td tal:content="python: term[1]"/>
-                        <td tal:content="python: '%s:%s'%(term[2],term[3])"/>
-                        <td tal:content="python: term[4]"/>
-                    </tr>
-                </tal:features>
-            </tbody>
-        </table>
+    <metal:main metal:fill-slot="main">
+      <tal:main-macro metal:define-macro="main">
+        <div metal:use-macro="context/@@base-pageform.html/macros/form">
+            <div metal:fill-slot="extra_info" tal:define="informativeFeatures view/informativeFeatures | nothing">
+                <table class="listing" tal:condition="informativeFeatures">
+                    <thead>
+                        <tr>
+                            <th i18n:translate="label_term">Term</th>
+                            <th i18n:translate="label_presence">Presence</th>
+                            <th i18n:translate="label_tagratio">Tag ratio</th>
+                            <th i18n:translate="label_ratio">Ratio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tal:features tal:repeat="term informativeFeatures">
+                            <tr tal:define="oddrow repeat/term/odd;"
+                                tal:attributes="class python:oddrow and 'odd' or 'even'">
+                                <td tal:content="python: term[0]"/>
+                                <td tal:content="python: term[1]"/>
+                                <td tal:content="python: '%s:%s'%(term[2],term[3])"/>
+                                <td tal:content="python: term[4]"/>
+                            </tr>
+                        </tal:features>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </tal:main-macro>
     </metal:main>
   </body>
 </html>

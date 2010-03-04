@@ -29,7 +29,6 @@
         for="*"
         name="classifier-stats"
         class=".classifierstats.ClassifierStatsView"
-        template="classifierstats.pt"
         permission="cmf.ManagePortal"
     />
 

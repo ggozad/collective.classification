@@ -1,17 +1,42 @@
+from Products.Five.formlib import formbase
+from zope.formlib import form
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from zope import schema
+from zope.interface import Interface
 from collective.classification.interfaces import IContentClassifier
 from zope.component import getUtility
-from Products.Five.browser import BrowserView
+from collective.classification import ClassificationMessageFactory as _
 
-class ClassifierStatsView(BrowserView):
-    """A view displaying classifier statistics
+class IStats(Interface):
     """
+    """
+    
+    no_features = schema.Int(
+        title = _(u"Number of important features to show"),
+        description = _(u""),
+        required = True,
+        default = 10
+    )
+    
+class ClassifierStatsView(formbase.PageForm):
+    """
+    """
+
+    form_fields = form.Fields(IStats)
+    template = ViewPageTemplateFile('classifierstats.pt')
+
+    def __init__(self, *args, **kwargs):
+        """
+        """
+        super(ClassifierStatsView,self).__init__(*args,**kwargs)
+        self.classifier = getUtility(IContentClassifier)
+        self.informativeFeatures = self.classifier.informativeFeatures()
         
-    def documentsParsed(self):
+        
+    
+    @form.action(_(u"Apply"))
+    def action_apply(self, action, data):
         """
         """
-        return 
-    def informativeFeatures(self):
-        """
-        """
-        classifier = getUtility(IContentClassifier)
-        return classifier.informativeFeatures(50)
+        self.informativeFeatures = \
+            self.classifier.informativeFeatures(data['no_features'])
