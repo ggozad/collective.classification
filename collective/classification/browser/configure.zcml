@@ -27,8 +27,8 @@
 
     <browser:page
         for="*"
-        name="classifier-stats"
-        class=".classifierstats.ClassifierStatsView"
+        name="classification-stats"
+        class=".classificationstats.ClassificationStatsView"
         permission="cmf.ManagePortal"
     />
 

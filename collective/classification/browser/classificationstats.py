@@ -1,10 +1,10 @@
-from Products.Five.formlib import formbase
-from zope.formlib import form
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from zope import schema
 from zope.interface import Interface
-from collective.classification.interfaces import IContentClassifier
 from zope.component import getUtility
+from zope import schema
+from zope.formlib import form
+from Products.Five.formlib import formbase
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from collective.classification.interfaces import IContentClassifier, INounPhraseStorage
 from collective.classification import ClassificationMessageFactory as _
 
 class IStats(Interface):
@@ -12,26 +12,27 @@ class IStats(Interface):
     """
     
     no_features = schema.Int(
-        title = _(u"Number of important features to show"),
-        description = _(u""),
+        title = _(u"Number of informative features to show"),
         required = True,
         default = 10
     )
     
-class ClassifierStatsView(formbase.PageForm):
+class ClassificationStatsView(formbase.PageForm):
     """
     """
 
     form_fields = form.Fields(IStats)
-    template = ViewPageTemplateFile('classifierstats.pt')
+    template = ViewPageTemplateFile('classificationstats.pt')
 
     def __init__(self, *args, **kwargs):
         """
         """
-        super(ClassifierStatsView,self).__init__(*args,**kwargs)
+        super(ClassificationStatsView,self).__init__(*args,**kwargs)
         self.classifier = getUtility(IContentClassifier)
+        self.npstorage = getUtility(INounPhraseStorage)
         self.informativeFeatures = self.classifier.informativeFeatures()
-        
+        self.parsedDocs = len(self.npstorage.rankedNouns)
+        self.classifierDocs = len(self.classifier.trainingDocs)
         
     
     @form.action(_(u"Apply"))

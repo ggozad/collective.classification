@@ -212,6 +212,16 @@ class ClassifierSettings(ControlPanelForm):
         classifier.train()
         self.status = _(u"Classifier trained.")
     
+    @form.action(_(u"Statistics"),validator=null_validator)
+    def stats_action(self,action,data):
+        """Displays the stats view.
+        """
+        url = getMultiAdapter((self.context, self.request),
+                              name='absolute_url')()
+        self.request.response.redirect(url + '/@@classification-stats')
+        return ''
+        
+    
     @form.action(_(u"Cancel"),validator=null_validator)
     def cancel_action(self, action, data):
         self.status = _(u"Changes cancelled.")

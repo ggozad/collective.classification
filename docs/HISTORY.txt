@@ -5,8 +5,9 @@ Changelog
 -------------------
 - Added a form to import sample content from the brown corpus, for debugging
   and testing. [ggozad]
-- Added some statistics information in the control panel. Displays the number
-  of parsed documents, as well as the most useful terms. [ggozad]
+- Added some statistics information with @@classification-stats.
+  Displays the number of parsed documents, as well as the most useful terms.
+  [ggozad]
 - Added @@terms view, allowing a user to inspect the identified terms for some
   content. [ggozad]
 - Have to specify corpus categories when training n-gram tagger. Fixes #3 [ggozad]
