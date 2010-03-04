@@ -88,6 +88,28 @@ class NounBayesClassifier(Persistent):
                 presentNouns[noun] = 1
         return self.classifier.prob_classify(presentNouns)
     
+    def informativeFeatures(self, n=10):
+        """Determines and returns the most relevant features
+        """
+        cpdist = self.classifier._feature_probdist
+        result = []
+        for (fname, fval) in self.classifier.most_informative_features(n):
+            def labelprob(l):
+              return cpdist[l,fname].prob(fval)
+            labels = sorted([l for l in self.classifier._labels
+                             if fval in cpdist[l,fname].samples()],
+                            key=labelprob)
+            if len(labels) == 1: continue
+            l0 = labels[0]
+            l1 = labels[-1]
+            if cpdist[l0,fname].prob(fval) == 0:
+              ratio = 'INF'
+            else:
+              ratio = '%8.1f' % (cpdist[l1,fname].prob(fval) /
+                                cpdist[l0,fname].prob(fval))
+            result.append((fname, bool(fval), l1, l0, ratio))
+        return result
+    
     def clear(self):
         """Wipes the classifier's data.
         """

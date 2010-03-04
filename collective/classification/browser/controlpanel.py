@@ -71,21 +71,7 @@ class ITermExtractorSchema(Interface):
         value_type=schema.Choice(vocabulary = brownCategories),
         required=True)
 
-class IStatisticsSchema(Interface):
-    """Term extractor settings
-    """
-    no_documents = schema.Int(
-        title=_(u"Number of documents in term storage"),
-        readonly=True
-    )
-    most_useful_terms = schema.Text(
-        title=_(u"Most useful terms"),
-        readonly=True
-    )
-
-
-class IClassificationSchema(IClassifierSettingsSchema, ITermExtractorSchema, 
-                            IStatisticsSchema):
+class IClassificationSchema(IClassifierSettingsSchema, ITermExtractorSchema):
     """Just a combination of the above schemata
     """
 
@@ -139,15 +125,6 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
     def get_no_documents(self):
         return len(self.storage.rankedNouns)
     no_documents = property(get_no_documents)
-    
-    def get_most_useful_terms(self):
-        """Fetches the most useful terms from the classifier.
-        """
-        try:
-            return str(self.classifier.classifier.most_informative_features(20))
-        except AttributeError:
-            return _(u"The classifier has no data on most useful features")       
-    most_useful_terms = property(get_most_useful_terms)
 
 classifierset = FormFieldsets(IClassifierSettingsSchema)
 classifierset.id = 'classifier'
@@ -155,15 +132,12 @@ classifierset.label = u"Classifier settings"
 termextractorset = FormFieldsets(ITermExtractorSchema)
 termextractorset.id = 'termextractor'
 termextractorset.label = U"Term Extraction settings"
-statisticsset = FormFieldsets(IStatisticsSchema)
-statisticsset.id = 'statistics'
-statisticsset.label = u"Statistics"
 
 class ClassifierSettings(ControlPanelForm):
     """
     """
     
-    form_fields = FormFieldsets(classifierset,termextractorset,statisticsset)
+    form_fields = FormFieldsets(classifierset,termextractorset)
     
     label = _("Classification settings")
     description = _("Settings for the term extractors, classifiers.")
@@ -181,7 +155,9 @@ class ClassifierSettings(ControlPanelForm):
             extractor.tagger_metadata['categories'] != tcategories:
             if ttype == 'N-Gram':
                 if not tcategories:
-                    IStatusMessage(self.request).addStatusMessage(_(u"Please choose some categories to train the N-Gram tagger with."), type='error')
+                    IStatusMessage(self.request).addStatusMessage(
+                        _(u"Please choose some categories to train the "\
+                           "N-Gram tagger with."), type='error')
                     return
                 tagged_sents = brown.tagged_sents(categories=tcategories)
                 tagger = getUtility(IPOSTagger,
@@ -215,8 +191,8 @@ class ClassifierSettings(ControlPanelForm):
             text = convertHtmlToWebIntelligentPlainText(
                 obj.SearchableText())
             storage.addDocument(uid,text)
-        self.status = _(u"Documents reparsed. You will need to re-train the" \
-            " classifier as well.")
+        self.status = _(u"Documents reparsed. You will need to re-train the "\
+                         "classifier as well.")
     
     @form.action(_(u"Retrain classifier"))
     def retrain_classifier_action(self,action,data):

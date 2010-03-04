@@ -27,6 +27,14 @@
 
     <browser:page
         for="*"
+        name="classifier-stats"
+        class=".classifierstats.ClassifierStatsView"
+        template="classifierstats.pt"
+        permission="cmf.ManagePortal"
+    />
+
+    <browser:page
+        for="*"
         name="samplecontent"
         class=".samplecontent.SampleContentView"
         permission="cmf.ManagePortal"
