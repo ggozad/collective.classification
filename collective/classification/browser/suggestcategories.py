@@ -24,14 +24,15 @@ class SuggestCategoriesView(formbase.PageForm):
     
     implements(IPlonePageForm)
     label = _(u"Suggested categories")
-    description = _(u"Choose among the proposed subjects. Clicking on apply" \
+    description = _(u"Choose among the proposed subjects. Clicking on apply "\
         "will add the chosen categories to the existing ones.")
     
     def getSuggestedSubjects(self):
         """
         """
         classifier = getUtility(IContentClassifier)
-        return classifier.probabilityClassify(self.context.UID())
+        uid = IClassifiable(self.context).UID()
+        return classifier.probabilityClassify(uid)
     
     @property
     def form_fields(self):

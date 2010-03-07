@@ -1,8 +1,5 @@
 from zope.component import getUtility
-from plone.intelligenttext.transforms \
-    import convertHtmlToWebIntelligentPlainText
-
-from collective.classification.interfaces import IContentClassifier
+from collective.classification.interfaces import IContentClassifier, IClassifiable
 from collective.classification.interfaces import INounPhraseStorage
 from zope.component.interfaces import ComponentLookupError
 
@@ -12,15 +9,15 @@ def updateClassifier(obj,event):
         termstorage = getUtility(INounPhraseStorage)    
         classifier = getUtility(IContentClassifier)
     except ComponentLookupError:
+        # The local utilites have not been registered, so what's the point?
         return
     if not termstorage.friendlyTypes or \
         obj.portal_type in termstorage.friendlyTypes:
+        obj = IClassifiable(obj)
         uid = obj.UID()
-        text = convertHtmlToWebIntelligentPlainText(
-            obj.SearchableText())
+        text = obj.text()
         termstorage.addDocument(uid,text)
-        subjects = obj.Subject()
-    
+        subjects = obj.keywords()
         if subjects:
             classifier = getUtility(IContentClassifier)
             classifier.addTrainingDocument(uid,subjects)

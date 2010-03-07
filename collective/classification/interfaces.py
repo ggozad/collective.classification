@@ -1,7 +1,24 @@
 from zope.interface import Interface
 
-class ITokenizer(Interface):
+class IClassifiable(Interface):
+    """An interface for objects on which we can perform term extraction and
+    classification.
     """
+    def UID():
+        """Return a unique id that will be used as an identifier of the 
+        object.
+        """
+        
+    def text():
+        """Return the text on which we perform term extraction.
+        """
+    
+    def keywords():
+        """Returns the keywords with which we train a classifier.
+        """
+
+class ITokenizer(Interface):
+    """Marker interface for tokenizers.
     """
     
     def tokenize(text):
@@ -34,7 +51,7 @@ class ITermExtractor(Interface):
         """
 
 class INounPhraseStorage(Interface):
-    """
+    """Marker interface for our noun-phrase storage.
     """
 
 
@@ -45,4 +62,3 @@ class IContentClassifier(Interface):
 class IContentClusterer(Interface):
     """Interface for clusterers
     """
-
