@@ -1,11 +1,12 @@
 from base64 import b64encode
 from zope.interface import Interface, implements
-from zope.component import getUtility
+from zope.component import getUtility, getMultiAdapter
 from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.formlib import form
 from plone.app.form.interfaces import IPlonePageForm
 from Products.Five.formlib import formbase
+from Products.statusmessages.interfaces import IStatusMessage
 from collective.classification.interfaces import IContentClassifier, \
     IClassifiable
 from collective.classification import ClassificationMessageFactory as _
@@ -66,4 +67,10 @@ class SuggestCategoriesView(formbase.PageForm):
             if subject not in subjects:
                 subjects.append(subject)
         obj.categories = subjects
+        url = getMultiAdapter((self.context, self.request),
+                              name='absolute_url')()
+        IStatusMessage(self.request).addStatusMessage(
+            _(u"Categories saved."),type="info")
+        self.request.response.redirect(url)
+        return ''
         
