@@ -18,7 +18,8 @@ class ISampleContent(Interface):
     brown_categories = schema.List(
         title=u"Brown corpus categories to import",
         value_type=schema.Choice(vocabulary = brownCategories),
-        required=True)
+        required=True
+    )
 
 class SampleContentView(formbase.PageForm):
     """Imports content from the brown corpus for testing.
@@ -42,4 +43,3 @@ class SampleContentView(formbase.PageForm):
                 folder.invokeFactory('Document',articleid,
                                     title=articleid,
                                     text=text,subject=category)
-                folder[articleid].reindexObject()

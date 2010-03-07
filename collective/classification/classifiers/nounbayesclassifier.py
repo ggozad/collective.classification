@@ -27,9 +27,9 @@ class NounBayesClassifier(Persistent):
         """
         storage = getUtility(INounPhraseStorage)
         importantNouns = storage.getNounTerms(doc_id,self.noNounRanksToKeep)
-        
-        self.trainingDocs[doc_id] = (importantNouns,tags)
-        self.allNouns = union(self.allNouns,OOSet(importantNouns))
+        if importantNouns:
+            self.trainingDocs[doc_id] = (importantNouns,tags)
+            self.allNouns = union(self.allNouns,OOSet(importantNouns))
     
     def train(self):
         """

@@ -3,6 +3,9 @@ Changelog
 
 0.1a3
 -------------------
+- Introduced IClassifiable interface. ATContentTypes are now adapted to it,
+and it should be easier to add other non-AT content types or customize the
+adapter. [ggozad]
 - Added a form to import sample content from the brown corpus, for debugging
   and testing. [ggozad]
 - Added some statistics information with @@classification-stats.
