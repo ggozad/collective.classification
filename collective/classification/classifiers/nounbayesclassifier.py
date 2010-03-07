@@ -27,10 +27,18 @@ class NounBayesClassifier(Persistent):
         """
         storage = getUtility(INounPhraseStorage)
         importantNouns = storage.getNounTerms(doc_id,self.noNounRanksToKeep)
-        if importantNouns:
+        if importantNouns and tags:
             self.trainingDocs[doc_id] = (importantNouns,tags)
             self.allNouns = union(self.allNouns,OOSet(importantNouns))
+        elif self.trainingDocs.has_key(doc_id):
+            del self.trainingDocs[doc_id]
     
+    def removeTrainingDocument(self,doc_id):
+        """
+        """
+        if self.trainingDocs.has_key(doc_id):
+            del self.trainingDocs[doc_id]
+            
     def train(self):
         """
         """
@@ -39,9 +47,8 @@ class NounBayesClassifier(Persistent):
         if not self.allNouns:
             storage = getUtility(INounPhraseStorage)
             for key in self.trainingDocs.keys():
-                importantNouns = storage.getNounTerms(
-                    key,
-                    self.noNounRanksToKeep)
+                importantNouns = storage.getNounTerms(key,
+                                                      self.noNounRanksToKeep)
                 self.allNouns = union(self.allNouns,OOSet(importantNouns))
         for item in self.allNouns:
             presentNouns.setdefault(item,0)
