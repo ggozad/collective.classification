@@ -40,4 +40,6 @@ class SampleContentView(formbase.PageForm):
             for articleid in brown.fileids(categories=category)[:no_items]:
                 text = " ".join(brown.words(articleid))
                 folder.invokeFactory('Document',articleid,
+                                    title=articleid,
                                     text=text,subject=category)
+                folder[articleid].reindexObject()

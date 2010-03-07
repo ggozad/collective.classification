@@ -6,7 +6,8 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.formlib import form
 from plone.app.form.interfaces import IPlonePageForm
 from Products.Five.formlib import formbase
-from collective.classification.interfaces import IContentClassifier
+from collective.classification.interfaces import IContentClassifier, \
+    IClassifiable
 from collective.classification import ClassificationMessageFactory as _
 
 class ISuggestCategories(Interface):

@@ -52,6 +52,13 @@ And finally 20 documents categorized as 'hobbies':
     ...                                    text=text,
     ...                                    subject='hobbies')
 
+All these documents should have been parsed and present in the term storage:
+
+    >>> from collective.classification.interfaces import INounPhraseStorage
+    >>> npstorage = getUtility(INounPhraseStorage)
+    >>> len(npstorage.rankedNouns)
+    60
+
 Let's see what terms we get for the first 'editorial' content:
 
     >>> browser = self.getBrowser()
