@@ -14,10 +14,10 @@ def updateClassifier(obj,event):
     if not termstorage.friendlyTypes or \
         obj.portal_type in termstorage.friendlyTypes:
         obj = IClassifiable(obj)
-        uid = obj.UID()
-        text = obj.text()
+        uid = obj.UID
+        text = obj.text
         termstorage.addDocument(uid,text)
-        subjects = obj.keywords()
+        subjects = obj.categories
         if subjects:
             classifier = getUtility(IContentClassifier)
             classifier.addTrainingDocument(uid,subjects)

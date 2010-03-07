@@ -13,16 +13,26 @@ class ATClassifiableAdapter(object):
     def __init__(self, context):
         self.context = context
     
-    def UID(self):
+    def getUID(self):
         return self.context.UID()
     
-    def text(self):
+    UID = property(getUID)
+    
+    def getText(self):
         """
         """
         return convertHtmlToWebIntelligentPlainText(
             self.context.SearchableText())
+    text = property(getText)
     
-    def keywords(self):
+    def getcategories(self):
         """
         """
-        return self.context.Subject()
+        return list(self.context.Subject())
+    
+    def setcategories(self,value):
+        """
+        """
+        return self.context.setSubject(value)    
+    
+    categories = property(getcategories,setcategories)

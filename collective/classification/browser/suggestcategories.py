@@ -32,7 +32,7 @@ class SuggestCategoriesView(formbase.PageForm):
         """
         """
         classifier = getUtility(IContentClassifier)
-        uid = IClassifiable(self.context).UID()
+        uid = IClassifiable(self.context).UID
         return classifier.probabilityClassify(uid)
     
     @property
@@ -60,9 +60,10 @@ class SuggestCategoriesView(formbase.PageForm):
     def action_submit(self, action, data):
         """
         """
-        subjects = list(self.context.Subject())
+        obj = IClassifiable(self.context)
+        subjects = obj.categories
         for subject in data['suggestions']:
             if subject not in subjects:
                 subjects.append(subject)
-        self.context.setSubject(subjects)
+        obj.categories = subjects
         

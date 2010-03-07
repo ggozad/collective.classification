@@ -1,21 +1,15 @@
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 
 class IClassifiable(Interface):
     """An interface for objects on which we can perform term extraction and
     classification.
     """
-    def UID():
-        """Return a unique id that will be used as an identifier of the 
-        object.
-        """
-        
-    def text():
-        """Return the text on which we perform term extraction.
-        """
     
-    def keywords():
-        """Returns the keywords with which we train a classifier.
-        """
+    UID = Attribute("""A unique identifier of the object.""")
+        
+    text = Attribute("""The text on which we perform term extraction.""")
+    
+    categories = Attribute("""The categories with which we train a classifier.""")
 
 class ITokenizer(Interface):
     """Marker interface for tokenizers.
