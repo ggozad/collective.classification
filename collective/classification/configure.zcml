@@ -18,6 +18,10 @@
                      zope.app.container.interfaces.IObjectModifiedEvent"
                 handler=".subscribers.updateClassifier"/>
 
+    <subscriber for="Products.ATContentTypes.interface.IATContentType
+                     zope.app.container.interfaces.IObjectRemovedEvent"
+                handler=".subscribers.removeFromClassifier"/>
+
     <genericsetup:registerProfile
       name="default"
       title="collective.classification"

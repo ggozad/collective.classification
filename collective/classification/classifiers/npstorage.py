@@ -41,6 +41,14 @@ class NounPhraseStorage(Persistent):
             ranked_nps = self._scoresToRanks(noun_phrase_scores)
             self.rankedNPs[doc_id] = ranked_nps
     
+    def removeDocument(self,doc_id):
+        """
+        """
+        if self.rankedNouns.has_key(doc_id):
+            del self.rankedNouns[doc_id]
+        if self.rankedNPs.has_key(doc_id):
+            del self.rankedNPs[doc_id]            
+        
     def _derankTerms(self,rankedTerms):
         return [term for (term,rank) in rankedTerms]
     
