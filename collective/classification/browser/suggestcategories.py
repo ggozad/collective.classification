@@ -1,12 +1,14 @@
 from base64 import b64encode
 from zope.interface import Interface, implements
-from zope.component import getUtility
+from zope.component import getUtility, getMultiAdapter
 from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.formlib import form
 from plone.app.form.interfaces import IPlonePageForm
 from Products.Five.formlib import formbase
-from collective.classification.interfaces import IContentClassifier
+from Products.statusmessages.interfaces import IStatusMessage
+from collective.classification.interfaces import IContentClassifier, \
+    IClassifiable
 from collective.classification import ClassificationMessageFactory as _
 
 class ISuggestCategories(Interface):
@@ -24,14 +26,15 @@ class SuggestCategoriesView(formbase.PageForm):
     
     implements(IPlonePageForm)
     label = _(u"Suggested categories")
-    description = _(u"Choose among the proposed subjects. Clicking on apply" \
+    description = _(u"Choose among the proposed subjects. Clicking on apply "\
         "will add the chosen categories to the existing ones.")
     
     def getSuggestedSubjects(self):
         """
         """
         classifier = getUtility(IContentClassifier)
-        return classifier.probabilityClassify(self.context.UID())
+        uid = IClassifiable(self.context).UID
+        return classifier.probabilityClassify(uid)
     
     @property
     def form_fields(self):
@@ -58,9 +61,16 @@ class SuggestCategoriesView(formbase.PageForm):
     def action_submit(self, action, data):
         """
         """
-        subjects = list(self.context.Subject())
+        obj = IClassifiable(self.context)
+        subjects = obj.categories
         for subject in data['suggestions']:
             if subject not in subjects:
                 subjects.append(subject)
-        self.context.setSubject(subjects)
+        obj.categories = subjects
+        url = getMultiAdapter((self.context, self.request),
+                              name='absolute_url')()
+        IStatusMessage(self.request).addStatusMessage(
+            _(u"Categories saved."),type="info")
+        self.request.response.redirect(url)
+        return ''
         

@@ -14,6 +14,7 @@ from plone.intelligenttext.transforms import \
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFDefault.formlib.schema import SchemaAdapterBase
 from Products.CMFCore.utils import getToolByName
+from Products.statusmessages.interfaces import IStatusMessage
 
 from nltk.corpus import brown
 
@@ -71,8 +72,7 @@ class ITermExtractorSchema(Interface):
         required=True)
 
 class IClassificationSchema(IClassifierSettingsSchema, ITermExtractorSchema):
-    """Just a combination of IClassifierSettingsSchema and
-    ITermExtractorSchema
+    """Just a combination of the above schemata
     """
 
 class ClassifierSettingsAdapter(SchemaAdapterBase):
@@ -115,12 +115,16 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
         pass
     tagger_type = property(get_tagger_type,set_tagger_type)
     
-    def set_brown_categories(self,value):
-        pass
     def get_brown_categories(self):
         npextractor = getUtility(ITermExtractor)
         return npextractor.tagger_metadata.get('categories')
+    def set_brown_categories(self,value):
+        pass
     brown_categories = property(get_brown_categories,set_brown_categories)
+    
+    def get_no_documents(self):
+        return len(self.storage.rankedNouns)
+    no_documents = property(get_no_documents)
 
 classifierset = FormFieldsets(IClassifierSettingsSchema)
 classifierset.id = 'classifier'
@@ -135,9 +139,9 @@ class ClassifierSettings(ControlPanelForm):
     
     form_fields = FormFieldsets(classifierset,termextractorset)
     
-    label = _("Classifier settings")
-    description = _("Settings for the content classifier.")
-    form_name = _("Classifier settings")
+    label = _("Classification settings")
+    description = _("Settings for the term extractors, classifiers.")
+    form_name = _("Classification settings")
     
     @form.action(_(u"Save"))
     def save_action(self,action,data):
@@ -150,6 +154,11 @@ class ClassifierSettings(ControlPanelForm):
         if extractor.tagger_metadata['type'] != ttype or \
             extractor.tagger_metadata['categories'] != tcategories:
             if ttype == 'N-Gram':
+                if not tcategories:
+                    IStatusMessage(self.request).addStatusMessage(
+                        _(u"Please choose some categories to train the "\
+                           "N-Gram tagger with."), type='error')
+                    return
                 tagged_sents = brown.tagged_sents(categories=tcategories)
                 tagger = getUtility(IPOSTagger,
                     name="collective.classification.taggers.NgramTagger")
@@ -182,8 +191,8 @@ class ClassifierSettings(ControlPanelForm):
             text = convertHtmlToWebIntelligentPlainText(
                 obj.SearchableText())
             storage.addDocument(uid,text)
-        self.status = _(u"Term extractor trained and NP storage updated." \
-        " You will need to re-train the classifier as well.")
+        self.status = _(u"Documents reparsed. You will need to re-train the "\
+                         "classifier as well.")
     
     @form.action(_(u"Retrain classifier"))
     def retrain_classifier_action(self,action,data):
@@ -202,6 +211,16 @@ class ClassifierSettings(ControlPanelForm):
                     item['Subject'])
         classifier.train()
         self.status = _(u"Classifier trained.")
+    
+    @form.action(_(u"Statistics"),validator=null_validator)
+    def stats_action(self,action,data):
+        """Displays the stats view.
+        """
+        url = getMultiAdapter((self.context, self.request),
+                              name='absolute_url')()
+        self.request.response.redirect(url + '/@@classification-stats')
+        return ''
+        
     
     @form.action(_(u"Cancel"),validator=null_validator)
     def cancel_action(self, action, data):

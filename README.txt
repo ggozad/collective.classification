@@ -84,7 +84,8 @@ After installation, you should have a control panel entry to configure the produ
 
 How to use it?
 ==============
-
+  * For a parsed document you can call the term view to display the identified
+    terms (just append *@@terms* to the url of the content to call the view).
   * In order to use the classifier and get suggested tags for some content,
     you can call *@@suggest-categories* on the content. This comes down to
     appending @@suggest-categories to the url in your browser. A form will

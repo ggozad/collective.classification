@@ -1,0 +1,56 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+xmlns:tal="http://xml.zope.org/namespaces/tal"
+xmlns:metal="http://xml.zope.org/namespaces/metal"
+xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+metal:use-macro="here/main_template/macros/master"
+i18n:domain="collective.classification">
+  <body>
+    <metal:main metal:fill-slot="main">
+      <tal:main-macro metal:define-macro="main">
+        <div metal:use-macro="context/@@base-pageform.html/macros/form">
+            <div metal:fill-slot="extra_info" tal:define="informativeFeatures view/informativeFeatures | nothing">
+                <label i18n:translate="label_no_parsed_docs">Parsed documents:</label>
+                <span tal:content="view/parsedDocs"/><br/>
+                <label i18n:translate="label_no_classified_docs">Classified documents:</label>
+                <span tal:content="view/classifierDocs"/><br/>
+                <label i18n:translate="label_informate_features">Informative features:</label>
+                <p class="discreet">
+                    In the table below, we show the most valuable terms for
+                    the classification. "Presence" indicates whether the noun
+                    should be present or not in the document. The "tag ratio"
+                    refers to the categories involved in the decision making.
+                    And the ratio value gives the strength of the decision.
+                    For example: cabbage, True, vegetables:fruit, 9.8, would
+                    mean that if the word "cabbage" is present in a document
+                    that gives 9.8 to 1 certainty that the document should be
+                    classified as "vegetable" instead of "fruit"".
+                    NOTE: SOMEONE PLEASE WRITE THIS IN PROPER ENGLISH ;)
+                </p>
+
+                <table class="listing" tal:condition="informativeFeatures">
+                    <thead>
+                        <tr>
+                            <th i18n:translate="label_term">Term</th>
+                            <th i18n:translate="label_presence">Presence</th>
+                            <th i18n:translate="label_tagratio">Tag ratio</th>
+                            <th i18n:translate="label_ratio">Ratio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tal:features tal:repeat="term informativeFeatures">
+                            <tr tal:define="oddrow repeat/term/odd;"
+                                tal:attributes="class python:oddrow and 'odd' or 'even'">
+                                <td tal:content="python: term[0]"/>
+                                <td tal:content="python: term[1]"/>
+                                <td tal:content="python: '%s:%s'%(term[2],term[3])"/>
+                                <td tal:content="python: term[4]"/>
+                            </tr>
+                        </tal:features>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </tal:main-macro>
+    </metal:main>
+  </body>
+</html>

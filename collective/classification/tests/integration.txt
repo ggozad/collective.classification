@@ -52,7 +52,21 @@ And finally 20 documents categorized as 'hobbies':
     ...                                    text=text,
     ...                                    subject='hobbies')
 
-Time to train the classifier:
+All these documents should have been parsed and present in the term storage:
+
+    >>> from collective.classification.interfaces import INounPhraseStorage
+    >>> npstorage = getUtility(INounPhraseStorage)
+    >>> len(npstorage.rankedNouns)
+    60
+
+Let's see what terms we get for the first 'editorial' content:
+
+    >>> browser = self.getBrowser()
+    >>> browser.open(self.folder.absolute_url()+'/cb01/@@terms')
+    >>> browser.contents
+    '...state...year...budget...danger...war...nuclear war...'
+
+Scary stuff. Nuclear war is the only noun-phrase identified... Time to train the classifier:
     >>> from collective.classification.interfaces import IContentClassifier
     >>> classifier = getUtility(IContentClassifier)
     >>> classifier.train()
@@ -61,12 +75,11 @@ Time to train the classifier:
 
 For a start, the classifier should be pretty certain when asked about text already classified:
 
-    >>> browser = self.getBrowser()
     >>> browser.open(self.folder.absolute_url()+'/ca01/@@suggest-categories')
     >>> browser.contents
     '...news 100.0%...editorial 0.0%...hobbies 0.0%...'
 
-So let's see where this gets us, by asking the classifier to categorize 5 more documents for which we know the category. We will use the classifier's functions this time instead of adding the documents to plone. 'News' first:
+So let's see where this gets us, by asking the classifier to categorize 5 more documents for which we know the category. We will use the classifier's functions directly this time instead of adding the documents to plone and calling the *@@suggest-categories* view. 'News' first:
 
     >>> classificationResult = []
     >>> for articleid in brown.fileids(categories='news')[20:25]:
@@ -104,5 +117,13 @@ That's excellent! What about 'hobbies'?
 
 Not so good, we missed 2 out of 5. Overall: we got 13/15 right...
 
+What about stats? We can call the *@@stats* view to find out...
 
+    >>> self.setRoles('Manager')
+    >>> browser.open(self.folder.absolute_url()+'/@@classification-stats')
+    >>> browser.contents
+    '...state...True...editorial:hobbies...5.0...'
 
+which basically tells us, that if the word 'state' is present the classifier
+gives 5 to 1 for the content to be in the 'editorial' category rather than the
+'hobbies' category
