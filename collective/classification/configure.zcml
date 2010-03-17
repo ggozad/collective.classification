@@ -15,7 +15,7 @@
                 handler=".subscribers.updateClassifier"/>
 
     <subscriber for="Products.ATContentTypes.interface.IATContentType
-                     zope.app.container.interfaces.IObjectModifiedEvent"
+                     zope.lifecycleevent.interfaces.IObjectModifiedEvent"
                 handler=".subscribers.updateClassifier"/>
 
     <subscriber for="Products.ATContentTypes.interface.IATContentType
