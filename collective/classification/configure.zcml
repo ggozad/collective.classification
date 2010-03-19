@@ -6,20 +6,17 @@
 
     <five:registerPackage package="." initialize=".initialize" />
 
-    <include package=".nltkutilities" />
     <include package=".adapters" />
+    <include package=".nltkutilities" />
     <include package=".browser" />
 
-    <subscriber for="Products.ATContentTypes.interface.IATContentType
-                     zope.app.container.interfaces.IObjectAddedEvent"
+    <subscriber for="zope.app.container.interfaces.IObjectAddedEvent"
                 handler=".subscribers.updateClassifier"/>
 
-    <subscriber for="Products.ATContentTypes.interface.IATContentType
-                     zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+    <subscriber for="zope.lifecycleevent.interfaces.IObjectModifiedEvent"
                 handler=".subscribers.updateClassifier"/>
 
-    <subscriber for="Products.ATContentTypes.interface.IATContentType
-                     zope.app.container.interfaces.IObjectRemovedEvent"
+    <subscriber for="zope.app.container.interfaces.IObjectRemovedEvent"
                 handler=".subscribers.removeFromClassifier"/>
 
     <genericsetup:registerProfile
