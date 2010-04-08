@@ -11,7 +11,7 @@ class NounBayesClassifier(Persistent):
     """
     """
     implements(IContentClassifier)
-    
+
     def __init__(self,tagger=None,noNounRanksToKeep = 20):
         """
         """
@@ -21,7 +21,7 @@ class NounBayesClassifier(Persistent):
         
         self.classifier = None
         self.trainAfterUpdate = True
-    
+
     def addTrainingDocument(self,doc_id,tags):
         """
         """
@@ -32,13 +32,13 @@ class NounBayesClassifier(Persistent):
             self.allNouns = union(self.allNouns,OOSet(importantNouns))
         elif self.trainingDocs.has_key(doc_id):
             del self.trainingDocs[doc_id]
-    
+
     def removeTrainingDocument(self,doc_id):
         """
         """
         if self.trainingDocs.has_key(doc_id):
             del self.trainingDocs[doc_id]
-            
+
     def train(self):
         """
         """
@@ -52,7 +52,7 @@ class NounBayesClassifier(Persistent):
                 self.allNouns = union(self.allNouns,OOSet(importantNouns))
         for item in self.allNouns:
             presentNouns.setdefault(item,0)
-        
+
         for (nouns,tags) in self.trainingDocs.values():
             nounPresence = presentNouns.copy()
             for noun in nouns:
@@ -61,30 +61,27 @@ class NounBayesClassifier(Persistent):
                 trainingData.append((nounPresence,tag,))
         if trainingData:
             self.classifier = NaiveBayesClassifier.train(trainingData)
-    
+
     def classify(self,doc_id):
         """
         """
         if not self.classifier:
             return []
-        
         presentNouns = dict()
         for item in self.allNouns:
             presentNouns.setdefault(item,0)
-        
         storage = getUtility(INounPhraseStorage)
         importantNouns = storage.getNounTerms(doc_id,self.noNounRanksToKeep)
         for noun in importantNouns:
             if noun in presentNouns.keys():
                 presentNouns[noun] = 1
         return self.classifier.classify(presentNouns)
-    
+
     def probabilityClassify(self,doc_id):
         """
         """
         if not self.classifier:
             return []
-        
         presentNouns = dict()
         for item in self.allNouns:
             presentNouns.setdefault(item,0)
@@ -94,7 +91,7 @@ class NounBayesClassifier(Persistent):
             if noun in presentNouns.keys():
                 presentNouns[noun] = 1
         return self.classifier.prob_classify(presentNouns)
-    
+
     def informativeFeatures(self, n=10):
         """Determines and returns the most relevant features
         """
@@ -116,15 +113,14 @@ class NounBayesClassifier(Persistent):
                                 cpdist[l0,fname].prob(fval))
             result.append((fname, bool(fval), l1, l0, ratio))
         return result
-    
+
     def clear(self):
         """Wipes the classifier's data.
         """
         self.allNouns.clear()
         self.trainingDocs.clear()
-    
+
     def tags(self):
         if not self.classifier:
             return []
         return self.classifier.labels()
-        

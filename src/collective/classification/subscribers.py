@@ -7,7 +7,7 @@ from collective.classification.interfaces import INounPhraseStorage
 def _wrapClassifiable(obj):
     """Looks whether the object is adaptable to IClassifiable,
     and returns the wrapper"""
-    
+
     if not IClassifiable.providedBy(obj):
         wrapper = queryAdapter(obj,IClassifiable)
         if wrapper:
@@ -25,18 +25,16 @@ def updateClassifier(event):
     except ComponentLookupError:
         # The local utilites have not been registered, so what's the point?
         return
-    
+
     obj = _wrapClassifiable(event.object)    
     # If it is not IClassifiable abort
     if not obj:
         return
-    
     # If it is AT-based check if blackilisted
     if IATContentType.providedBy(event.object) and \
         termstorage.friendlyTypes and \
         event.object.portal_type not in termstorage.friendlyTypes:
         return    
-    
     uid = obj.UID
     text = obj.text
     termstorage.addDocument(uid,text)
@@ -52,11 +50,9 @@ def removeFromClassifier(event):
     except ComponentLookupError:
         # The local utilites have not been registered, so what's the point?
         return
-
     obj = _wrapClassifiable(event.object)
     # If it is not IClassifiable abort
     if not obj:
         return
-    
     classifier.removeTrainingDocument(obj.UID)
     termstorage.removeDocument(obj.UID)

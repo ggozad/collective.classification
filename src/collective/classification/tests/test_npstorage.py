@@ -6,12 +6,12 @@ from collective.classification.interfaces import INounPhraseStorage
 class TestNPStorage(ClassificationTestCase):
     """Tests the Noun-phrase storage
     """
+
     def test_npstorage(self):
         """Reads a review of Alice in Wonderland and extracts the most
         frequent nouns found in the text as well as the most frequent 
         'noun phrases'.
         """
-        
         text = readData('alicereview.txt')
         storage = getUtility(INounPhraseStorage)        
         storage.addDocument('alice',text)
@@ -31,17 +31,14 @@ class TestNPStorage(ClassificationTestCase):
              ('everyone', 37), ('dream', 37), ('tree', 37), ('game', 37), 
              ('window', 37), ('way', 37), ('part', 37), ('evidence', 37), 
              ('executioner', 37), ('doesn', 37), ('footman', 37)])
-        
         self.failUnless(storage.rankedNPs['alice'] == 
             [('white rabbit', 0), ('mock turtle', 0), ('cheshire cat', 2), 
              ('march hare', 3), ('mad hatter', 4)])
-
         self.failUnless(storage.getRankedTerms('alice',5) == 
           ([('alice', 0), ('queen', 1), ('rabbit', 2), ('hatter', 3), 
             ('door', 3), ('cat', 3)], 
            [('white rabbit', 0), ('mock turtle', 0), ('cheshire cat', 2), 
             ('march hare', 3), ('mad hatter', 4)]))
-        
         self.failUnless(storage.getNounTerms('alice',5) == 
             ['alice', 'queen', 'rabbit', 'hatter', 'door', 'cat'])
         self.failUnless(storage.getNPTerms('alice',5) == 

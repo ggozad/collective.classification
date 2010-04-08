@@ -10,13 +10,13 @@ from collective.classification import ClassificationMessageFactory as _
 class IStats(Interface):
     """
     """
-    
+
     no_features = schema.Int(
         title = _(u"Number of informative features to show"),
         required = True,
         default = 10
     )
-    
+
 class ClassificationStatsView(formbase.PageForm):
     """
     """
@@ -33,8 +33,7 @@ class ClassificationStatsView(formbase.PageForm):
         self.informativeFeatures = self.classifier.informativeFeatures()
         self.parsedDocs = len(self.npstorage.rankedNouns)
         self.classifierDocs = len(self.classifier.trainingDocs)
-        
-    
+
     @form.action(_(u"Apply"))
     def action_apply(self, action, data):
         """

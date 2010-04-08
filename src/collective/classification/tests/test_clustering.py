@@ -9,7 +9,7 @@ from collective.classification.interfaces import IPOSTagger, ITermExtractor, \
 class TestKMeansClustering(ClassificationTestCase):
     """Test the KMeans clusterer.
     """
-    
+
     def test_clusterer(self):
         """Here we take 10 documents categorized as 'government' and
         'mystery' from the brown corpus, and perform k-means clustering on
@@ -22,7 +22,7 @@ class TestKMeansClustering(ClassificationTestCase):
         condition is that a max of  1 out of 10 documents will fall in the 
         wrong cluster.
         """
-        
+
         tagged_sents =  brown.tagged_sents(
             categories=['government','mystery'])
         tagger = getUtility(IPOSTagger,
@@ -31,15 +31,15 @@ class TestKMeansClustering(ClassificationTestCase):
         extractor = getUtility(ITermExtractor)
         extractor.setTagger(tagger)
         storage = getUtility(INounPhraseStorage)
-        
+
         clusterer = KMeans()
         government_ids = brown.fileids(categories='government')[:10]        
         mystery_ids = brown.fileids(categories='mystery')[:10]
-        
+
         for articleid in government_ids:
             text = " ".join(brown.words(articleid))
             storage.addDocument(articleid,text)
-        
+
         for articleid in mystery_ids:
             text = " ".join(brown.words(articleid))
             storage.addDocument(articleid,text)

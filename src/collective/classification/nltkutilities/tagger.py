@@ -2,18 +2,16 @@ from zope.interface import implements
 from nltk import pos_tag
 from nltk import AffixTagger, UnigramTagger, BigramTagger, \
     TrigramTagger, DefaultTagger
-
-
 from collective.classification.interfaces import IPOSTagger
 
 class PennTreebankTagger(object):
     """Tokenizes text using the default nltk tagger, based on Penn Treebank
     """
-    
+
     implements(IPOSTagger)
     def train(self,sentence_list):
         pass
-    
+
     def tag(self,words):
         """
         """
@@ -22,10 +20,10 @@ class PennTreebankTagger(object):
 class NgramTagger(object):
     """ Trigram tagger
     """
-    
+
     def __init__(self):
         self.tagger = None
-    
+
     def train(self,sentence_list):
         """
         """
@@ -38,13 +36,10 @@ class NgramTagger(object):
             backoff=unigram_fallback)
         self.tagger = TrigramTagger(sentence_list,
             backoff=bigram_fallback)
-    
+
     def tag(self,words):
         """
         """
         if not self.tagger:
             raise Exception("Trigram Tagger not trained.")
         return self.tagger.tag(words)
-            
-            
-            

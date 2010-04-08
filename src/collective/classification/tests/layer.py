@@ -22,8 +22,7 @@ class ClassificationLayer(PloneSite):
         # and commit the changes
         commit()
         close(root)
-        
+
     @classmethod
     def tearDown(cls):
         pass
-        

@@ -9,7 +9,7 @@ class TestUtilities(ClassificationTestCase):
         """
         self.failUnless(singularize("axes") == "axis")
         self.failUnless(singularize(":") == ":")
-        
+
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()

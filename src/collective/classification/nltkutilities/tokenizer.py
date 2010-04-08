@@ -6,9 +6,9 @@ from collective.classification.interfaces import ITokenizer
 class NLTKTokenizer(object):
     """Tokenizes text using the default nltk tokenizer
     """
-    
+
     implements(ITokenizer)
-    
+
     def tokenize(self,text):
         """
         """

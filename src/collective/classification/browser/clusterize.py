@@ -16,14 +16,14 @@ class IClusterize(Interface):
         description = _(u""),
         required = True,
     )
-    
+
     no_noun_ranks = schema.Int(
         title=_(u"Important nouns to keep"),
         description=_(u"Indicates how many nouns to keep when building the" \
             "list of most frequent nouns in the text."),
         default=20,
         required=True)
-    
+
     repeats = schema.Int(
         title = _(u"Number of runs"),
         description = _(u""),
@@ -34,10 +34,10 @@ class IClusterize(Interface):
 class ClusterizeView(formbase.PageForm):
     """
     """
-    
+
     form_fields = form.Fields(IClusterize)
     template = ViewPageTemplateFile('clusterize.pt')
-    
+
     @form.action(_(u"Clusterize"))
     def action_clusterize(self, action, data):
         """
@@ -59,4 +59,3 @@ class ClusterizeView(formbase.PageForm):
                      item.Description))
             result.append(clusterlist)
         self.clusters = result
-        

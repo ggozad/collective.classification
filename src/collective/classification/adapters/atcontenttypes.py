@@ -9,30 +9,31 @@ class ATClassifiableAdapter(object):
     """
     implements(IClassifiable)
     adapts(IATContentType)
-    
+
     def __init__(self, context):
         self.context = context
-    
+
     def getUID(self):
         return self.context.UID()
-    
+
     UID = property(getUID)
-    
+
     def getText(self):
         """
         """
         return convertHtmlToWebIntelligentPlainText(
             self.context.SearchableText())
+
     text = property(getText)
-    
+
     def getcategories(self):
         """
         """
         return list(self.context.Subject())
-    
+
     def setcategories(self,value):
         """
         """
         return self.context.setSubject(value)    
-    
+
     categories = property(getcategories,setcategories)

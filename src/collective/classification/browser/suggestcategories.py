@@ -23,19 +23,19 @@ class ISuggestCategories(Interface):
 class SuggestCategoriesView(formbase.PageForm):
     """Suggest categories to the user and let him set them.
     """
-    
+
     implements(IPlonePageForm)
     label = _(u"Suggested categories")
     description = _(u"Choose among the proposed subjects. Clicking on apply "\
         "will add the chosen categories to the existing ones.")
-    
+
     def getSuggestedSubjects(self):
         """
         """
         classifier = getUtility(IContentClassifier)
         uid = IClassifiable(self.context).UID
         return classifier.probabilityClassify(uid)
-    
+
     @property
     def form_fields(self):
         """
@@ -56,7 +56,7 @@ class SuggestCategoriesView(formbase.PageForm):
         choice = schema.Choice(vocabulary=SimpleVocabulary(vocab_terms))
         ff['suggestions'].field.value_type = choice
         return ff
-    
+
     @form.action(_(u"Apply"))
     def action_submit(self, action, data):
         """
@@ -73,4 +73,3 @@ class SuggestCategoriesView(formbase.PageForm):
             _(u"Categories saved."),type="info")
         self.request.response.redirect(url)
         return ''
-        

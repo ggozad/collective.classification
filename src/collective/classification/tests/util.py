@@ -6,7 +6,6 @@ def getFile(filename):
     filename = join(dirname(tests.__file__), 'data', filename)
     return open(filename, 'r')
 
-
 def readData(filename):
     """ return file data """
     return getFile(filename).read()

@@ -24,9 +24,9 @@ class ISampleContent(Interface):
 class SampleContentView(formbase.PageForm):
     """Imports content from the brown corpus for testing.
     """
-    
+
     form_fields = form.Fields(ISampleContent)
-    
+
     @form.action(u"Import sample content from brown corpus")
     def action_import(self, action, data):
         """

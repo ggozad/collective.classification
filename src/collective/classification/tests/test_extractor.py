@@ -14,27 +14,23 @@ class TestExtractor(ClassificationTestCase):
         frequent nouns found in the text as well as the most frequent 
         'noun phrases'.
         """
-        
+
         text = readData('alicereview.txt')
-        
         extractor = getUtility(ITermExtractor)
         (simple_terms,np_terms)  =  extractor.extract(text)
         important_terms = sorted(
             simple_terms.items(),
             key = itemgetter(1),
             reverse=True)[:10]
-            
         self.failUnless(
             important_terms == 
             [('alice', 80), ('queen', 19), ('rabbit', 15), ('hatter', 13),
             ('door', 13), ('cat', 13), ('chapter', 12), ('king', 12),
             ('turtle', 11), ('duchess', 11)])
-
         important_np_terms = sorted(
             np_terms.items(),
             key = itemgetter(1),
             reverse=True)[:10]
-               
         self.failUnless(
             important_np_terms == 
             [('white rabbit', 8), ('mock turtle', 8), ('cheshire cat', 5),

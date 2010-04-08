@@ -46,7 +46,6 @@ i18n:domain="collective.classification">
             </tbody>
         </table>
     </fieldset>
-
     </metal:main>
   </body>
 </html>
