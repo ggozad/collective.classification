@@ -9,9 +9,9 @@ Let us setup the tagger first. You can do this by means of using the control pan
     >>> from zope.component import getUtility
     >>> from collective.classification.interfaces import IPOSTagger
     >>> tagger = getUtility(IPOSTagger,
-    ...     name="collective.classification.taggers.NgramTagger")
+    ...     name="collective.classification.taggers.TrigramTagger")
     >>> tagger
-    <collective.classification.nltkutilities.tagger.NgramTagger ...>
+    <collective.classification.nltkutilities.tagger.TrigramTagger ...>
 
 Now we can train the tagger with the tagged sentences from the Brown corpus corresponding to the categories we have chosen:
 
