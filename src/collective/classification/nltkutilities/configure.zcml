@@ -16,8 +16,8 @@
 
     <utility
         provides="..interfaces.IPOSTagger"
-        factory=".tagger.TrigramTagger"
-        name="collective.classification.taggers.TrigramTagger"
+        factory=".tagger.TriGramTagger"
+        name="collective.classification.taggers.TriGramTagger"
     />
 
 </configure>

@@ -17,7 +17,7 @@ class PennTreebankTagger(object):
         """
         return pos_tag(words)
 
-class TrigramTagger(object):
+class TriGramTagger(object):
     """ Trigram tagger
     """
 

@@ -23,7 +23,7 @@ class TestTaggers(ClassificationTestCase):
         """Tests the n-gram tagger.
         """
         tagger = getUtility(IPOSTagger,
-            name="collective.classification.taggers.TrigramTagger")
+            name="collective.classification.taggers.TriGramTagger")
         tagger.train(self.tagged_sents)
         self.failUnless(tagger.tag(self.tokens) == 
             [('The', 'AT'), ('quick', 'JJ'), ('brown', 'NN'), ('fox', 'NN'), 

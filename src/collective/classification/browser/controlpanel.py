@@ -166,7 +166,7 @@ class ClassifierSettings(ControlPanelForm):
                     return
                 tagged_sents = brown.tagged_sents(categories=tcategories)
                 tagger = getUtility(IPOSTagger,
-                    name="collective.classification.taggers.TrigramTagger")
+                    name="collective.classification.taggers.TriGramTagger")
                 tagger.train(tagged_sents)
                 extractor.setTagger(tagger,
                     {'type':'N-Gram','categories':tcategories})

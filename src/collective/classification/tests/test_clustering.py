@@ -26,7 +26,7 @@ class TestKMeansClustering(ClassificationTestCase):
         tagged_sents =  brown.tagged_sents(
             categories=['government','mystery'])
         tagger = getUtility(IPOSTagger,
-            name="collective.classification.taggers.TrigramTagger")
+            name="collective.classification.taggers.TriGramTagger")
         tagger.train(tagged_sents)
         extractor = getUtility(ITermExtractor)
         extractor.setTagger(tagger)
