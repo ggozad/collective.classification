@@ -95,6 +95,8 @@ class NounBayesClassifier(Persistent):
     def informativeFeatures(self, n=10):
         """Determines and returns the most relevant features
         """
+        if not self.classifier:
+            return []
         cpdist = self.classifier._feature_probdist
         result = []
         for (fname, fval) in self.classifier.most_informative_features(n):
