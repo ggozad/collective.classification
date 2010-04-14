@@ -8,6 +8,7 @@ class IClassifiable(Interface):
     UID = Attribute("""A unique identifier of the object.""")
     text = Attribute("""The text on which we perform term extraction.""")
     categories = Attribute("""The categories with which we train a classifier.""")
+    language = Attribute("""The language of the content item.""")
 
 class ITokenizer(Interface):
     """Marker interface for tokenizers.
