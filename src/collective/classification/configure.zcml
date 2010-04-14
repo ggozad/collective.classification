@@ -8,6 +8,7 @@
 
     <include package=".adapters" />
     <include package=".nltkutilities" />
+    <include package=".classifiers" />
     <include package=".browser" />
 
     <subscriber for="zope.app.container.interfaces.IObjectAddedEvent"

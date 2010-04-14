@@ -3,11 +3,6 @@
   <utilities>
 
     <utility
-      interface="collective.classification.interfaces.ITermExtractor"
-      factory="collective.classification.classifiers.npextractor.NPExtractor"
-    />
-
-    <utility
       interface="collective.classification.interfaces.INounPhraseStorage"
       factory="collective.classification.classifiers.npstorage.NounPhraseStorage"
     />

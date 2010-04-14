@@ -9,7 +9,7 @@ from collective.classification.interfaces import IPOSTagger, ITokenizer, \
 from collective.classification.classifiers.utils import singularize
 
 def _extractor_cachekey(method, self, text):
-    return (self.tagger_metadata, text)
+    return (text)
 
 def permissiveFilter(word, occur):
     return True
@@ -23,7 +23,7 @@ class DefaultFilter(object):
     def __call__(self, word, occur):
         return occur >= self.minOccur
 
-class NPExtractor(Persistent):
+class NPExtractor(object):
     """
     """
 
@@ -33,11 +33,6 @@ class NPExtractor(Persistent):
         """
         """
         self.filter = DefaultFilter()
-        self.tokenizer = getUtility(ITokenizer,
-            name="collective.classification.tokenizers.NLTKTokenizer")
-        self.tagger = getUtility(IPOSTagger,
-                name="collective.classification.taggers.PennTreebankTagger")
-        self.tagger_metadata = {'type':'Pen TreeBank','categories':[]}
         self.np_grammar = r"""
             NP: {<JJ>*<NN>}         # chunk determiners, adjectives and nouns
                 {<NNP>+}            # chunk proper nouns
@@ -52,8 +47,12 @@ class NPExtractor(Persistent):
     def extract(self,text):
         """
         """
-        tokens = self.tokenizer.tokenize(text)
-        tagged_terms = self.tagger.tag(tokens)
+        tokenizer = getUtility(ITokenizer,
+            name="collective.classification.tokenizers.NLTKTokenizer")
+        tagger = getUtility(IPOSTagger,
+            name="collective.classification.taggers.PennTreebankTagger")
+        tokens = tokenizer.tokenize(text)
+        tagged_terms = tagger.tag(tokens)
         terms = {}
         np_terms = {}
         noun_phrases = [
@@ -82,10 +81,3 @@ class NPExtractor(Persistent):
             if not self.filter(term,np_terms[term]):
                 del np_terms[term]
         return (terms,np_terms)
-
-    def setTagger(self,tagger,tagger_metadata={}):
-        self.tagger = tagger
-        if not tagger_metadata:
-            self.tagger_metadata['type']='unknown'
-        else:
-            self.tagger_metadata = tagger_metadata
