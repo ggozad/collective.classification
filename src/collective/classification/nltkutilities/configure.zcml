@@ -5,7 +5,6 @@
     <utility
         provides="..interfaces.ITokenizer"
         factory=".tokenizer.NLTKTokenizer"
-        name="collective.classification.tokenizers.NLTKTokenizer"
     />
 
     <utility

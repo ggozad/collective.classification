@@ -13,8 +13,7 @@ class TestTaggers(ClassificationTestCase):
         """Setup the tokenized test text and select the training set for the 
         n-gram tagger.
         """
-        tokenizer = getUtility(ITokenizer,
-            name="collective.classification.tokenizers.NLTKTokenizer")
+        tokenizer = getUtility(ITokenizer)
         text = "The quick brown fox jumped over the lazy dog."
         self.tokens = tokenizer.tokenize(text)
         self.tagged_sents = brown.tagged_sents(categories='news')

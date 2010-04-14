@@ -7,8 +7,7 @@ class TestNLTKTokenizer(ClassificationTestCase):
     def test_tokenizer(self):
         """Tests whether the tokenizer utility performs its job properly.
         """
-        tokenizer = getUtility(ITokenizer,
-            name="collective.classification.tokenizers.NLTKTokenizer")
+        tokenizer = getUtility(ITokenizer)
         text = """
             Alice opened the door and found that it led into a small passage,
             not much larger than a rat-hole: she knelt down and looked along

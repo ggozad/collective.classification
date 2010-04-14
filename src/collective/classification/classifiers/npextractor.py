@@ -47,8 +47,7 @@ class NPExtractor(object):
     def extract(self,text):
         """
         """
-        tokenizer = getUtility(ITokenizer,
-            name="collective.classification.tokenizers.NLTKTokenizer")
+        tokenizer = getUtility(ITokenizer)
         tagger = getUtility(IPOSTagger,
             name="collective.classification.taggers.PennTreebankTagger")
         tokens = tokenizer.tokenize(text)
