@@ -1,4 +1,3 @@
-from persistent import Persistent
 from zope.interface import implements
 from zope.component import getUtility
 from plone.memoize import ram
@@ -48,8 +47,7 @@ class NPExtractor(object):
         """
         """
         tokenizer = getUtility(ITokenizer)
-        tagger = getUtility(IPOSTagger,
-            name="collective.classification.taggers.PennTreebankTagger")
+        tagger = getUtility(IPOSTagger)
         tokens = tokenizer.tokenize(text)
         tagged_terms = tagger.tag(tokens)
         terms = {}

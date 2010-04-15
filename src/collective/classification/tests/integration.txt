@@ -6,10 +6,9 @@ Here, we'll test the classifier using a sample of the Brown corpus. The Brown co
 
 Let us setup the tagger first. You can do this by means of using the control panel, here we do it manually. First we fetch the N-gram tagger.
 
-    >>> from zope.component import getUtility
-    >>> from collective.classification.interfaces import IPOSTagger
-    >>> tagger = getUtility(IPOSTagger,
-    ...     name="collective.classification.taggers.TriGramTagger")
+    >>> from collective.classification.nltkutilities.tagger import \
+    ...     TriGramTagger
+    >>> tagger = TriGramTagger()
     >>> tagger
     <collective.classification.nltkutilities.tagger.TriGramTagger ...>
 
@@ -22,11 +21,12 @@ Now we can train the tagger with the tagged sentences from the Brown corpus corr
     [[('The', 'AT'), ('Fulton', 'NP-TL'), ('County', 'NN-TL'), ...],...]
     >>> tagger.train(tagged_sents)
 
-Let's assign the tagger to the NP-extractor:
+Let's override the default tagger:
 
-    >>> from collective.classification.interfaces import ITermExtractor
-    >>> extractor = getUtility(ITermExtractor)
-    >>> extractor.tagger = tagger
+    >>> from zope.component import getGlobalSiteManager
+    >>> from collective.classification.interfaces import IPOSTagger
+    >>> gsm = getGlobalSiteManager()
+    >>> gsm.registerUtility(tagger,IPOSTagger)
 
 We can now start adding documents, starting with the first 20 documents in Brown categorized as 'news'.
 
@@ -54,6 +54,7 @@ And finally 20 documents categorized as 'hobbies':
 
 All these documents should have been parsed and present in the term storage:
 
+    >>> from zope.component import getUtility
     >>> from collective.classification.interfaces import INounPhraseStorage
     >>> npstorage = getUtility(INounPhraseStorage)
     >>> len(npstorage.rankedNouns)
@@ -127,3 +128,12 @@ What about stats? We can call the *@@stats* view to find out...
 which basically tells us, that if the word 'state' is present the classifier
 gives 5 to 1 for the content to be in the 'editorial' category rather than the
 'hobbies' category
+
+Now, let's get the original tagger back to normal...
+
+    >>> from collective.classification.nltkutilities.tagger import \
+    ...     penn_treebank_tagger
+    >>> gsm.unregisterUtility(tagger, IPOSTagger)
+    True
+    >>> gsm.registerUtility(penn_treebank_tagger,IPOSTagger)
+
