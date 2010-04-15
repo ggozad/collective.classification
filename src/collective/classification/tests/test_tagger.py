@@ -24,9 +24,11 @@ class TestTaggers(ClassificationTestCase):
         """Tests the default english tagger shipped with 
         collective.classification
         """
-        tagger = getUtility(IPOSTagger)
-        print tagger.tag(self.tokens)
-        
+        tagger = getUtility(IPOSTagger,name="en")
+        self.failUnless(tagger.tag(self.tokens) == 
+            [('The', 'DT'), ('quick', 'JJ'), ('brown', 'VBN'), ('fox', 'NN'), 
+             ('jumped', 'VBD'), ('over', 'IN'), ('the', 'DT'), ('lazy', 'NN'), 
+             ('dog', 'NN'), ('.', '.')]
     
     def test_ngram_tagger(self):
         """Tests the n-gram tagger.

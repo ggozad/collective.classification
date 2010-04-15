@@ -4,7 +4,7 @@
 
     <utility
         provides="..interfaces.IPOSTagger"
-        component=".english_trigram.english_trigram_tagger"
+        component=".english.english_tagger"
 		name="en"
     />
 

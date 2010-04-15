@@ -17,7 +17,6 @@ class TriGramTagger(object):
             self.tagger = pickle.load(f)
         finally:
             f.close()
-
     def tag(self,words):
         """
         """
