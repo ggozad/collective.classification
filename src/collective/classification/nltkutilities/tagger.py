@@ -17,6 +17,8 @@ class PennTreebankTagger(object):
         """
         return pos_tag(words)
 
+penn_treebank_tagger = PennTreebankTagger()
+
 class TriGramTagger(object):
     """ Trigram tagger
     """
@@ -43,3 +45,5 @@ class TriGramTagger(object):
         if not self.tagger:
             raise Exception("Trigram Tagger not trained.")
         return self.tagger.tag(words)
+
+trigram_tagger = TriGramTagger()

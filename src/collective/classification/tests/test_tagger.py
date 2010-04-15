@@ -1,6 +1,8 @@
 from zope.component import getUtility
-from collective.classification.interfaces import IPOSTagger, ITokenizer
+from collective.classification.interfaces import ITokenizer
 from collective.classification.tests.base import ClassificationTestCase
+from collective.classification.nltkutilities.tagger import TriGramTagger, \
+    PennTreebankTagger
 from nltk.corpus import brown
 
 class TestTaggers(ClassificationTestCase):
@@ -13,8 +15,7 @@ class TestTaggers(ClassificationTestCase):
         """Setup the tokenized test text and select the training set for the 
         n-gram tagger.
         """
-        tokenizer = getUtility(ITokenizer,
-            name="collective.classification.tokenizers.NLTKTokenizer")
+        tokenizer = getUtility(ITokenizer)
         text = "The quick brown fox jumped over the lazy dog."
         self.tokens = tokenizer.tokenize(text)
         self.tagged_sents = brown.tagged_sents(categories='news')
@@ -22,8 +23,7 @@ class TestTaggers(ClassificationTestCase):
     def test_ngram_tagger(self):
         """Tests the n-gram tagger.
         """
-        tagger = getUtility(IPOSTagger,
-            name="collective.classification.taggers.TriGramTagger")
+        tagger = TriGramTagger()
         tagger.train(self.tagged_sents)
         self.failUnless(tagger.tag(self.tokens) == 
             [('The', 'AT'), ('quick', 'JJ'), ('brown', 'NN'), ('fox', 'NN'), 
@@ -33,8 +33,7 @@ class TestTaggers(ClassificationTestCase):
     def test_pentreebank_tagger(self):
         """Tests the Pen TreeBank tagger.
         """
-        tagger = getUtility(IPOSTagger,
-            name="collective.classification.taggers.PennTreebankTagger")
+        tagger = PennTreebankTagger()
         self.failUnless(tagger.tag(self.tokens) == 
             [('The', 'DT'), ('quick', 'NN'), ('brown', 'NN'), ('fox', 'NN'), 
              ('jumped', 'VBD'), ('over', 'IN'), ('the', 'DT'), ('lazy', 'NN'), 

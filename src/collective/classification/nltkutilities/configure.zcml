@@ -5,19 +5,17 @@
     <utility
         provides="..interfaces.ITokenizer"
         factory=".tokenizer.NLTKTokenizer"
-        name="collective.classification.tokenizers.NLTKTokenizer"
     />
 
     <utility
         provides="..interfaces.IPOSTagger"
-        factory=".tagger.PennTreebankTagger"
-        name="collective.classification.taggers.PennTreebankTagger"
+        component=".tagger.penn_treebank_tagger"
     />
-
+<!--
     <utility
         provides="..interfaces.IPOSTagger"
-        factory=".tagger.TriGramTagger"
+        component=".tagger.trigram_tagger"
         name="collective.classification.taggers.TriGramTagger"
     />
-
+-->
 </configure>

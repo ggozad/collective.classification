@@ -3,23 +3,17 @@ from zope.component import adapts, getUtility, getMultiAdapter
 from zope.app.schema.vocabulary import IVocabularyFactory
 from zope.formlib import form
 from zope import schema
-from zope.schema.vocabulary import SimpleVocabulary
 from plone.app.controlpanel.form import ControlPanelForm
 from plone.app.form.validators import null_validator
-from plone.fieldsets.fieldsets import FormFieldsets
 from plone.intelligenttext.transforms import \
     convertHtmlToWebIntelligentPlainText
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFDefault.formlib.schema import SchemaAdapterBase
 from Products.CMFCore.utils import getToolByName
-from Products.statusmessages.interfaces import IStatusMessage
-from nltk.corpus import brown
 from collective.classification.interfaces import IContentClassifier, \
-    IPOSTagger, INounPhraseStorage, ITermExtractor
+    INounPhraseStorage
 from collective.classification import ClassificationMessageFactory as _
 
-brownCategories = SimpleVocabulary.fromValues(brown.categories())
-taggers = SimpleVocabulary.fromValues(['Pen TreeBank','N-Gram'])
 
 class IClassifierSettingsSchema(Interface):
     """Classifier settings
@@ -49,35 +43,13 @@ class IClassifierSettingsSchema(Interface):
             'plone.app.vocabularies.ReallyUserFriendlyTypes'),
     )
 
-class ITermExtractorSchema(Interface):
-    """Term extractor settings
-    """
-    tagger_type = schema.Choice(
-        title=_(u"Tagger type"),
-        description=_(u"Choose the tagger type. By default the generic " \
-            "Pen Treebank  is used, however the N-gram tagger is more " \
-            "performant and gives better results."),
-        vocabulary=taggers,
-        required=True)
-
-    brown_categories = schema.List(
-        title=_(u"Brown corpus categories used for N-gram training"),
-        description=_(u"Choose the categories among the available in the " \
-            "Brown corpus that you think correspond most to your content. " \
-            "Only applies if you have chosen the N-gram tagger above."),
-        value_type=schema.Choice(vocabulary = brownCategories),
-        required=True)
-
-class IClassificationSchema(IClassifierSettingsSchema, ITermExtractorSchema):
-    """Just a combination of the above schemata
-    """
 
 class ClassifierSettingsAdapter(SchemaAdapterBase):
     """TODO: Fill in the properties that 'pass' saving and retrieving tagger
     properties
     """
     adapts(IPloneSiteRoot)
-    implements(IClassificationSchema)
+    implements(IClassifierSettingsSchema)
 
     def __init__(self, context):
         super(ClassifierSettingsAdapter, self).__init__(context)
@@ -110,71 +82,24 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
     friendly_types = property(get_friendly_types,
         set_friendly_types)
 
-    def get_tagger_type(self):
-        npextractor = getUtility(ITermExtractor)
-        return npextractor.tagger_metadata['type']
-
-    def set_tagger_type(self,value):
-        pass
-
-    tagger_type = property(get_tagger_type,set_tagger_type)
-
-    def get_brown_categories(self):
-        npextractor = getUtility(ITermExtractor)
-        return npextractor.tagger_metadata.get('categories')
-
-    def set_brown_categories(self,value):
-        pass
-    brown_categories = property(get_brown_categories,set_brown_categories)
-
     def get_no_documents(self):
         return len(self.storage.rankedNouns)
 
     no_documents = property(get_no_documents)
 
-classifierset = FormFieldsets(IClassifierSettingsSchema)
-classifierset.id = 'classifier'
-classifierset.label = u"Classifier settings"
-termextractorset = FormFieldsets(ITermExtractorSchema)
-termextractorset.id = 'termextractor'
-termextractorset.label = U"Term Extraction settings"
-
 class ClassifierSettings(ControlPanelForm):
     """
     """
 
-    form_fields = FormFieldsets(classifierset,termextractorset)
+    form_fields = form.FormFields(IClassifierSettingsSchema)
 
     label = _("Classification settings")
-    description = _("Settings for the term extractors, classifiers.")
+    description = _("Settings for collective.classification.")
     form_name = _("Classification settings")
     
     @form.action(_(u"Save"))
     def save_action(self,action,data):
         form.applyChanges(self.context, self.form_fields, data, self.adapters)
-        extractor = getUtility(ITermExtractor)
-        # Check if user has changed the tagger...
-        ttype = data['tagger_type']
-        tcategories = data['brown_categories']
-        if extractor.tagger_metadata['type'] != ttype or \
-            extractor.tagger_metadata['categories'] != tcategories:
-            if ttype == 'N-Gram':
-                if not tcategories:
-                    IStatusMessage(self.request).addStatusMessage(
-                        _(u"Please choose some categories to train the "\
-                           "N-Gram tagger with."), type='error')
-                    return
-                tagged_sents = brown.tagged_sents(categories=tcategories)
-                tagger = getUtility(IPOSTagger,
-                    name="collective.classification.taggers.TriGramTagger")
-                tagger.train(tagged_sents)
-                extractor.setTagger(tagger,
-                    {'type':'N-Gram','categories':tcategories})
-            else:
-                tagger = getUtility(IPOSTagger,
-                name="collective.classification.taggers.PennTreebankTagger")
-                extractor.setTagger(tagger,
-                    {'type':'Pen TreeBank','categories':[]})
         self.status = _(u"Changes saved. You will need to reparse the " \
             "content and then retrain the classifier.")
 

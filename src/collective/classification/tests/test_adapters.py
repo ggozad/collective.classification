@@ -17,6 +17,7 @@ class TestAdapters(ClassificationTestCase):
             self.folder['test'].SearchableText())
         )
         self.failUnless(adapted.categories==['A Subject'])
+        self.failUnless(adapted.language == 'en')
 
 def test_suite():
     from unittest import TestSuite, makeSuite

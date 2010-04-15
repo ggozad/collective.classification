@@ -37,3 +37,11 @@ class ATClassifiableAdapter(object):
         return self.context.setSubject(value)    
 
     categories = property(getcategories,setcategories)
+
+    def getlanguage(self):
+        """
+        """
+        ps = self.context.unrestrictedTraverse("@@plone_portal_state")
+        return self.context.Language() or ps.default_language()
+
+    language = property(getlanguage)
