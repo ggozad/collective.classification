@@ -5,8 +5,8 @@ from collective.classification.interfaces import IPOSTagger
 from collective.classification import data
 
 
-class TriGramTagger(object):
-    """ Trigram tagger
+class EnglishTagger(object):
+    """ Brill/Trigram/Affix tagger
     """
     implements(IPOSTagger)
 
@@ -22,4 +22,4 @@ class TriGramTagger(object):
         """
         return self.tagger.tag(words)
 
-english_trigram_tagger = TriGramTagger()
+english_tagger = EnglishTagger()

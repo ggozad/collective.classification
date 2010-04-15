@@ -28,7 +28,7 @@ class TestTaggers(ClassificationTestCase):
         self.failUnless(tagger.tag(self.tokens) == 
             [('The', 'DT'), ('quick', 'JJ'), ('brown', 'VBN'), ('fox', 'NN'), 
              ('jumped', 'VBD'), ('over', 'IN'), ('the', 'DT'), ('lazy', 'NN'), 
-             ('dog', 'NN'), ('.', '.')]
+             ('dog', 'NN'), ('.', '.')])
     
     def test_ngram_tagger(self):
         """Tests the n-gram tagger.
