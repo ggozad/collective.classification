@@ -2,34 +2,17 @@
 Integration test
 ================
 
-Here, we'll test the classifier using a sample of the Brown corpus. The Brown corpus has a list of POS-tagged english articles which are also conveniently categorized. The test consists of training the classifier using 20 documents from each of the categories 'news','editorial' and 'hobbies'. Then we'll ask the classifier to classify 5 more documents from each category and see what happens.
+Here, we'll test the classifier using a sample of the Brown corpus. The Brown
+corpus has a list of POS-tagged english articles which are also conveniently
+categorized. The test consists of training the classifier using 20 documents
+from each of the categories 'news','editorial' and 'hobbies'. Then we'll ask
+the classifier to classify 5 more documents from each category and see what
+happens.
 
-Let us setup the tagger first. You can do this by means of using the control panel, here we do it manually. First we fetch the N-gram tagger.
-
-    >>> from collective.classification.nltkutilities.tagger import \
-    ...     TriGramTagger
-    >>> tagger = TriGramTagger()
-    >>> tagger
-    <collective.classification.nltkutilities.tagger.TriGramTagger ...>
-
-Now we can train the tagger with the tagged sentences from the Brown corpus corresponding to the categories we have chosen:
+We can now start adding documents, starting with the first 20 documents in the
+Brown corpus categorized as 'news'.
 
     >>> from nltk.corpus import brown
-    >>> tagged_sents =  brown.tagged_sents(
-    ...     categories=['news','editorial','hobbies'])
-    >>> tagged_sents
-    [[('The', 'AT'), ('Fulton', 'NP-TL'), ('County', 'NN-TL'), ...],...]
-    >>> tagger.train(tagged_sents)
-
-Let's override the default tagger:
-
-    >>> from zope.component import getGlobalSiteManager
-    >>> from collective.classification.interfaces import IPOSTagger
-    >>> gsm = getGlobalSiteManager()
-    >>> gsm.registerUtility(tagger,IPOSTagger)
-
-We can now start adding documents, starting with the first 20 documents in Brown categorized as 'news'.
-
     >>> for articleid in brown.fileids(categories='news')[:20]:
     ...     text = " ".join(brown.words(articleid))
     ...     id = self.folder.invokeFactory('Document',articleid,
@@ -65,22 +48,27 @@ Let's see what terms we get for the first 'editorial' content:
     >>> browser = self.getBrowser()
     >>> browser.open(self.folder.absolute_url()+'/cb01/@@terms')
     >>> browser.contents
-    '...state...year...budget...danger...war...nuclear war...'
+    '...state...year...budget...war...danger...nuclear war...united states...'
 
-Scary stuff. Nuclear war is the only noun-phrase identified... Time to train the classifier:
+Nuclear war and United States? Scary stuff... Time to train the classifier:
+
     >>> from collective.classification.interfaces import IContentClassifier
     >>> classifier = getUtility(IContentClassifier)
     >>> classifier.train()
     >>> classifier.tags()
     ['editorial', 'hobbies', 'news']
 
-For a start, the classifier should be pretty certain when asked about text already classified:
+For a start, the classifier should be pretty certain when asked about text
+already classified:
 
     >>> browser.open(self.folder.absolute_url()+'/ca01/@@suggest-categories')
     >>> browser.contents
     '...news 100.0%...editorial 0.0%...hobbies 0.0%...'
 
-So let's see where this gets us, by asking the classifier to categorize 5 more documents for which we know the category. We will use the classifier's functions directly this time instead of adding the documents to plone and calling the *@@suggest-categories* view. 'News' first:
+So let's see where this gets us, by asking the classifier to categorize 5 more
+documents for which we know the category. We will use the classifier's
+functions directly this time instead of adding the documents to plone and
+calling the *@@suggest-categories* view. 'News' first:
 
     >>> classificationResult = []
     >>> for articleid in brown.fileids(categories='news')[20:25]:
@@ -90,7 +78,7 @@ So let's see where this gets us, by asking the classifier to categorize 5 more d
     ...     uid = self.folder[id].UID()
     ...     classificationResult.append(classifier.classify(uid))
     >>> classificationResult
-    ['news', 'news', 'news', 'news', 'news']
+    ['editorial', 'news', 'news', 'news', 'news']
 
 Let's see how we do with 'editorials'
 
@@ -114,9 +102,9 @@ That's excellent! What about 'hobbies'?
     ...     uid = self.folder[id].UID()
     ...     classificationResult.append(classifier.classify(uid))
     >>> classificationResult
-    ['hobbies', 'editorial', 'hobbies', 'hobbies', 'editorial']
+    ['hobbies', 'hobbies', 'hobbies', 'hobbies', 'editorial']
 
-Not so good, we missed 2 out of 5. Overall: we got 13/15 right...
+Not so bad! Overall: we got 13/15 right...
 
 What about stats? We can call the *@@stats* view to find out...
 
@@ -128,12 +116,3 @@ What about stats? We can call the *@@stats* view to find out...
 which basically tells us, that if the word 'state' is present the classifier
 gives 5 to 1 for the content to be in the 'editorial' category rather than the
 'hobbies' category
-
-Now, let's get the original tagger back to normal...
-
-    >>> from collective.classification.nltkutilities.tagger import \
-    ...     penn_treebank_tagger
-    >>> gsm.unregisterUtility(tagger, IPOSTagger)
-    True
-    >>> gsm.registerUtility(penn_treebank_tagger,IPOSTagger)
-

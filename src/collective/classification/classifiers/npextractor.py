@@ -32,10 +32,8 @@ class NPExtractor(object):
         """
         """
         self.filter = DefaultFilter()
-        self.np_grammar = r"""
-            NP: {<JJ>*<NN>}         # chunk determiners, adjectives and nouns
-                {<NNP>+}            # chunk proper nouns
-                """
+        # chunk determiners, adjectives and nouns
+        self.np_grammar = r"NP: {<JJ.*>*<NN.*>+}"
         self.np_finder = RegexpParser(self.np_grammar)
 
     def _add(self,norm, terms):
@@ -43,11 +41,11 @@ class NPExtractor(object):
         terms[norm] += 1
 
     @ram.cache(_extractor_cachekey)
-    def extract(self,text):
+    def extract(self,text,locale='en'):
         """
         """
         tokenizer = getUtility(ITokenizer)
-        tagger = getUtility(IPOSTagger)
+        tagger = getUtility(IPOSTagger,name=locale)
         tokens = tokenizer.tokenize(text)
         tagged_terms = tagger.tag(tokens)
         terms = {}
@@ -65,7 +63,8 @@ class NPExtractor(object):
                     if len(term)>1
                     ]
                 mterm = ' '.join(mterm)
-                self._add(mterm,np_terms)
+                if mterm:
+                    self._add(mterm,np_terms)
             for (term,tag,temp) in coll_tag:
                 if tag.startswith('N') and len(term)>1:
                     if tag in ['NNS','NNPS']:

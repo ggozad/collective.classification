@@ -1,5 +1,5 @@
 from zope.component import getUtility
-from collective.classification.interfaces import ITokenizer
+from collective.classification.interfaces import ITokenizer, IPOSTagger
 from collective.classification.tests.base import ClassificationTestCase
 from collective.classification.nltkutilities.tagger import TriGramTagger, \
     PennTreebankTagger
@@ -19,7 +19,17 @@ class TestTaggers(ClassificationTestCase):
         text = "The quick brown fox jumped over the lazy dog."
         self.tokens = tokenizer.tokenize(text)
         self.tagged_sents = brown.tagged_sents(categories='news')
-
+    
+    def test_default_tagger(self):
+        """Tests the default english tagger shipped with 
+        collective.classification
+        """
+        tagger = getUtility(IPOSTagger,name="en")
+        self.failUnless(tagger.tag(self.tokens) == 
+            [('The', 'DT'), ('quick', 'JJ'), ('brown', 'VBN'), ('fox', 'NN'), 
+             ('jumped', 'VBD'), ('over', 'IN'), ('the', 'DT'), ('lazy', 'NN'), 
+             ('dog', 'NN'), ('.', '.')])
+    
     def test_ngram_tagger(self):
         """Tests the n-gram tagger.
         """

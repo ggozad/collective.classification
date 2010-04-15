@@ -1,29 +1,12 @@
 from zope.component import getUtility
-from zope.component import getGlobalSiteManager
 from nltk.corpus import brown
 from collective.classification.tests.base import ClassificationTestCase
-from collective.classification.nltkutilities.tagger import TriGramTagger, \
-    penn_treebank_tagger
-from collective.classification.classifiers.clustering \
-    import KMeans
-from collective.classification.interfaces import IPOSTagger, \
-    INounPhraseStorage
+from collective.classification.classifiers.clustering import KMeans
+from collective.classification.interfaces import INounPhraseStorage
 
 class TestKMeansClustering(ClassificationTestCase):
     """Test the KMeans clusterer.
     """
-
-    def afterSetUp(self):
-        """Register the TriGramTagger trained over the corpus we will be using 
-        as the global tagger. We do that in order to test independently of the 
-        quality of the tagger.
-        """
-        tagged_sents =  brown.tagged_sents(
-            categories=['government','mystery'])
-        self.tagger = TriGramTagger()
-        self.tagger.train(tagged_sents)
-        gsm = getGlobalSiteManager()
-        gsm.registerUtility(self.tagger, IPOSTagger)
 
     def test_clusterer(self):
         """Here we take 10 documents categorized as 'government' and
@@ -55,13 +38,6 @@ class TestKMeansClustering(ClassificationTestCase):
         missed = min(len(cluster1-set(government_ids)),
                      len(cluster1-set(mystery_ids)))
         self.failUnless(missed<2)
-
-    def beforeTearDown(self):
-        """Unregister the trigram tagger
-        """
-        gsm = getGlobalSiteManager()
-        gsm.unregisterUtility(self.tagger, IPOSTagger)
-        gsm.registerUtility(penn_treebank_tagger,IPOSTagger)
 
 def test_suite():
     from unittest import TestSuite, makeSuite

@@ -7,6 +7,7 @@
     <five:registerPackage package="." initialize=".initialize" />
 
     <include package=".adapters" />
+	<include package=".taggers" />
     <include package=".nltkutilities" />
     <include package=".classifiers" />
     <include package=".browser" />
@@ -27,4 +28,5 @@
       description="Content classification/clustering through language processing"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
+
 </configure>
