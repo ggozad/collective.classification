@@ -9,13 +9,13 @@
 
     <utility
         provides="..interfaces.IPOSTagger"
-        factory=".tagger.PennTreebankTagger"
+        component=".tagger.penn_treebank_tagger"
         name="collective.classification.taggers.PennTreebankTagger"
     />
 
     <utility
         provides="..interfaces.IPOSTagger"
-        factory=".tagger.TriGramTagger"
+        component=".tagger.trigram_tagger"
         name="collective.classification.taggers.TriGramTagger"
     />
 
