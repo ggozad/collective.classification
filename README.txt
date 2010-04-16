@@ -5,8 +5,8 @@ Introduction
 document classification. Currently it makes use of the
 `Natural Language Toolkit`_ and features a trainable document classifier based
 on Part Of Speech (POS) tagging, heavily influenced by `topia.termextract`_.
-This is not a finished product and is intended to be used for experimentation
-and development.
+This product is mostly intended to be used for experimentation and
+development.
 
   .. _`Natural Language Toolkit`: http://www.nltk.org
   .. _`topia.termextract`: http://pypi.python.org/pypi/topia.termextract/
@@ -17,10 +17,15 @@ What is this all about?
 It's mostly about having fun! The package is in a very early experimental
 stage and awaits eagerly contributions. You will get a good understanding of
 what works or not by looking at the tests. You might also be able to do some
-useful things with it: On a large site with a lot of content and tags (or
-subjects in the plone lingo) it might be difficult to assign tags to new
-content. In this case, a trained classifier could provide useful suggestions
-to an editor responsible for tagging content.
+useful things with it:
+
+    1) Term extraction can be performed to provide quick insight on what a
+    document is about.
+    2) On a large site with a lot of content and tags (or subjects in the
+    plone lingo) it might be difficult to assign tags to new content. In this
+    case, a trained classifier could provide useful suggestions to an editor
+    responsible for tagging content.
+    3) Clustering can help you organize unclassified content into groups.
 
 How it works?
 =============
@@ -58,29 +63,14 @@ installed (use macports on osx, or your package installer on linux). If nltk
 exists for your OS you might as well install that, otherwise it will be
 fetched when you run buildout.
 
-To get started you will simply need to add the package to your "eggs" and
-"zcml" sections, run buildout, restart your Plone instance and install the
+To get started you will simply need to add the package to your "eggs" section
+and run buildout, restart your Plone instance and install the
 "collective.classification" package using the quick-installer or via the
 "Add-on Products" section in "Site Setup".
 
 **WARNING: Upon first time installation linguistic data will be fetched from
-NLTK's repository and stored locally on your filesystem. It's about 225Mb, so
-not for the faint at disk space.**
-
-After installation, you should have a control panel entry to configure the product.
-
-  * By default the product uses the Pen TreeBank tagger who is not very
-    performant. It is a good idea to go to the term extractor configuration
-    and change it so as to use an N-Gram tagger. Among the brown corpus
-    categories choose the ones that seem to fit better with your content.
-    Train the tagger. This will look for *all* content and perform term
-    extraction. So go grab yourself something to drink, it will take a while.
-  * After training the tagger, train the classifier. This will look for any
-    content that is tagged and train the Bayes classifier.
-  * By default the classifier does get re-trained every time content is
-    added or updated. If you do not want this to happen automatically (that is
-    if you have a site with a lot of content, and things get slow), in the
-    control panel you can disable auto-training.
+NLTK's repository and stored locally on your filesystem. It's not big (about 400kb) but you need the plone user to have access to its "home". Running the
+tests will also fetch more data from nltk bringing the total to about 225Mb, so not for the faint at disk space.**
 
 How to use it?
 ==============

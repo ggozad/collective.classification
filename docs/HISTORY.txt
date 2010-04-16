@@ -1,6 +1,17 @@
 Changelog
 =========
-
+0.1b1
+-------------------
+- A lot of refactoring. Things got moved around and a lot of unnecessary code
+was removed. [ggozad]
+- We now use a Brill/Trigram/Affix tagger that is pre-trained. This
+allows collective.classification to ship without all the corpora. The user
+can still supply a different tagger if necessary. [ggozad]
+- The default nltk PenTreeBank tagger is no longer used. Too slow. [ggozad]
+- npextractor is no longer a local persistent utility. Opted for a global
+non-persisted object. [ggozad]
+- zope.lifecycle events are now used. [ggozad]
+- Gained compatibility with plone 4. [ggozad]
 0.1a3
 -------------------
 - Introduced IClassifiable interface. ATContentTypes are now adapted to it,
