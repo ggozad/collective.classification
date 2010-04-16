@@ -3,9 +3,14 @@
     i18n_domain="collective.classification">
 
     <utility
+        provides="..interfaces.ITokenizer"
+        factory=".tokenizer.NLTKTokenizer"
+    />
+
+    <utility
         provides="..interfaces.IPOSTagger"
         component=".english.english_tagger"
-		name="en"
+        name="en"
     />
 
 </configure>
