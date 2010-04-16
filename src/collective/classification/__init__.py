@@ -1,5 +1,5 @@
 from zope.i18nmessageid import MessageFactory
-from collective.classification.nltkutilities.downloader import downloadNLTKTokenizerData
+from collective.classification.data.downloader import downloadNLTKTokenizerData
 ClassificationMessageFactory = MessageFactory('collective.classification')
 downloadNLTKTokenizerData()
 
