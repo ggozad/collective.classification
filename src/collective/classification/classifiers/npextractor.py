@@ -7,7 +7,7 @@ from collective.classification.interfaces import IPOSTagger, ITokenizer, \
     ITermExtractor
 from collective.classification.classifiers.utils import singularize
 
-def _extractor_cachekey(method, self, text):
+def _extractor_cachekey(method, self, text, locale):
     return (text)
 
 def permissiveFilter(word, occur):
@@ -44,8 +44,13 @@ class NPExtractor(object):
     def extract(self,text,locale='en'):
         """
         """
-        tokenizer = getUtility(ITokenizer)
-        tagger = getUtility(IPOSTagger,name=locale)
+        try:
+            tokenizer = getUtility(ITokenizer,name=locale)
+            tagger = getUtility(IPOSTagger,name=locale)
+        except ComponentLookupError: #Non-supported language
+            return
+        
+            
         tokens = tokenizer.tokenize(text)
         tagged_terms = tagger.tag(tokens)
         terms = {}
@@ -67,6 +72,8 @@ class NPExtractor(object):
                     self._add(mterm,np_terms)
             for (term,tag,temp) in coll_tag:
                 if tag.startswith('N') and len(term)>1:
+                    #This should be generalized to normalize and be language
+                    # independent
                     if tag in ['NNS','NNPS']:
                         term = singularize(term)
                     self._add(term.lower(),terms)

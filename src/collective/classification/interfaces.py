@@ -36,7 +36,7 @@ class ITermExtractor(Interface):
     """Interface for term extractors
     """
 
-    def extract(text):
+    def extract(text,locale):
         """Extracts terms from text.
         """
 

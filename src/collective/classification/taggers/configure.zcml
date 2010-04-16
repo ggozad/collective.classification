@@ -5,6 +5,7 @@
     <utility
         provides="..interfaces.ITokenizer"
         component=".english.english_tokenizer"
+        name="en"
     />
 
     <utility

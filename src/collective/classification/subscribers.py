@@ -37,6 +37,7 @@ def updateClassifier(event):
         return    
     uid = obj.UID
     text = obj.text
+    locale = obj.language
     termstorage.addDocument(uid,text)
     subjects = obj.categories
     classifier.addTrainingDocument(uid,subjects)

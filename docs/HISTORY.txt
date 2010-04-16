@@ -2,6 +2,8 @@ Changelog
 =========
 0.1b1
 -------------------
+- Speed gain by not utilizing the PenTreeBank tagger anymore. [ggozad]
+- Added multi-lingual support. [ggozad]
 - A lot of refactoring. Things got moved around and a lot of unnecessary code
 was removed. [ggozad]
 - We now use a Brill/Trigram/Affix tagger that is pre-trained. This

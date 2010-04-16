@@ -19,7 +19,6 @@ class NounPhraseStorage(Persistent):
         """
         self.rankedNouns = PersistentMapping()
         self.rankedNPs = PersistentMapping()
-        self.extractor = getUtility(ITermExtractor)
         self.friendlyTypes = PersistentList()
 
     def _scoresToRanks(self,rankdict):
@@ -32,10 +31,11 @@ class NounPhraseStorage(Persistent):
             ranks_from_scores(scored_items)]
         return ranked_items
 
-    def addDocument(self,doc_id,text):
+    def addDocument(self,doc_id,text,locale='en'):
         """
         """
-        (noun_scores,noun_phrase_scores) = self.extractor.extract(text)
+        extractor = getUtility(ITermExtractor)
+        (noun_scores,noun_phrase_scores) = extractor.extract(text,locale)
         if noun_scores:
             ranked_nouns = self._scoresToRanks(noun_scores)
             self.rankedNouns[doc_id] = ranked_nouns

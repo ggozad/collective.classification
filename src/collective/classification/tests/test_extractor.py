@@ -17,7 +17,7 @@ class TestExtractor(ClassificationTestCase):
 
         text = readData('alicereview.txt')
         extractor = getUtility(ITermExtractor)
-        (simple_terms,np_terms)  =  extractor.extract(text)
+        (simple_terms,np_terms)  =  extractor.extract(text,locale="en")
 
         top_10_nouns = sorted(
             simple_terms.items(),
