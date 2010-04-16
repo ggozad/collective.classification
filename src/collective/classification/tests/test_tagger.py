@@ -20,7 +20,7 @@ class TestTaggers(ClassificationTestCase):
         self.tokens = tokenizer.tokenize(text)
         self.tagged_sents = brown.tagged_sents(categories='news')
     
-    def test_default_tagger(self):
+    def test_default_english_tagger(self):
         """Tests the default english tagger shipped with 
         collective.classification
         """
@@ -29,7 +29,20 @@ class TestTaggers(ClassificationTestCase):
             [('The', 'DT'), ('quick', 'JJ'), ('brown', 'VBN'), ('fox', 'NN'), 
              ('jumped', 'VBD'), ('over', 'IN'), ('the', 'DT'), ('lazy', 'NN'), 
              ('dog', 'NN'), ('.', '.')])
-    
+
+    def test_default_dutch_tagger(self):
+        """Tests the default english tagger shipped with 
+        collective.classification
+        """
+        tokenizer = getUtility(ITokenizer,name="nl")
+        text = "De snelle bruine vos sprong over de luie hond."
+        tokens = tokenizer.tokenize(text)
+        tagger = getUtility(IPOSTagger,name="nl")
+        self.failUnless(tagger.tag(tokens) == 
+            [('De', 'DET'), ('snelle', 'ADJ'), ('bruine', 'ADJ'), 
+             ('vos', 'N'), ('sprong', 'V'), ('over', 'P'), ('de', 'DET'), 
+             ('luie', 'NN'), ('hond', 'N'), ('.', '.')])
+
     def test_ngram_tagger(self):
         """Tests the n-gram tagger.
         """

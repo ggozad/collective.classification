@@ -33,7 +33,7 @@ class NPExtractor(object):
         """
         self.filter = DefaultFilter()
         # chunk determiners, adjectives and nouns
-        self.np_grammar = r"NP: {<JJ.*>*<NN.*>+}"
+        self.np_grammar = r"NP: {<JJ.*|ADJ>*<N.*>+}"
         self.np_finder = RegexpParser(self.np_grammar)
 
     def _add(self,norm, terms):

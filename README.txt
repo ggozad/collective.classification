@@ -6,7 +6,7 @@ document classification. Currently it makes use of the
 `Natural Language Toolkit`_ and features a trainable document classifier based
 on Part Of Speech (POS) tagging, heavily influenced by `topia.termextract`_.
 This product is mostly intended to be used for experimentation and
-development.
+development. Currently english and dutch are supported.
 
   .. _`Natural Language Toolkit`: http://www.nltk.org
   .. _`topia.termextract`: http://pypi.python.org/pypi/topia.termextract/
