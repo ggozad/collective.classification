@@ -20,3 +20,9 @@ def downloadNLTKPenTreeBank():
     logger = logging.getLogger('collective.classification')
     logger.info("Downloading NLTK's Treebank POS Tagger (Max entropy)")
     download('maxent_treebank_pos_tagger')
+    
+def downloadNLTKAlpinoCorpus():
+    logger = logging.getLogger('collective.classification')
+    logger.info("Downloading NLTK's Alpino corpus")
+    download('alpino')
+    

@@ -19,3 +19,16 @@ def english():
     tagger = BrillTrigramTagger()
     tagger.train(conll2000_sents)
     dump(tagger.tagger,"english_tagger.pickle")
+
+def dutch():
+    """
+    """
+    from collective.classification.data.downloader import \
+        downloadNLTKAlpinoCorpus
+    downloadNLTKAlpinoCorpus()
+    from nltk.corpus import alpino
+    alpino_sents = alpino.tagged_sents(simplify_tags=True)
+    print alpino_sents[1]
+    tagger = BrillTrigramTagger()
+    tagger.train(alpino_sents)
+    dump(tagger.tagger,"dutch_tagger.pickle")
