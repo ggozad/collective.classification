@@ -4,7 +4,7 @@
 
     <utility
         provides="..interfaces.ITokenizer"
-        factory=".tokenizer.NLTKTokenizer"
+        component=".english.english_tokenizer"
     />
 
     <utility
