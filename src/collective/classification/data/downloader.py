@@ -6,6 +6,11 @@ def downloadNLTKTokenizerData():
     logger.info("Downloading NLTK's Punkt Tokenizer Models")
     download('punkt')
 
+def downloadNLTKConll2000Corpus():
+    logger = logging.getLogger('collective.classification')
+    logger.info("Downloading NLTK's conll2000 corpus")
+    download('conll2000')
+
 def downloadNLTKBrownCorpus():
     logger = logging.getLogger('collective.classification')
     logger.info("Downloading NLTK's Brown corpus")
