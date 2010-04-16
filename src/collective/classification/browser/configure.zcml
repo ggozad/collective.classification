@@ -32,13 +32,6 @@
     permission="cmf.ManagePortal"
   />
 
-  <browser:page
-    for="*"
-    name="samplecontent"
-    class=".samplecontent.SampleContentView"
-    permission="cmf.ManagePortal"
-  />
-
   <!--Control panel-->
   <browser:page
     name="classifier-settings-controlpanel"

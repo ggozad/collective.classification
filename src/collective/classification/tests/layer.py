@@ -4,6 +4,8 @@ from Products.Five import fiveconfigure
 from Testing.ZopeTestCase import app, close, installPackage
 from Products.CMFCore.utils import getToolByName
 from Products.PloneTestCase.layer import PloneSite
+from collective.classification.nltkutilities.downloader import \
+    downloadNLTKBrownCorpus, downloadNLTKPenTreeBank
 
 class ClassificationLayer(PloneSite):
     @classmethod
@@ -22,6 +24,8 @@ class ClassificationLayer(PloneSite):
         # and commit the changes
         commit()
         close(root)
+        downloadNLTKPenTreeBank()
+        downloadNLTKBrownCorpus()
 
     @classmethod
     def tearDown(cls):

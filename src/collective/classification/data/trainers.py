@@ -43,16 +43,26 @@ class BrillTrainer(object):
         trigram_fallback = TrigramTagger(sentence_list,
             backoff=bigram_fallback)
         templates = [
-            brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,1)),
-            brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (2,2)),
-            brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,2)),
-            brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,3)),
-            brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,1)),
-            brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (2,2)),
-            brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,2)),
-            brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,3)),
-            brill.ProximateTokensTemplate(brill.ProximateTagsRule, (-1, -1), (1,1)),
-            brill.ProximateTokensTemplate(brill.ProximateWordsRule, (-1, -1), (1,1))
+            brill.SymmetricProximateTokensTemplate(
+                brill.ProximateTagsRule, (1,1)),
+            brill.SymmetricProximateTokensTemplate(
+                brill.ProximateTagsRule, (2,2)),
+            brill.SymmetricProximateTokensTemplate(
+                brill.ProximateTagsRule, (1,2)),
+            brill.SymmetricProximateTokensTemplate(
+                brill.ProximateTagsRule, (1,3)),
+            brill.SymmetricProximateTokensTemplate(
+                brill.ProximateWordsRule, (1,1)),
+            brill.SymmetricProximateTokensTemplate(
+                brill.ProximateWordsRule, (2,2)),
+            brill.SymmetricProximateTokensTemplate(
+                brill.ProximateWordsRule, (1,2)),
+            brill.SymmetricProximateTokensTemplate(
+                brill.ProximateWordsRule, (1,3)),
+            brill.ProximateTokensTemplate(
+                brill.ProximateTagsRule, (-1, -1), (1,1)),
+            brill.ProximateTokensTemplate(
+                brill.ProximateWordsRule, (-1, -1), (1,1))
         ]
         trainer = brill.FastBrillTaggerTrainer(trigram_fallback, templates)
         self.tagger = trainer.train(sentence_list,max_rules=100,min_score=3)

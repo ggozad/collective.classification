@@ -1,7 +1,7 @@
 from zope.i18nmessageid import MessageFactory
-from collective.classification.nltkutilities.downloader import downloadNLTKData
+from collective.classification.nltkutilities.downloader import downloadNLTKTokenizerData
 ClassificationMessageFactory = MessageFactory('collective.classification')
-downloadNLTKData()
+downloadNLTKTokenizerData()
 
 def initialize(context):
     """Initializer called when used as a Zope 2 product."""
