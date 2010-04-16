@@ -1,7 +1,7 @@
 from zope.component import getUtility
 from collective.classification.interfaces import ITokenizer, IPOSTagger
 from collective.classification.tests.base import ClassificationTestCase
-from collective.classification.nltkutilities.tagger import TriGramTagger, \
+from collective.classification.taggers.taggers import TriGramTagger, \
     PennTreebankTagger
 from nltk.corpus import brown
 
