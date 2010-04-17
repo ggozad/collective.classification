@@ -4,6 +4,7 @@ Changelog
 -------------------
 - Speed gain by not utilizing the PenTreeBank tagger anymore. [ggozad]
 - Added multi-lingual support, starting with dutch! [ggozad]
+- No need to download all the coprora anymore. [ggozad]
 - A lot of refactoring. Things got moved around and a lot of unnecessary code
 was removed. [ggozad]
 - We now use a Brill/Trigram/Affix tagger that is pre-trained. This
