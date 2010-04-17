@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="collective.classification">
+
+    <five:registerPackage package="." initialize=".initialize" />
+
+    <include package=".adapters" />
+    <include package=".taggers" />
+    <include package=".classifiers" />
+    <include package=".browser" />
+
+    <subscriber for="zope.app.container.interfaces.IObjectAddedEvent"
+                handler=".subscribers.updateClassifier"/>
+
+    <subscriber for="zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+                handler=".subscribers.updateClassifier"/>
+
+    <subscriber for="zope.app.container.interfaces.IObjectRemovedEvent"
+                handler=".subscribers.removeFromClassifier"/>
+
+    <genericsetup:registerProfile
+      name="default"
+      title="collective.classification"
+      directory="profiles/default"
+      description="Content classification/clustering through language processing"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+</configure>

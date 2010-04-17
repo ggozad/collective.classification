@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1a3'
+version = '0.1b1'
 
 setup(name='collective.classification',
       version=version,
@@ -29,10 +29,13 @@ setup(name='collective.classification',
       author='Yiorgis Gozadinos',
       author_email='ggozad@jarn.com',
       url='http://github.org/ggozad/collective.classification',
+      download_url = 'http://pypi.python.org/pypi/collective.classification/',
       license='GPL',
-      packages=find_packages(exclude=['ez_setup']),
+      packages=find_packages('src'),
+      package_dir = {'': 'src'},
       namespace_packages=['collective'],
       include_package_data=True,
+      platforms = 'Any',
       zip_safe=False,
       install_requires=[
           'setuptools',

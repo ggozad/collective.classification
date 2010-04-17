@@ -1,0 +1,48 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="collective.classification">
+
+  <browser:page
+    for="Products.ATContentTypes.interface.IATContentType"
+    name="suggest-categories"
+    class=".suggestcategories.SuggestCategoriesView"
+    permission="cmf.ModifyPortalContent"
+  />
+
+  <browser:page
+    for="Products.ATContentTypes.interface.IATContentType"
+    name="terms"
+    class=".terms.TermsView"
+    template="terms.pt"
+    permission="zope2.View"
+  />
+
+  <browser:page
+    for="*"
+    name="clusterize"
+    class=".clusterize.ClusterizeView"
+    permission="cmf.ManagePortal"
+  />
+
+  <browser:page
+    for="*"
+    name="classification-stats"
+    class=".classificationstats.ClassificationStatsView"
+    permission="cmf.ManagePortal"
+  />
+
+  <!--Control panel-->
+  <browser:page
+    name="classifier-settings-controlpanel"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    class=".controlpanel.ClassifierSettings"
+    permission="cmf.ManagePortal"
+  />
+  <adapter factory=".controlpanel.ClassifierSettingsAdapter"/>
+
+  <browser:resourceDirectory
+    name="classification.resources"
+    directory="resources"
+  />
+</configure>

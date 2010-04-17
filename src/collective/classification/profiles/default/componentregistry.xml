@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<componentregistry>
+  <utilities>
+
+    <utility
+      interface="collective.classification.interfaces.INounPhraseStorage"
+      factory="collective.classification.classifiers.npstorage.NounPhraseStorage"
+    />
+
+    <utility
+       interface="collective.classification.interfaces.IContentClassifier"
+       factory="collective.classification.classifiers.nounbayesclassifier.NounBayesClassifier"
+     />
+
+  </utilities>
+</componentregistry>

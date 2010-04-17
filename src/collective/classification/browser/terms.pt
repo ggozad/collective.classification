@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+xmlns:tal="http://xml.zope.org/namespaces/tal"
+xmlns:metal="http://xml.zope.org/namespaces/metal"
+xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+metal:use-macro="here/main_template/macros/master"
+i18n:domain="collective.classification">
+  <body>
+    <metal:main metal:fill-slot="main">
+    <fieldset tal:define="noun_terms view/nounTerms" tal:condition="noun_terms">
+        <legend i18n:translate="label_noun_terms">Noun terms</legend>
+        <table class="listing">
+            <thead>
+                <tr>
+                    <th i18n:translate="label_term">Term</th>
+                    <th i18n:translate="label_rank">Rank</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tal:terms tal:repeat="term noun_terms">
+                    <tr tal:define="oddrow repeat/term/odd;"
+                        tal:attributes="class python:oddrow and 'odd' or 'even'">
+                        <td tal:content="python: term[0]"/>
+                        <td tal:content="python: term[1]"/>
+                    </tr>
+                </tal:terms>
+            </tbody>
+        </table>
+    </fieldset>
+    <fieldset tal:define="np_terms view/npTerms" tal:condition="np_terms">
+        <legend i18n:translate="label_np_terms">Noun-phrase terms</legend>
+        <table class="listing">
+            <thead>
+                <tr>
+                    <th i18n:translate="label_term">Term</th>
+                    <th i18n:translate="label_rank">Rank</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tal:terms tal:repeat="term np_terms">
+                    <tr tal:define="oddrow repeat/term/odd;"
+                        tal:attributes="class python:oddrow and 'odd' or 'even'">
+                        <td tal:content="python: term[0]"/>
+                        <td tal:content="python: term[1]"/>
+                    </tr>
+                </tal:terms>
+            </tbody>
+        </table>
+    </fieldset>
+    </metal:main>
+  </body>
+</html>

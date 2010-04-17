@@ -1,0 +1,118 @@
+================
+Integration test
+================
+
+Here, we'll test the classifier using a sample of the Brown corpus. The Brown
+corpus has a list of POS-tagged english articles which are also conveniently
+categorized. The test consists of training the classifier using 20 documents
+from each of the categories 'news','editorial' and 'hobbies'. Then we'll ask
+the classifier to classify 5 more documents from each category and see what
+happens.
+
+We can now start adding documents, starting with the first 20 documents in the
+Brown corpus categorized as 'news'.
+
+    >>> from nltk.corpus import brown
+    >>> for articleid in brown.fileids(categories='news')[:20]:
+    ...     text = " ".join(brown.words(articleid))
+    ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    text=text,
+    ...                                    subject='news')
+
+Continuing with 20 documents categorized as 'editorial':
+
+    >>> for articleid in brown.fileids(categories='editorial')[:20]:
+    ...     text = " ".join(brown.words(articleid))
+    ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    text=text,
+    ...                                    subject='editorial')
+
+And finally 20 documents categorized as 'hobbies':
+
+    >>> for articleid in brown.fileids(categories='hobbies')[:20]:
+    ...     text = " ".join(brown.words(articleid))
+    ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    text=text,
+    ...                                    subject='hobbies')
+
+All these documents should have been parsed and present in the term storage:
+
+    >>> from zope.component import getUtility
+    >>> from collective.classification.interfaces import INounPhraseStorage
+    >>> npstorage = getUtility(INounPhraseStorage)
+    >>> len(npstorage.rankedNouns)
+    60
+
+Let's see what terms we get for the first 'editorial' content:
+
+    >>> browser = self.getBrowser()
+    >>> browser.open(self.folder.absolute_url()+'/cb01/@@terms')
+    >>> browser.contents
+    '...state...year...budget...war...danger...nuclear war...united states...'
+
+Nuclear war and United States? Scary stuff... Time to train the classifier:
+
+    >>> from collective.classification.interfaces import IContentClassifier
+    >>> classifier = getUtility(IContentClassifier)
+    >>> classifier.train()
+    >>> classifier.tags()
+    ['editorial', 'hobbies', 'news']
+
+For a start, the classifier should be pretty certain when asked about text
+already classified:
+
+    >>> browser.open(self.folder.absolute_url()+'/ca01/@@suggest-categories')
+    >>> browser.contents
+    '...news 100.0%...editorial 0.0%...hobbies 0.0%...'
+
+So let's see where this gets us, by asking the classifier to categorize 5 more
+documents for which we know the category. We will use the classifier's
+functions directly this time instead of adding the documents to plone and
+calling the *@@suggest-categories* view. 'News' first:
+
+    >>> classificationResult = []
+    >>> for articleid in brown.fileids(categories='news')[20:25]:
+    ...     text = " ".join(brown.words(articleid))
+    ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    text=text)
+    ...     uid = self.folder[id].UID()
+    ...     classificationResult.append(classifier.classify(uid))
+    >>> classificationResult
+    ['editorial', 'news', 'news', 'news', 'news']
+
+Let's see how we do with 'editorials'
+
+    >>> classificationResult = []
+    >>> for articleid in brown.fileids(categories='editorial')[20:25]:
+    ...     text = " ".join(brown.words(articleid))
+    ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    text=text)
+    ...     uid = self.folder[id].UID()
+    ...     classificationResult.append(classifier.classify(uid))
+    >>> classificationResult
+    ['editorial', 'editorial', 'editorial', 'editorial', 'editorial']
+
+That's excellent! What about 'hobbies'?
+
+    >>> classificationResult = []
+    >>> for articleid in brown.fileids(categories='hobbies')[20:25]:
+    ...     text = " ".join(brown.words(articleid))
+    ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    text=text)
+    ...     uid = self.folder[id].UID()
+    ...     classificationResult.append(classifier.classify(uid))
+    >>> classificationResult
+    ['hobbies', 'hobbies', 'hobbies', 'hobbies', 'editorial']
+
+Not so bad! Overall: we got 13/15 right...
+
+What about stats? We can call the *@@stats* view to find out...
+
+    >>> self.setRoles('Manager')
+    >>> browser.open(self.folder.absolute_url()+'/@@classification-stats')
+    >>> browser.contents
+    '...state...True...editorial:hobbies...5.0...'
+
+which basically tells us, that if the word 'state' is present the classifier
+gives 5 to 1 for the content to be in the 'editorial' category rather than the
+'hobbies' category
