@@ -1,11 +1,10 @@
 from zope.interface import implements
 from zope.component import getUtility
+from zope.component.interfaces import ComponentLookupError
 from plone.memoize import ram
-from nltk import RegexpParser
 from nltk.chunk.util import tree2conlltags
 from collective.classification.interfaces import IPOSTagger, ITokenizer, \
     ITermExtractor
-from collective.classification.classifiers.utils import singularize
 
 def _extractor_cachekey(method, self, text, locale):
     return (text)
@@ -32,9 +31,6 @@ class NPExtractor(object):
         """
         """
         self.filter = DefaultFilter()
-        # chunk determiners, adjectives and nouns
-        self.np_grammar = r"NP: {<JJ.*|ADJ>*<N.*>+}"
-        self.np_finder = RegexpParser(self.np_grammar)
 
     def _add(self,norm, terms):
         terms.setdefault(norm, 0)
@@ -57,7 +53,7 @@ class NPExtractor(object):
         np_terms = {}
         noun_phrases = [
             node
-            for node in self.np_finder.parse(tagged_terms)
+            for node in tagger.np_grammar.parse(tagged_terms)
             if not isinstance(node,tuple)]
         for node in noun_phrases:
             coll_tag = tree2conlltags(node)
@@ -72,10 +68,7 @@ class NPExtractor(object):
                     self._add(mterm,np_terms)
             for (term,tag,temp) in coll_tag:
                 if tag.startswith('N') and len(term)>1:
-                    #This should be generalized to normalize and be language
-                    # independent
-                    if tag in ['NNS','NNPS']:
-                        term = singularize(term)
+                    term = tagger.normalize(term,tag)
                     self._add(term.lower(),terms)
         for term in terms.keys():
             if not self.filter(term,terms[term]):

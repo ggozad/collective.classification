@@ -22,15 +22,17 @@ class ITokenizer(Interface):
 class IPOSTagger(Interface):
     """Interface of Parts Of Speech taggers.
     """
-    def train(tagged_sentences):
-        """Trains the tagger if necessary. Tagged sentences is a list of
-        sentences where each sentence is a list of tuples of the form
-        (word,tag)
-        """
+
+    np_grammar = Attribute("""A regular expression for Noun-phrase identification""")
+
     def tag(tokens):
         """Characterizes words as POS.
         Returns a list of tuples (word,POS)
         """
+
+    def normalize(word,tag):
+        """Return the normal form of a word if appropriate.
+        """ 
 
 class ITermExtractor(Interface):
     """Interface for term extractors

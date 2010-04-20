@@ -4,25 +4,25 @@
 
     <utility
         provides="..interfaces.ITokenizer"
-        component=".languagespecific.english_tokenizer"
+        component=".english.english_tokenizer"
+        name="en"
+    />
+
+    <utility
+        provides="..interfaces.IPOSTagger"
+        component=".english.english_tagger"
         name="en"
     />
 
     <utility
         provides="..interfaces.ITokenizer"
-        component=".languagespecific.dutch_tokenizer"
+        component=".dutch.dutch_tokenizer"
         name="nl"
     />
 
     <utility
         provides="..interfaces.IPOSTagger"
-        component=".languagespecific.english_tagger"
-        name="en"
-    />
-
-    <utility
-        provides="..interfaces.IPOSTagger"
-        component=".languagespecific.dutch_tagger"
+        component=".dutch.dutch_tagger"
         name="nl"
     />
 
