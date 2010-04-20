@@ -29,6 +29,8 @@ class TestTaggers(ClassificationTestCase):
             [('The', 'DT'), ('quick', 'JJ'), ('brown', 'VBN'), ('fox', 'NN'), 
              ('jumped', 'VBD'), ('over', 'IN'), ('the', 'DT'), ('lazy', 'NN'), 
              ('dog', 'NN'), ('.', '.')])
+        # Test normalization
+        self.failUnless(tagger.normalize("axes","NNS") == "axis")
 
     def test_default_dutch_tagger(self):
         """Tests the default english tagger shipped with 
