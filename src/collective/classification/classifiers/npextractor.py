@@ -45,8 +45,6 @@ class NPExtractor(object):
             tagger = getUtility(IPOSTagger,name=locale)
         except ComponentLookupError: #Non-supported language
             return
-        
-            
         tokens = tokenizer.tokenize(text)
         tagged_terms = tagger.tag(tokens)
         terms = {}
