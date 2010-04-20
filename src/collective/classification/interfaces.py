@@ -30,7 +30,7 @@ class IPOSTagger(Interface):
         Returns a list of tuples (word,POS)
         """
 
-    def normalize(word,tag):
+    def normalize(term,tag):
         """Return the normal form of a word if appropriate.
         """ 
 

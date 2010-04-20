@@ -35,9 +35,9 @@ class DutchTagger(object):
         """
         return self.tagger.tag(words)
 
-    def normalize(self,word,tag):
+    def normalize(self,term,tag):
         """
         """
-        return word
+        return term
 
 dutch_tagger = DutchTagger()

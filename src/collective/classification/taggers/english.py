@@ -102,11 +102,11 @@ class EnglishTagger(object):
         """
         return self.tagger.tag(words)
 
-    def normalize(self,word,tag):
+    def normalize(self,term,tag):
         """
         """
         if tag in ['NNS','NNPS']:
-            word = singularize(word)
-        return word
+            term = singularize(term)
+        return term
 
 english_tagger = EnglishTagger()
