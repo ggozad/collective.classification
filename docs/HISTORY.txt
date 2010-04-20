@@ -1,5 +1,9 @@
 Changelog
 =========
+0.1b2
+-------------------
+- Noun-phrase grammar and normalization is now a property of the
+  language-dependent tagger. [ggozad]
 
 0.1b1
 -------------------
