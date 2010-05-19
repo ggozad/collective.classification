@@ -2,6 +2,8 @@ Changelog
 =========
 0.1b2
 -------------------
+- Using BTrees instead of PersistenDict. Should make writes to ZODB lighter. 
+  [ggozad]
 - Noun-phrase grammar and normalization is now a property of the
   language-dependent tagger. [ggozad]
 
