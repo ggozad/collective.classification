@@ -1,5 +1,6 @@
 from zope.interface import Interface, Attribute
 
+
 class IClassifiable(Interface):
     """An interface for objects on which we can perform term extraction and
     classification.
@@ -7,8 +8,10 @@ class IClassifiable(Interface):
 
     UID = Attribute("""A unique identifier of the object.""")
     text = Attribute("""The text on which we perform term extraction.""")
-    categories = Attribute("""The categories with which we train a classifier.""")
+    categories = Attribute(
+        """The categories with which we train a classifier.""")
     language = Attribute("""The language of the content item.""")
+
 
 class ITokenizer(Interface):
     """Marker interface for tokenizers.
@@ -19,36 +22,42 @@ class ITokenizer(Interface):
         Returns the list of tokens
         """
 
+
 class IPOSTagger(Interface):
     """Interface of Parts Of Speech taggers.
     """
 
-    np_grammar = Attribute("""A regular expression for Noun-phrase identification""")
+    np_grammar = Attribute(
+        """A regular expression for Noun-phraseidentification""")
 
     def tag(tokens):
         """Characterizes words as POS.
         Returns a list of tuples (word,POS)
         """
 
-    def normalize(term,tag):
+    def normalize(term, tag):
         """Return the normal form of a word if appropriate.
-        """ 
+        """
+
 
 class ITermExtractor(Interface):
     """Interface for term extractors
     """
 
-    def extract(text,locale):
+    def extract(text, locale):
         """Extracts terms from text.
         """
+
 
 class INounPhraseStorage(Interface):
     """Marker interface for our noun-phrase storage.
     """
 
+
 class IContentClassifier(Interface):
     """Interface for classifiers
     """
+
 
 class IContentClusterer(Interface):
     """Interface for clusterers

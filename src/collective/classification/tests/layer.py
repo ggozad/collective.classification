@@ -4,16 +4,18 @@ from Products.Five import fiveconfigure
 from Testing.ZopeTestCase import app, close, installPackage
 from Products.CMFCore.utils import getToolByName
 from Products.PloneTestCase.layer import PloneSite
-from collective.classification.data import downloader 
+from collective.classification.data import downloader
+
 
 class ClassificationLayer(PloneSite):
+
     @classmethod
     def setUp(cls):
         fiveconfigure.debug_mode = True
         import collective.classification
         zcml.load_config('configure.zcml', collective.classification)
-        fiveconfigure.debug_mode = False    
-        installPackage('collective.classification',quiet=True)
+        fiveconfigure.debug_mode = False
+        installPackage('collective.classification', quiet=True)
         # import the default profile
         root = app()
         portal = root.plone

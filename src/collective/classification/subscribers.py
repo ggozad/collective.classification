@@ -1,32 +1,35 @@
 from zope.component import getUtility, queryAdapter
 from zope.component.interfaces import ComponentLookupError
 from Products.ATContentTypes.interface import IATContentType
-from collective.classification.interfaces import IContentClassifier, IClassifiable
+from collective.classification.interfaces import IContentClassifier,\
+    IClassifiable
 from collective.classification.interfaces import INounPhraseStorage
+
 
 def _wrapClassifiable(obj):
     """Looks whether the object is adaptable to IClassifiable,
     and returns the wrapper"""
 
     if not IClassifiable.providedBy(obj):
-        wrapper = queryAdapter(obj,IClassifiable)
+        wrapper = queryAdapter(obj, IClassifiable)
         if wrapper:
             obj = wrapper
         else:
             return None
     return obj
 
+
 def updateClassifier(event):
     """
     """
     try:
-        termstorage = getUtility(INounPhraseStorage)    
+        termstorage = getUtility(INounPhraseStorage)
         classifier = getUtility(IContentClassifier)
     except ComponentLookupError:
         # The local utilites have not been registered, so what's the point?
         return
 
-    obj = _wrapClassifiable(event.object)    
+    obj = _wrapClassifiable(event.object)
     # If it is not IClassifiable abort
     if not obj:
         return
@@ -34,19 +37,20 @@ def updateClassifier(event):
     if IATContentType.providedBy(event.object) and \
         termstorage.friendlyTypes and \
         event.object.portal_type not in termstorage.friendlyTypes:
-        return    
+        return
     uid = obj.UID
     text = obj.text
     locale = obj.language
-    termstorage.addDocument(uid,text,locale)
+    termstorage.addDocument(uid, text, locale)
     subjects = obj.categories
-    classifier.addTrainingDocument(uid,subjects)
+    classifier.addTrainingDocument(uid, subjects)
     if classifier.trainAfterUpdate:
         classifier.train()
 
+
 def removeFromClassifier(event):
     try:
-        termstorage = getUtility(INounPhraseStorage)    
+        termstorage = getUtility(INounPhraseStorage)
         classifier = getUtility(IContentClassifier)
     except ComponentLookupError:
         # The local utilites have not been registered, so what's the point?

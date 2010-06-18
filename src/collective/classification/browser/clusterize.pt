@@ -20,7 +20,7 @@ i18n:domain="collective.classification">
                                 <dd>
                                     <a href="#"
                                         tal:attributes="href python:item[0];
-                                            title python:item[2]"
+                                                        title python:item[2]"
                                         tal:content="python:item[1]">
                                         Title
                                     </a>

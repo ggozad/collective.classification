@@ -7,10 +7,9 @@ from Products.CMFCore.utils import getToolByName
 from collective.classification import ClassificationMessageFactory as _
 from collective.classification.classifiers.clustering import KMeans
 
+
 class IClusterize(Interface):
-    """
-    """
-    
+
     no_clusters = schema.Int(
         title = _(u"Number of clusters"),
         description = _(u""),
@@ -31,9 +30,8 @@ class IClusterize(Interface):
         required = True,
     )
 
+
 class ClusterizeView(formbase.PageForm):
-    """
-    """
 
     form_fields = form.Fields(IClusterize)
     template = ViewPageTemplateFile('clusterize.pt')
@@ -42,7 +40,7 @@ class ClusterizeView(formbase.PageForm):
     def action_clusterize(self, action, data):
         """
         """
-        catalog = getToolByName(self.context,'portal_catalog')
+        catalog = getToolByName(self.context, 'portal_catalog')
         clusterer = KMeans()
         clusters = clusterer.clusterize(
             data['no_clusters'],

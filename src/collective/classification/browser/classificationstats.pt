@@ -8,12 +8,15 @@ i18n:domain="collective.classification">
     <metal:main metal:fill-slot="main">
       <tal:main-macro metal:define-macro="main">
         <div metal:use-macro="context/@@base-pageform.html/macros/form">
-            <div metal:fill-slot="extra_info" tal:define="informativeFeatures view/informativeFeatures | nothing">
+            <div metal:fill-slot="extra_info" 
+                 tal:define="informativeFeatures view/informativeFeatures | nothing">
                 <label i18n:translate="label_no_parsed_docs">Parsed documents:</label>
                 <span tal:content="view/parsedDocs"/><br/>
-                <label i18n:translate="label_no_classified_docs">Classified documents:</label>
+                <label i18n:translate="label_no_classified_docs">
+                  Classified documents:</label>
                 <span tal:content="view/classifierDocs"/><br/>
-                <label i18n:translate="label_informate_features">Informative features:</label>
+                <label i18n:translate="label_informate_features">
+                  Informative features:</label>
                 <p class="discreet">
                     In the table below, we show the most valuable terms for
                     the classification. "Presence" indicates whether the noun
@@ -26,7 +29,6 @@ i18n:domain="collective.classification">
                     classified as "vegetable" instead of "fruit"".
                     NOTE: SOMEONE PLEASE WRITE THIS IN PROPER ENGLISH ;)
                 </p>
-
                 <table class="listing" tal:condition="informativeFeatures">
                     <thead>
                         <tr>

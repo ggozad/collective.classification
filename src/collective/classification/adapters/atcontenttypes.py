@@ -1,8 +1,10 @@
-from plone.intelligenttext.transforms import convertHtmlToWebIntelligentPlainText
+from plone.intelligenttext.transforms import\
+    convertHtmlToWebIntelligentPlainText
 from zope.interface import implements
 from zope.component import adapts
 from Products.ATContentTypes.interface import IATContentType
 from collective.classification.interfaces import IClassifiable
+
 
 class ATClassifiableAdapter(object):
     """Adapts AT-based content to IClassifiable.
@@ -31,12 +33,12 @@ class ATClassifiableAdapter(object):
         """
         return list(self.context.Subject())
 
-    def setcategories(self,value):
+    def setcategories(self, value):
         """
         """
-        return self.context.setSubject(value)    
+        return self.context.setSubject(value)
 
-    categories = property(getcategories,setcategories)
+    categories = property(getcategories, setcategories)
 
     def getlanguage(self):
         """

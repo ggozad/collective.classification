@@ -3,21 +3,24 @@ from collective.classification.interfaces import INounPhraseStorage
 from zope.component import getUtility
 from collective.classification.tests.base import ClassificationTestCase
 
+
 class TestSubscribers(ClassificationTestCase):
     """Tests the subscribers
     """
+
     def test_subscribers(self):
         """Creates, modifies and deletes a document in order to test the
         subscribers.
         """
+
         npstorage = getUtility(INounPhraseStorage)
         classifier = getUtility(IContentClassifier)
         text = """
         This is a boring test. A boring test? Yes a boring test!
         """
-        #Let's create a document. This has enough text to be added to the 
+        #Let's create a document. This has enough text to be added to the
         # storage, and a subject so it will be added to the classifier.
-        self.folder.invokeFactory('Document','test',
+        self.folder.invokeFactory('Document', 'test',
                                   title="test",
                                   text=text,
                                   subject="A Subject")
@@ -30,6 +33,7 @@ class TestSubscribers(ClassificationTestCase):
         del self.folder['test']
         self.failUnless(len(npstorage.rankedNouns) == 0)
         self.failUnless(len(classifier.trainingDocs) == 0)
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
