@@ -1,4 +1,4 @@
-from zope.interface import implements,Interface
+from zope.interface import implements, Interface
 from zope.component import adapts, getUtility, getMultiAdapter
 from zope.app.schema.vocabulary import IVocabularyFactory
 from zope.formlib import form
@@ -23,16 +23,14 @@ class IClassifierSettingsSchema(Interface):
         description=_(u"Indicates how many nouns to keep when building the" \
             "list of most frequent nouns in the text."),
         default=20,
-        required=True
-    )
+        required=True)
 
     train_after_update = schema.Bool(
         title=_(u"Train after update"),
         description=_(u"Enabling this will trigger training the classifier " \
             "every time tagged content is added, modified or deleted. " \
             "Disabling it means you will have to periodically manually " \
-            "retrain the classifier.")
-    )
+            "retrain the classifier."))
 
     friendly_types = schema.List(
         required = False,
@@ -40,8 +38,7 @@ class IClassifierSettingsSchema(Interface):
         description = _(u"Restrict the content types parsed. Leaving this " \
             "empty will include all user-friendly content types."),
         value_type = schema.Choice(vocabulary =
-            'plone.app.vocabularies.ReallyUserFriendlyTypes'),
-    )
+            'plone.app.vocabularies.ReallyUserFriendlyTypes'))
 
 
 class ClassifierSettingsAdapter(SchemaAdapterBase):
@@ -59,15 +56,15 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
     def get_no_noun_ranks(self):
         return self.classifier.noNounRanksToKeep
 
-    def set_no_noun_ranks(self,no_ranks):
+    def set_no_noun_ranks(self, no_ranks):
         self.classifier.noNounRanksToKeep = no_ranks
 
-    no_noun_ranks = property(get_no_noun_ranks,set_no_noun_ranks)
+    no_noun_ranks = property(get_no_noun_ranks, set_no_noun_ranks)
 
     def get_train_after_update(self):
         return self.classifier.trainAfterUpdate
 
-    def set_train_after_update(self,train_after_update):
+    def set_train_after_update(self, train_after_update):
         self.classifier.trainAfterUpdate = train_after_update
 
     train_after_update = property(get_train_after_update,
@@ -76,7 +73,7 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
     def get_friendly_types(self):
         return self.storage.friendlyTypes
 
-    def set_friendly_types(self,friendly_types):
+    def set_friendly_types(self, friendly_types):
         self.storage.friendlyTypes = friendly_types
 
     friendly_types = property(get_friendly_types,
@@ -87,29 +84,27 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
 
     no_documents = property(get_no_documents)
 
+
 class ClassifierSettings(ControlPanelForm):
-    """
-    """
 
     form_fields = form.FormFields(IClassifierSettingsSchema)
-
     label = _("Classification settings")
     description = _("Settings for collective.classification.")
     form_name = _("Classification settings")
-    
+
     @form.action(_(u"Save"))
-    def save_action(self,action,data):
+    def save_action(self, action, data):
         form.applyChanges(self.context, self.form_fields, data, self.adapters)
         self.status = _(u"Changes saved. You will need to reparse the " \
             "content and then retrain the classifier.")
 
     @form.action(_(u"Reparse all documents"))
-    def retrain_termextractor_action(self,action,data):        
+    def retrain_termextractor_action(self, action, data):
         storage = getUtility(INounPhraseStorage)
         storage.clear()
 
         catalog = getToolByName(self.context, 'portal_catalog')
-        types_to_search = storage.friendlyTypes or \
+        types_to_search = storage.friendlyTypes or\
             self._friendlyContentTypes()
         trainContent = catalog.searchResults(
             portal_type=types_to_search)
@@ -120,12 +115,12 @@ class ClassifierSettings(ControlPanelForm):
             uid = obj.UID()
             text = convertHtmlToWebIntelligentPlainText(
                 obj.SearchableText())
-            storage.addDocument(uid,text)
+            storage.addDocument(uid, text)
         self.status = _(u"Documents reparsed. You will need to re-train the "\
                          "classifier as well.")
 
     @form.action(_(u"Retrain classifier"))
-    def retrain_classifier_action(self,action,data):
+    def retrain_classifier_action(self, action, data):
         storage = getUtility(INounPhraseStorage)
         classifier = getUtility(IContentClassifier)
         classifier.clear()
@@ -133,7 +128,7 @@ class ClassifierSettings(ControlPanelForm):
         types_to_search = storage.friendlyTypes or \
             self._friendlyContentTypes()
         trainContent = catalog.searchResults(
-            portal_type=types_to_search)        
+            portal_type=types_to_search)
         for item in trainContent:
             if item.Subject:
                 classifier.addTrainingDocument(
@@ -142,8 +137,8 @@ class ClassifierSettings(ControlPanelForm):
         classifier.train()
         self.status = _(u"Classifier trained.")
 
-    @form.action(_(u"Statistics"),validator=null_validator)
-    def stats_action(self,action,data):
+    @form.action(_(u"Statistics"), validator=null_validator)
+    def stats_action(self, action, data):
         """Displays the stats view.
         """
         url = getMultiAdapter((self.context, self.request),
@@ -151,7 +146,7 @@ class ClassifierSettings(ControlPanelForm):
         self.request.response.redirect(url + '/@@classification-stats')
         return ''
 
-    @form.action(_(u"Cancel"),validator=null_validator)
+    @form.action(_(u"Cancel"), validator=null_validator)
     def cancel_action(self, action, data):
         self.status = _(u"Changes cancelled.")
         url = getMultiAdapter((self.context, self.request),

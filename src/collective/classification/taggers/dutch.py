@@ -6,15 +6,18 @@ from collective.classification.interfaces import IPOSTagger, ITokenizer
 from collective.classification.taggers.tokenizers import Tokenizer
 from collective.classification import data
 
+
 class DutchTokenizer(Tokenizer):
     """Tokenizes text using the default nltk tokenizer (dutch)
     """
+
     implements(ITokenizer)
+
     def __init__(self):
-        self.sent_tokenizer = nltk.data.load(
-            'tokenizers/punkt/dutch.pickle')
+        self.sent_tokenizer = nltk.data.load('tokenizers/punkt/dutch.pickle')
 
 dutch_tokenizer = DutchTokenizer()
+
 
 class DutchTagger(object):
     """ Brill/Trigram/Affix tagger (dutch)
@@ -22,7 +25,7 @@ class DutchTagger(object):
     implements(IPOSTagger)
 
     np_grammar = nltk.RegexpParser("NP: {<ADJ>*<N.*>+}")
-    
+
     def __init__(self):
         filename = join(dirname(data.__file__), 'dutch_tagger.pickle')
         try:
@@ -30,12 +33,13 @@ class DutchTagger(object):
             self.tagger = pickle.load(f)
         finally:
             f.close()
-    def tag(self,words):
+
+    def tag(self, words):
         """
         """
         return self.tagger.tag(words)
 
-    def normalize(self,term,tag):
+    def normalize(self, term, tag):
         """
         """
         return term

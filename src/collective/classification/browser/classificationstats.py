@@ -4,30 +4,26 @@ from zope import schema
 from zope.formlib import form
 from Products.Five.formlib import formbase
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from collective.classification.interfaces import IContentClassifier, INounPhraseStorage
+from collective.classification.interfaces import IContentClassifier,\
+    INounPhraseStorage
 from collective.classification import ClassificationMessageFactory as _
 
-class IStats(Interface):
-    """
-    """
 
+class IStats(Interface):
     no_features = schema.Int(
-        title = _(u"Number of informative features to show"),
-        required = True,
-        default = 10
-    )
+        title=_(u"Number of informative features to show"),
+        required=True,
+        default=10)
+
 
 class ClassificationStatsView(formbase.PageForm):
-    """
-    """
-
     form_fields = form.Fields(IStats)
     template = ViewPageTemplateFile('classificationstats.pt')
 
     def __init__(self, *args, **kwargs):
         """
         """
-        super(ClassificationStatsView,self).__init__(*args,**kwargs)
+        super(ClassificationStatsView, self).__init__(*args,**kwargs)
         self.classifier = getUtility(IContentClassifier)
         self.npstorage = getUtility(INounPhraseStorage)
         self.informativeFeatures = self.classifier.informativeFeatures()

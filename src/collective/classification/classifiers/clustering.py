@@ -3,17 +3,17 @@ from operator import indexOf
 from zope.interface import implements
 from zope.component import getUtility
 from nltk.cluster import KMeansClusterer
-#from nltk.cluster.util import euclidean_distance, cosine_distance
 from collective.classification.classifiers.utils import pearson
 from collective.classification.interfaces import INounPhraseStorage
 from collective.classification.interfaces import IContentClusterer
+
+
 class KMeans(object):
     """
     """
-    
     implements(IContentClusterer)
 
-    def clusterize(self,noClusters,noNouranksToKeep,**kwargs):
+    def clusterize(self, noClusters, noNouranksToKeep, **kwargs):
         """
         """
         storage = getUtility(INounPhraseStorage)
@@ -33,13 +33,13 @@ class KMeans(object):
             vector = [(noun in nouns and 1 or 0) for noun in allNouns]
             vectors.append(numpy.array(vector))
 
-        clusterer = KMeansClusterer(noClusters,pearson,**kwargs)
-        clusters = clusterer.cluster(vectors,True)
+        clusterer = KMeansClusterer(noClusters, pearson, **kwargs)
+        clusters = clusterer.cluster(vectors, True)
 
         result = {}
         for i in range(noClusters):
             result[i] = []
         for docid in docids:
-            index = indexOf(docids,docid)
+            index = indexOf(docids, docid)
             result[clusters[index]] = result[clusters[index]] + [docid]
         return result

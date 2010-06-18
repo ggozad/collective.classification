@@ -39,6 +39,7 @@
     class=".controlpanel.ClassifierSettings"
     permission="cmf.ManagePortal"
   />
+
   <adapter factory=".controlpanel.ClassifierSettingsAdapter"/>
 
   <browser:resourceDirectory
