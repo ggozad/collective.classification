@@ -3,7 +3,7 @@ from Products.Five.testbrowser import Browser
 from collective.classification.tests.layer import ClassificationLayer
 
 
-PloneTestCase.setupPloneSite()
+PloneTestCase.setupPloneSite(extension_profiles=['collective.classification:default'])
 
 
 class ClassificationTestCase(PloneTestCase.PloneTestCase):
