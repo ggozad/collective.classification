@@ -1,5 +1,5 @@
 from zope.interface import implements
-from zope.component import getUtility
+from zope.component import queryUtility
 from zope.component.interfaces import ComponentLookupError
 from plone.memoize import ram
 from nltk.chunk.util import tree2conlltags
@@ -40,10 +40,10 @@ class NPExtractor(object):
     def extract(self, text, locale='en'):
         """
         """
-        try:
-            tokenizer = getUtility(ITokenizer, name=locale)
-            tagger = getUtility(IPOSTagger, name=locale)
-        except ComponentLookupError: #Non-supported language
+        tokenizer = queryUtility(ITokenizer, name=locale)
+        tagger = queryUtility(IPOSTagger, name=locale)
+        if not tagger or not tokenizer:
+            #Non-supported language
             return
         tokens = tokenizer.tokenize(text)
         tagged_terms = tagger.tag(tokens)

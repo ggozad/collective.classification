@@ -1,5 +1,4 @@
-from zope.component import getUtility, queryAdapter
-from zope.component.interfaces import ComponentLookupError
+from zope.component import queryUtility, queryAdapter
 from Products.ATContentTypes.interface import IATContentType
 from collective.classification.interfaces import IContentClassifier,\
     IClassifiable
@@ -22,11 +21,9 @@ def _wrapClassifiable(obj):
 def updateClassifier(event):
     """
     """
-    try:
-        termstorage = getUtility(INounPhraseStorage)
-        classifier = getUtility(IContentClassifier)
-    except ComponentLookupError:
-        # The local utilites have not been registered, so what's the point?
+    termstorage = queryUtility(INounPhraseStorage)
+    classifier = queryUtility(IContentClassifier)
+    if not termstorage or not classifier:
         return
 
     obj = _wrapClassifiable(event.object)
@@ -49,11 +46,9 @@ def updateClassifier(event):
 
 
 def removeFromClassifier(event):
-    try:
-        termstorage = getUtility(INounPhraseStorage)
-        classifier = getUtility(IContentClassifier)
-    except ComponentLookupError:
-        # The local utilites have not been registered, so what's the point?
+    termstorage = queryUtility(INounPhraseStorage)
+    classifier = queryUtility(IContentClassifier)
+    if not termstorage or not classifier:
         return
     obj = _wrapClassifiable(event.object)
     # If it is not IClassifiable abort
