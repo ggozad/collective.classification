@@ -20,6 +20,9 @@
     <subscriber for="zope.app.container.interfaces.IObjectRemovedEvent"
                 handler=".subscribers.removeFromClassifier"/>
 
+    <adapter name="noun_terms"
+        factory=".indexer.TermIndexer" />
+
     <genericsetup:registerProfile
       name="default"
       title="collective.classification"
