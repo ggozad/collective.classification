@@ -1,7 +1,6 @@
 from collective.classification.interfaces import IClassifiable
 from zope.component import getUtility
 from Products.Five.browser import BrowserView
-from collective.classification.interfaces import INounPhraseStorage
 
 
 class TermsView(BrowserView):

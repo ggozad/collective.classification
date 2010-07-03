@@ -21,7 +21,10 @@
                 handler=".subscribers.removeFromClassifier"/>
 
     <adapter name="noun_terms"
-        factory=".indexer.TermIndexer" />
+        factory=".indexer.NounTermIndexer" />
+
+    <adapter name="noun_phrase_terms"
+        factory=".indexer.NounPhraseTermIndexer" />
 
     <genericsetup:registerProfile
       name="default"
