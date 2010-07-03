@@ -9,15 +9,16 @@ class TermsView(BrowserView):
 
     def __init__(self, context, request):
         super(TermsView, self).__init__(context, request)
-        self.npstorage = getUtility(INounPhraseStorage)
-        self.content_uid = IClassifiable(self.context).UID
+        path = "/".join(self.context.getPhysicalPath())
+        catalog = self.context.portal_catalog
+        self.brain = catalog.unrestrictedSearchResults(path=path, depth=0)[0]
 
     def nounTerms(self):
         """Returns the noun terms
         """
-        return self.npstorage.getRankedNounTerms(self.content_uid)
+        return self.brain.noun_terms
 
     def npTerms(self):
         """Returns the noun-phrase terms
         """
-        return self.npstorage.getRankedNPTerms(self.content_uid)
+        return self.brain.noun_phrase_terms

@@ -13,27 +13,32 @@ We can now start adding documents, starting with the first 20 documents in the
 Brown corpus categorized as 'news'.
 
     >>> from nltk.corpus import brown
+    >>> from Products.PloneTestCase.PloneTestCase import default_user
     >>> for articleid in brown.fileids(categories='news')[:20]:
     ...     text = " ".join(brown.words(articleid))
     ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    title=articleid,
     ...                                    text=text,
-    ...                                    subject='news')
+    ...                                    subject='news',creator=default_user)
 
 Continuing with 20 documents categorized as 'editorial':
 
     >>> for articleid in brown.fileids(categories='editorial')[:20]:
     ...     text = " ".join(brown.words(articleid))
     ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    title=articleid,
     ...                                    text=text,
-    ...                                    subject='editorial')
+    ...                                    subject='editorial',
+    ...                                    creator=default_user)
 
 And finally 20 documents categorized as 'hobbies':
 
     >>> for articleid in brown.fileids(categories='hobbies')[:20]:
     ...     text = " ".join(brown.words(articleid))
     ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    title=articleid,
     ...                                    text=text,
-    ...                                    subject='hobbies')
+    ...                                    subject='hobbies',creator=default_user)
 
 All these documents should have been parsed and indexed:
 
@@ -51,6 +56,7 @@ Let's see what terms we get for the first 'editorial' content:
 
 Nuclear war and United States? Scary stuff... Time to train the classifier:
 
+    >>> from zope.component import getUtility
     >>> from collective.classification.interfaces import IContentClassifier
     >>> classifier = getUtility(IContentClassifier)
     >>> classifier.train()
