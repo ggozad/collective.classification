@@ -1,8 +1,6 @@
 from zope.component import queryUtility, queryAdapter
-from Products.ATContentTypes.interface import IATContentType
 from collective.classification.interfaces import IContentClassifier,\
     IClassifiable
-from collective.classification.interfaces import INounPhraseStorage
 
 
 def _wrapClassifiable(obj):
@@ -21,9 +19,8 @@ def _wrapClassifiable(obj):
 def updateClassifier(event):
     """
     """
-    termstorage = queryUtility(INounPhraseStorage)
     classifier = queryUtility(IContentClassifier)
-    if not termstorage or not classifier:
+    if not classifier:
         return
 
     obj = _wrapClassifiable(event.object)
@@ -31,28 +28,5 @@ def updateClassifier(event):
     if not obj:
         return
     # If it is AT-based check if blackilisted
-    if IATContentType.providedBy(event.object) and \
-        termstorage.friendlyTypes and \
-        event.object.portal_type not in termstorage.friendlyTypes:
-        return
-    uid = obj.UID
-    text = obj.text
-    locale = obj.language
-    termstorage.addDocument(uid, text, locale)
-    subjects = obj.categories
-    classifier.addTrainingDocument(uid, subjects)
     if classifier.trainAfterUpdate:
         classifier.train()
-
-
-def removeFromClassifier(event):
-    termstorage = queryUtility(INounPhraseStorage)
-    classifier = queryUtility(IContentClassifier)
-    if not termstorage or not classifier:
-        return
-    obj = _wrapClassifiable(event.object)
-    # If it is not IClassifiable abort
-    if not obj:
-        return
-    classifier.removeTrainingDocument(obj.UID)
-    termstorage.removeDocument(obj.UID)
