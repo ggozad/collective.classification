@@ -21,21 +21,21 @@ class TestExtractor(ClassificationTestCase):
         extractor = getUtility(ITermExtractor)
         (simple_terms, np_terms) = extractor.extract(text, locale="en")
 
-        top_10_nouns = sorted(
+        top_5_nouns = sorted(
             simple_terms.items(),
             key = itemgetter(1),
-            reverse=True)[:10]
-        top_10_nouns = [term for (term, rank) in top_10_nouns]
+            reverse=True)[:5]
+        top_5_nouns = [term for (term, rank) in top_5_nouns]
         for word in ['alice', 'rabbit', 'hatter', 'door', 'cat']:
-            self.failUnless(word in top_10_nouns)
+            self.failUnless(word in top_5_nouns)
 
-        top_10_nps = sorted(
+        top_5_nps = sorted(
             np_terms.items(),
             key = itemgetter(1),
-            reverse=True)[:10]
-        top_10_nps = [term for (term, rank) in top_10_nps]
+            reverse=True)[:5]
+        top_5_nps = [term for (term, rank) in top_5_nps]
         for np in ['white rabbit', 'mock turtle', 'mad hatter', 'march hare']:
-            self.failUnless(np in top_10_nps)
+            self.failUnless(np in top_5_nps)
 
 
 def test_suite():
