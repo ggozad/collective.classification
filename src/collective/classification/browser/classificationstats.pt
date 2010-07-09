@@ -12,9 +12,6 @@ i18n:domain="collective.classification">
                  tal:define="informativeFeatures view/informativeFeatures | nothing">
                 <label i18n:translate="label_no_parsed_docs">Parsed documents:</label>
                 <span tal:content="view/parsedDocs"/><br/>
-                <label i18n:translate="label_no_classified_docs">
-                  Classified documents:</label>
-                <span tal:content="view/classifierDocs"/><br/>
                 <label i18n:translate="label_informate_features">
                   Informative features:</label>
                 <p class="discreet">

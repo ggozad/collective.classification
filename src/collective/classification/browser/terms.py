@@ -1,5 +1,3 @@
-from collective.classification.interfaces import IClassifiable
-from zope.component import getUtility
 from Products.Five.browser import BrowserView
 
 
@@ -9,16 +7,23 @@ class TermsView(BrowserView):
 
     def __init__(self, context, request):
         super(TermsView, self).__init__(context, request)
-        path = "/".join(self.context.getPhysicalPath())
         catalog = self.context.portal_catalog
-        self.brain = catalog.unrestrictedSearchResults(path=path, depth=0)[0]
+        results = catalog.unrestrictedSearchResults(UID=self.context.UID())
+        if len(results):
+            self.brain = results[0]
+        else:
+            self.brain = None
 
     def nounTerms(self):
         """Returns the noun terms
         """
+        if self.brain is None:
+            return []
         return self.brain.noun_terms
 
     def npTerms(self):
         """Returns the noun-phrase terms
         """
+        if self.brain is None:
+            return []
         return self.brain.noun_phrase_terms

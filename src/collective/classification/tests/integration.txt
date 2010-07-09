@@ -13,13 +13,12 @@ We can now start adding documents, starting with the first 20 documents in the
 Brown corpus categorized as 'news'.
 
     >>> from nltk.corpus import brown
-    >>> from Products.PloneTestCase.PloneTestCase import default_user
     >>> for articleid in brown.fileids(categories='news')[:20]:
     ...     text = " ".join(brown.words(articleid))
     ...     id = self.folder.invokeFactory('Document',articleid,
     ...                                    title=articleid,
     ...                                    text=text,
-    ...                                    subject='news',creator=default_user)
+    ...                                    subject='news')
 
 Continuing with 20 documents categorized as 'editorial':
 
@@ -28,8 +27,7 @@ Continuing with 20 documents categorized as 'editorial':
     ...     id = self.folder.invokeFactory('Document',articleid,
     ...                                    title=articleid,
     ...                                    text=text,
-    ...                                    subject='editorial',
-    ...                                    creator=default_user)
+    ...                                    subject='editorial')
 
 And finally 20 documents categorized as 'hobbies':
 
@@ -38,7 +36,7 @@ And finally 20 documents categorized as 'hobbies':
     ...     id = self.folder.invokeFactory('Document',articleid,
     ...                                    title=articleid,
     ...                                    text=text,
-    ...                                    subject='hobbies',creator=default_user)
+    ...                                    subject='hobbies')
 
 All these documents should have been parsed and indexed:
 
@@ -83,7 +81,7 @@ calling the *@@suggest-categories* view. 'News' first:
     ...     uid = self.folder[id].UID()
     ...     classificationResult.append(classifier.classify(uid))
     >>> classificationResult
-    ['editorial', 'news', 'news', 'news', 'news']
+    ['news', 'news', 'news', 'news', 'news']
 
 Let's see how we do with 'editorials'
 
@@ -107,9 +105,9 @@ That's excellent! What about 'hobbies'?
     ...     uid = self.folder[id].UID()
     ...     classificationResult.append(classifier.classify(uid))
     >>> classificationResult
-    ['hobbies', 'hobbies', 'hobbies', 'hobbies', 'editorial']
+    ['hobbies', 'hobbies', 'editorial', 'hobbies', 'hobbies']
 
-Not so bad! Overall: we got 13/15 right...
+Not so bad! Overall: we got 14/15 right...
 
 What about stats? We can call the *@@stats* view to find out...
 
