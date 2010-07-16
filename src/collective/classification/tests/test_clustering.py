@@ -1,8 +1,6 @@
-from zope.component import getUtility
 from nltk.corpus import brown
 from collective.classification.tests.base import ClassificationTestCase
 from collective.classification.classifiers.clustering import KMeans
-from collective.classification.interfaces import INounPhraseStorage
 
 
 class TestKMeansClustering(ClassificationTestCase):

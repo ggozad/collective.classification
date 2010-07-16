@@ -42,11 +42,6 @@ class ClassifierSettingsAdapter(SchemaAdapterBase):
     train_after_update = property(get_train_after_update,
                                   set_train_after_update)
 
-    def get_no_documents(self):
-        return len(self.storage.rankedNouns)
-
-    no_documents = property(get_no_documents)
-
 
 class ClassifierSettings(ControlPanelForm):
 
