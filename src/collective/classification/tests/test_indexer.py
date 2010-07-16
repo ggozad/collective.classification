@@ -16,7 +16,6 @@ class TestIndexer(ClassificationTestCase):
                                   subject="A Subject")
         catalog = getToolByName(self.folder, 'portal_catalog')
         cr = catalog.searchResults(noun_terms="alice")
-        print cr[0]['noun_terms']
         self.failUnless(cr[0]['noun_terms'][:5] ==
             ['alice', 'rabbit', 'door', 'cat', 'hatter'])
         self.failUnless(cr[0]['noun_phrase_terms'][:5] ==
