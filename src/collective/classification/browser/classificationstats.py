@@ -4,8 +4,8 @@ from zope import schema
 from zope.formlib import form
 from Products.Five.formlib import formbase
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from collective.classification.interfaces import IContentClassifier,\
-    INounPhraseStorage
+from Products.CMFCore.utils import getToolByName
+from collective.classification.interfaces import IContentClassifier
 from collective.classification import ClassificationMessageFactory as _
 
 
@@ -24,11 +24,10 @@ class ClassificationStatsView(formbase.PageForm):
         """
         """
         super(ClassificationStatsView, self).__init__(*args,**kwargs)
+        catalog = getToolByName(self.context, 'portal_catalog')
         self.classifier = getUtility(IContentClassifier)
-        self.npstorage = getUtility(INounPhraseStorage)
         self.informativeFeatures = self.classifier.informativeFeatures()
-        self.parsedDocs = len(self.npstorage.rankedNouns)
-        self.classifierDocs = len(self.classifier.trainingDocs)
+        self.parsedDocs = len(catalog._catalog.getIndex('noun_terms')._unindex)
 
     @form.action(_(u"Apply"))
     def action_apply(self, action, data):

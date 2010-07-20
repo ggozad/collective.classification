@@ -27,7 +27,6 @@ def dutch():
     downloadNLTKAlpinoCorpus()
     from nltk.corpus import alpino
     alpino_sents = alpino.tagged_sents(simplify_tags=True)
-    print alpino_sents[1]
     tagger = BrillTrigramTagger()
     tagger.train(alpino_sents)
     dump(tagger.tagger, "dutch_tagger.pickle")

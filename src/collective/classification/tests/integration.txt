@@ -16,6 +16,7 @@ Brown corpus categorized as 'news'.
     >>> for articleid in brown.fileids(categories='news')[:20]:
     ...     text = " ".join(brown.words(articleid))
     ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    title=articleid,
     ...                                    text=text,
     ...                                    subject='news')
 
@@ -24,6 +25,7 @@ Continuing with 20 documents categorized as 'editorial':
     >>> for articleid in brown.fileids(categories='editorial')[:20]:
     ...     text = " ".join(brown.words(articleid))
     ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    title=articleid,
     ...                                    text=text,
     ...                                    subject='editorial')
 
@@ -32,16 +34,16 @@ And finally 20 documents categorized as 'hobbies':
     >>> for articleid in brown.fileids(categories='hobbies')[:20]:
     ...     text = " ".join(brown.words(articleid))
     ...     id = self.folder.invokeFactory('Document',articleid,
+    ...                                    title=articleid,
     ...                                    text=text,
     ...                                    subject='hobbies')
 
-All these documents should have been parsed and present in the term storage:
+All these documents should have been parsed and indexed:
 
-    >>> from zope.component import getUtility
-    >>> from collective.classification.interfaces import INounPhraseStorage
-    >>> npstorage = getUtility(INounPhraseStorage)
-    >>> len(npstorage.rankedNouns)
-    60
+    >>> catalog = self.folder.portal_catalog
+    >>> sr = catalog.searchResults(noun_terms='state')
+    >>> len(sr) > 5
+    True
 
 Let's see what terms we get for the first 'editorial' content:
 
@@ -52,6 +54,7 @@ Let's see what terms we get for the first 'editorial' content:
 
 Nuclear war and United States? Scary stuff... Time to train the classifier:
 
+    >>> from zope.component import getUtility
     >>> from collective.classification.interfaces import IContentClassifier
     >>> classifier = getUtility(IContentClassifier)
     >>> classifier.train()
@@ -78,7 +81,7 @@ calling the *@@suggest-categories* view. 'News' first:
     ...     uid = self.folder[id].UID()
     ...     classificationResult.append(classifier.classify(uid))
     >>> classificationResult
-    ['editorial', 'news', 'news', 'news', 'news']
+    ['news', 'news', 'news', 'news', 'news']
 
 Let's see how we do with 'editorials'
 
@@ -102,9 +105,9 @@ That's excellent! What about 'hobbies'?
     ...     uid = self.folder[id].UID()
     ...     classificationResult.append(classifier.classify(uid))
     >>> classificationResult
-    ['hobbies', 'hobbies', 'hobbies', 'hobbies', 'editorial']
+    ['hobbies', 'hobbies', 'editorial', 'hobbies', 'hobbies']
 
-Not so bad! Overall: we got 13/15 right...
+Not so bad! Overall: we got 14/15 right...
 
 What about stats? We can call the *@@stats* view to find out...
 

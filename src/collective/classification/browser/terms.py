@@ -1,7 +1,4 @@
-from collective.classification.interfaces import IClassifiable
-from zope.component import getUtility
 from Products.Five.browser import BrowserView
-from collective.classification.interfaces import INounPhraseStorage
 
 
 class TermsView(BrowserView):
@@ -10,15 +7,23 @@ class TermsView(BrowserView):
 
     def __init__(self, context, request):
         super(TermsView, self).__init__(context, request)
-        self.npstorage = getUtility(INounPhraseStorage)
-        self.content_uid = IClassifiable(self.context).UID
+        catalog = self.context.portal_catalog
+        results = catalog.unrestrictedSearchResults(UID=self.context.UID())
+        if len(results):
+            self.brain = results[0]
+        else:
+            self.brain = None
 
     def nounTerms(self):
         """Returns the noun terms
         """
-        return self.npstorage.getRankedNounTerms(self.content_uid)
+        if self.brain is None:
+            return []
+        return self.brain.noun_terms
 
     def npTerms(self):
         """Returns the noun-phrase terms
         """
-        return self.npstorage.getRankedNPTerms(self.content_uid)
+        if self.brain is None:
+            return []
+        return self.brain.noun_phrase_terms

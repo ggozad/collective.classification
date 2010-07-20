@@ -49,11 +49,6 @@ class ITermExtractor(Interface):
         """
 
 
-class INounPhraseStorage(Interface):
-    """Marker interface for our noun-phrase storage.
-    """
-
-
 class IContentClassifier(Interface):
     """Interface for classifiers
     """

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<object name="portal_catalog">
+ <index name="noun_terms" meta_type="KeywordIndex">
+  <indexed_attr value="noun_terms"/>
+ </index>
+ <index name="noun_phrase_terms" meta_type="KeywordIndex">
+  <indexed_attr value="noun_phrase_terms"/>
+ </index>
+ <column value="noun_terms"/>
+ <column value="noun_phrase_terms"/>
+
+</object>

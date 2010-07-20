@@ -18,7 +18,13 @@
                 handler=".subscribers.updateClassifier"/>
 
     <subscriber for="zope.app.container.interfaces.IObjectRemovedEvent"
-                handler=".subscribers.removeFromClassifier"/>
+                handler=".subscribers.updateClassifier"/>
+
+    <adapter name="noun_terms"
+        factory=".indexer.NounTermIndexer" />
+
+    <adapter name="noun_phrase_terms"
+        factory=".indexer.NounPhraseTermIndexer" />
 
     <genericsetup:registerProfile
       name="default"

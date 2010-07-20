@@ -43,6 +43,14 @@ class SuggestCategoriesView(formbase.PageForm):
         """
         ff = form.Fields(ISuggestCategories)
         suggestions = self.getSuggestedSubjects()
+        if not suggestions:
+            url = getMultiAdapter((self.context, self.request),
+                                  name='absolute_url')()
+            IStatusMessage(self.request).addStatusMessage(
+                _(u"Classifier has not been trained or has "\
+                   "not sufficient information."), type="error")
+            self.request.response.redirect(url)
+            return []
         subject_prob_list = [
             (suggestions.prob(subject), subject)
             for subject in suggestions.samples()]
