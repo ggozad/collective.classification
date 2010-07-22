@@ -16,3 +16,8 @@ def pearson(v1, v2):
     if den==0:
         return 0
     return 1.0-num/den
+
+def jaccard(v1,v2):
+    s1=set(v1)
+    s2=set(v2)
+    return (1.0*len(s1.intersection(s2)))/len(s1.union(s2))

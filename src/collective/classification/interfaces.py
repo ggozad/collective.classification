@@ -57,3 +57,8 @@ class IContentClassifier(Interface):
 class IContentClusterer(Interface):
     """Interface for clusterers
     """
+
+
+class ISimilarFinder(Interface):
+    """Interface for utilities finding similar items
+    """

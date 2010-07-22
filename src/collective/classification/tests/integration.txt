@@ -109,6 +109,29 @@ That's excellent! What about 'hobbies'?
 
 Not so bad! Overall: we got 14/15 right...
 
+Let's now pick again the first editorial item and see which documents are
+similar to it based on the terms we extracted:
+
+    >>> browser.open(self.folder['cb01'].absolute_url()+'/@@similar-items')
+
+The most similar item (a Jaccard index of ~0.2) is
+cb15:
+
+    >>> browser.contents
+    '...cb15...0.212121212121...'
+
+Let's see what their common terms are:
+
+    >>> cb01terms = catalog.searchResults(
+    ... UID=self.folder['cb01'].UID())[0].noun_terms[:20]
+    >>> cb15terms = catalog.searchResults(
+    ... UID=self.folder['cb15'].UID())[0].noun_terms[:20]
+    >>> set(cb01terms).intersection(set(cb15terms))
+    set(['development', 'state', 'planning', 'year', 'area'])
+
+which is fine, since both documents talk about development and budget
+planning...
+
 What about stats? We can call the *@@stats* view to find out...
 
     >>> self.setRoles('Manager')

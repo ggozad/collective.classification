@@ -28,12 +28,12 @@ class TestKMeansClustering(ClassificationTestCase):
 
         for articleid in government_ids:
             text = " ".join(brown.words(articleid))
-            self.folder.invokeFactory('Document',articleid,text=text)
+            self.folder.invokeFactory('Document', articleid, text=text)
             government_uids.append(self.folder[articleid].UID())
 
         for articleid in mystery_ids:
             text = " ".join(brown.words(articleid))
-            self.folder.invokeFactory('Document',articleid,text=text)
+            self.folder.invokeFactory('Document', articleid, text=text)
             mystery_uids.append(self.folder[articleid].UID())
 
         result = clusterer.clusterize(2, 50, repeats=50)
