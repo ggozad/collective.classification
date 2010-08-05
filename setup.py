@@ -10,7 +10,7 @@ setup(name='collective.classification',
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join(
                             "src", "collective", "classification", "tests",
-                            "integration.txt")).read() +
+                            "integration.txt")).read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       classifiers=[
       'Environment :: Web Environment',

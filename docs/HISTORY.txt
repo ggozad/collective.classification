@@ -1,7 +1,9 @@
 Changelog
 =========
+
 0.1b2
 -------------------
+
 - Removed the persistent noun storage altogether. Now noun and noun-phrase
   terms are stored directly in the catalog using plone.indexer.
   [ggozad, stefan]
@@ -17,6 +19,7 @@ Changelog
 
 0.1b1
 -------------------
+
 - Speed gain by not utilizing the PenTreeBank tagger anymore. [ggozad]
 - Added multi-lingual support, starting with dutch! [ggozad]
 - No need to download all the coprora anymore. [ggozad]
@@ -33,6 +36,7 @@ Changelog
 
 0.1a3
 -------------------
+
 - Introduced IClassifiable interface. ATContentTypes are now adapted to it,
   and it should be easier to add other non-AT content types or customize the
   adapter. [ggozad]
@@ -49,6 +53,7 @@ Changelog
 
 0.1a2
 -------------------
+
 - Made control panel more sane. Fixes #1. [ggozad]
 - NP-extractor has become a local persistent utility. [ggozad]
 - Renamed @@subjectsuggest to @@suggest-categories. Fixes #2. [ggozad]
