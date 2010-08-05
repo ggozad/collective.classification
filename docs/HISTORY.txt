@@ -8,10 +8,12 @@ Changelog
 - Using BTrees instead of PersistenDict. Should make writes to ZODB lighter. 
   [ggozad]
 - Noun-phrase grammar and normalization is now a property of the
-  language-dependent tagger. [ggozad]
+  language-dependent tagger.
+  [ggozad]
 - Removed a lot of the control panel functionality. Not need for confusion.
   [ggozad]
-- Fixed Dutch. [ggozad]
+- Fixed Dutch language support.
+  [ggozad]
 
 0.1b1
 -------------------

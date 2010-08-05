@@ -50,7 +50,7 @@ class ClusterizeView(formbase.PageForm):
         for cluster in clusters.values():
             clusterlist = []
             for uid in cluster:
-                item = catalog.searchResults(UID=uid)[0]
+                item = catalog.unrestrictedSearchResults(UID=uid)[0]
                 clusterlist.append(
                     (item.getURL(),
                      item.Title,
