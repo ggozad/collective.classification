@@ -8,6 +8,9 @@ setup(name='collective.classification',
       description="Content classification/clustering through " \
                   "language processing",
       long_description=open("README.txt").read() + "\n" +
+                       open(os.path.join(
+                            "src", "collective", "classification", "tests",
+                            "integration.txt")).read() +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       classifiers=[
       'Environment :: Web Environment',
