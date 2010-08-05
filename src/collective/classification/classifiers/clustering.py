@@ -1,45 +1,50 @@
 import numpy
-from operator import indexOf
 from zope.interface import implements
 from zope.component import getUtility
 from nltk.cluster import KMeansClusterer
-#from nltk.cluster.util import euclidean_distance, cosine_distance
+from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.interfaces import ISiteRoot
 from collective.classification.classifiers.utils import pearson
-from collective.classification.interfaces import INounPhraseStorage
 from collective.classification.interfaces import IContentClusterer
+
+
 class KMeans(object):
     """
     """
-    
     implements(IContentClusterer)
 
-    def clusterize(self,noClusters,noNouranksToKeep,**kwargs):
+    def clusterize(self, noClusters, noNounsToKeep, **kwargs):
         """
         """
-        storage = getUtility(INounPhraseStorage)
-        docids = storage.rankedNouns.keys()
-        docnouns = []
+        root = getUtility(ISiteRoot)
+        catalog = getToolByName(root, 'portal_catalog')
+
+        nounTermsIndex = catalog._catalog.getIndex('noun_terms')
+        uidTermsIndex = catalog._catalog.getIndex('UID')
+        nounTermsIndexIds = []
         allNouns = set()
+        docnouns = []
         vectors = []
 
-        for key in docids:
-            importantNouns = storage.getNounTerms(
-                key,
-                noNouranksToKeep)
-            docnouns.append(importantNouns)
-            allNouns = allNouns.union(importantNouns)
+        for key in nounTermsIndex._unindex.keys():
+            importantNouns = nounTermsIndex._unindex[key][:noNounsToKeep]
+            if importantNouns:
+                nounTermsIndexIds.append(key)
+                docnouns.append(importantNouns)
+                allNouns = allNouns.union(importantNouns)
 
         for nouns in docnouns:
             vector = [(noun in nouns and 1 or 0) for noun in allNouns]
             vectors.append(numpy.array(vector))
 
-        clusterer = KMeansClusterer(noClusters,pearson,**kwargs)
-        clusters = clusterer.cluster(vectors,True)
-
+        clusterer = KMeansClusterer(noClusters, pearson, **kwargs)
+        clusters = clusterer.cluster(vectors, True)
         result = {}
         for i in range(noClusters):
             result[i] = []
-        for docid in docids:
-            index = indexOf(docids,docid)
-            result[clusters[index]] = result[clusters[index]] + [docid]
+        for i in range(len(nounTermsIndexIds)):
+            docid = nounTermsIndexIds[i]
+            uid = uidTermsIndex._unindex[docid]
+            result[clusters[i]] = result[clusters[i]] + [uid]
+
         return result

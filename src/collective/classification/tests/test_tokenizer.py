@@ -2,12 +2,13 @@ from zope.component import getUtility
 from collective.classification.interfaces import ITokenizer
 from collective.classification.tests.base import ClassificationTestCase
 
+
 class TestNLTKTokenizer(ClassificationTestCase):
 
     def test_tokenizer(self):
         """Tests whether the tokenizer utility performs its job properly.
         """
-        tokenizer = getUtility(ITokenizer,name="en")
+        tokenizer = getUtility(ITokenizer, name="en")
         text = """
             Alice opened the door and found that it led into a small passage,
             not much larger than a rat-hole: she knelt down and looked along
@@ -23,7 +24,7 @@ class TestNLTKTokenizer(ClassificationTestCase):
             impossible.
             """
         tokens = tokenizer.tokenize(text)
-        self.failUnless(tokens == 
+        self.failUnless(tokens ==
             ['Alice', 'opened', 'the', 'door', 'and', 'found', 'that', 'it',
             'led', 'into', 'a', 'small', 'passage', ',', 'not', 'much',
             'larger', 'than', 'a', 'rat-hole', ':', 'she', 'knelt', 'down',
@@ -40,11 +41,12 @@ class TestNLTKTokenizer(ClassificationTestCase):
             'wish', 'I', 'could', 'shut', 'up', 'like', 'a', 'telescope', '!',
             'I', 'think', 'I', 'could', ',', 'if', 'I', 'only', 'knew', 'how',
             'to', 'begin', '.', '"', 'For', ',', 'you', 'see', ',', 'so',
-            'many','out-of-the-way', 'things', 'had', 'happened','lately',
+            'many', 'out-of-the-way', 'things', 'had', 'happened', 'lately',
             ',', 'that', 'Alice', 'had', 'begun', 'to', 'think', 'that',
             'very', 'few', 'things', 'indeed', 'were', 'really', 'impossible',
-            '.']
-        )
+            '.'])
+
+
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()

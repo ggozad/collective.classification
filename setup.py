@@ -1,13 +1,16 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1b1'
+version = '0.1b2'
 
 setup(name='collective.classification',
       version=version,
       description="Content classification/clustering through " \
                   "language processing",
       long_description=open("README.txt").read() + "\n" +
+                       open(os.path.join(
+                            "src", "collective", "classification", "tests",
+                            "integration.txt")).read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       classifiers=[
       'Environment :: Web Environment',

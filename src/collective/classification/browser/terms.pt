@@ -12,15 +12,13 @@ i18n:domain="collective.classification">
             <thead>
                 <tr>
                     <th i18n:translate="label_term">Term</th>
-                    <th i18n:translate="label_rank">Rank</th>
                 </tr>
             </thead>
             <tbody>
                 <tal:terms tal:repeat="term noun_terms">
                     <tr tal:define="oddrow repeat/term/odd;"
                         tal:attributes="class python:oddrow and 'odd' or 'even'">
-                        <td tal:content="python: term[0]"/>
-                        <td tal:content="python: term[1]"/>
+                        <td tal:content="python: term"/>
                     </tr>
                 </tal:terms>
             </tbody>
@@ -32,15 +30,13 @@ i18n:domain="collective.classification">
             <thead>
                 <tr>
                     <th i18n:translate="label_term">Term</th>
-                    <th i18n:translate="label_rank">Rank</th>
                 </tr>
             </thead>
             <tbody>
                 <tal:terms tal:repeat="term np_terms">
                     <tr tal:define="oddrow repeat/term/odd;"
                         tal:attributes="class python:oddrow and 'odd' or 'even'">
-                        <td tal:content="python: term[0]"/>
-                        <td tal:content="python: term[1]"/>
+                        <td tal:content="python: term"/>
                     </tr>
                 </tal:terms>
             </tbody>

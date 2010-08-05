@@ -1,0 +1,35 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+xmlns:tal="http://xml.zope.org/namespaces/tal"
+xmlns:metal="http://xml.zope.org/namespaces/metal"
+xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+metal:use-macro="here/main_template/macros/master"
+i18n:domain="collective.classification">
+  <body>
+    <metal:main metal:fill-slot="main" 
+      tal:define="similar_items view/similar">
+      <span class="discreet" tal:condition="python: not similar_items">
+          No similar items were found.</span>
+      <table class="listing" tal:condition="similar_items | nothing">
+          <thead>
+              <tr>
+                  <th i18n:translate="label_object">Object</th>
+                  <th i18n:translate="label_similarity">Similarity</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tal:terms tal:repeat="item similar_items">
+                  <tr tal:define="oddrow repeat/item/odd;"
+                      tal:attributes="class python:oddrow and 'odd' or 'even'">
+                      <td>
+                        <a rel="nofollow"
+                          tal:attributes="href python:item[0].getURL()"
+                          tal:content="python:item[0].Title" />
+                      </td>
+                      <td tal:content="python:item[1]"/>
+                  </tr>
+              </tal:terms>
+          </tbody>
+      </table>
+    </metal:main>
+  </body>
+</html>

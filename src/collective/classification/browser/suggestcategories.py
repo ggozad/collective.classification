@@ -11,14 +11,15 @@ from collective.classification.interfaces import IContentClassifier, \
     IClassifiable
 from collective.classification import ClassificationMessageFactory as _
 
+
 class ISuggestCategories(Interface):
     """
     """
     suggestions = schema.List(
         title = _(u"Suggestions"),
         description = _(u""),
-        default = []
-    )
+        default = [])
+
 
 class SuggestCategoriesView(formbase.PageForm):
     """Suggest categories to the user and let him set them.
@@ -42,14 +43,21 @@ class SuggestCategoriesView(formbase.PageForm):
         """
         ff = form.Fields(ISuggestCategories)
         suggestions = self.getSuggestedSubjects()
+        if not suggestions:
+            url = getMultiAdapter((self.context, self.request),
+                                  name='absolute_url')()
+            IStatusMessage(self.request).addStatusMessage(
+                _(u"Classifier has not been trained or has "\
+                   "not sufficient information."), type="error")
+            self.request.response.redirect(url)
+            return []
         subject_prob_list = [
-            (suggestions.prob(subject),subject)
-            for subject in suggestions.samples()
-        ]
-        subject_prob_list = sorted(subject_prob_list,reverse=True)
+            (suggestions.prob(subject), subject)
+            for subject in suggestions.samples()]
+        subject_prob_list = sorted(subject_prob_list, reverse=True)
         vocab_terms = []
-        for (probability,subject) in subject_prob_list:
-            label = "%s %2.1f%%"%(subject,probability*100)
+        for (probability, subject) in subject_prob_list:
+            label = "%s %2.1f%%"%(subject, probability*100)
             vocab_terms.append(SimpleTerm(value=subject,
                                           token=b64encode(subject),
                                           title=label))
@@ -70,6 +78,6 @@ class SuggestCategoriesView(formbase.PageForm):
         url = getMultiAdapter((self.context, self.request),
                               name='absolute_url')()
         IStatusMessage(self.request).addStatusMessage(
-            _(u"Categories saved."),type="info")
+            _(u"Categories saved."), type="info")
         self.request.response.redirect(url)
         return ''

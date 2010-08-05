@@ -1,25 +1,45 @@
 Changelog
 =========
+
+0.1b2
+-------------------
+
+- Removed the persistent noun storage altogether. Now noun and noun-phrase
+  terms are stored directly in the catalog using plone.indexer.
+  [ggozad, stefan]
+- Using BTrees instead of PersistenDict. Should make writes to ZODB lighter.
+  [ggozad]
+- Noun-phrase grammar and normalization is now a property of the
+  language-dependent tagger.
+  [ggozad]
+- Removed a lot of the control panel functionality. Not need for confusion.
+  [ggozad]
+- Fixed Dutch language support.
+  [ggozad]
+
 0.1b1
 -------------------
+
 - Speed gain by not utilizing the PenTreeBank tagger anymore. [ggozad]
 - Added multi-lingual support, starting with dutch! [ggozad]
 - No need to download all the coprora anymore. [ggozad]
 - A lot of refactoring. Things got moved around and a lot of unnecessary code
-was removed. [ggozad]
+  was removed. [ggozad]
 - We now use a Brill/Trigram/Affix tagger that is pre-trained. This
-allows collective.classification to ship without all the corpora. The user
-can still supply a different tagger if necessary. [ggozad]
+  allows collective.classification to ship without all the corpora. The user
+  can still supply a different tagger if necessary. [ggozad]
 - The default nltk PenTreeBank tagger is no longer used. Too slow. [ggozad]
 - npextractor is no longer a local persistent utility. Opted for a global
-non-persisted object. [ggozad]
+  non-persisted object. [ggozad]
 - zope.lifecycle events are now used. [ggozad]
 - Gained compatibility with plone 4. [ggozad]
+
 0.1a3
 -------------------
+
 - Introduced IClassifiable interface. ATContentTypes are now adapted to it,
-and it should be easier to add other non-AT content types or customize the
-adapter. [ggozad]
+  and it should be easier to add other non-AT content types or customize the
+  adapter. [ggozad]
 - Handling of IObjectRemovedEvent event. [ggozad]
 - Added a form to import sample content from the brown corpus, for debugging
   and testing. [ggozad]
@@ -28,10 +48,12 @@ adapter. [ggozad]
   [ggozad]
 - Added @@terms view, allowing a user to inspect the identified terms for some
   content. [ggozad]
-- Have to specify corpus categories when training n-gram tagger. Fixes #3 [ggozad]
+- Have to specify corpus categories when training n-gram tagger. Fixes #3
+  [ggozad]
 
 0.1a2
 -------------------
+
 - Made control panel more sane. Fixes #1. [ggozad]
 - NP-extractor has become a local persistent utility. [ggozad]
 - Renamed @@subjectsuggest to @@suggest-categories. Fixes #2. [ggozad]

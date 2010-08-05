@@ -19,6 +19,14 @@
   />
 
   <browser:page
+    for="Products.ATContentTypes.interface.IATContentType"
+    name="similar-items"
+    class=".similaritems.SimilarItemsView"
+    template="similaritems.pt"
+    permission="zope2.View"
+  />
+
+  <browser:page
     for="*"
     name="clusterize"
     class=".clusterize.ClusterizeView"
@@ -39,6 +47,7 @@
     class=".controlpanel.ClassifierSettings"
     permission="cmf.ManagePortal"
   />
+
   <adapter factory=".controlpanel.ClassifierSettingsAdapter"/>
 
   <browser:resourceDirectory

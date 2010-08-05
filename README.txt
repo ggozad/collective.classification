@@ -25,7 +25,8 @@ useful things with it:
     plone lingo) it might be difficult to assign tags to new content. In this
     case, a trained classifier could provide useful suggestions to an editor
     responsible for tagging content.
-    3) Clustering can help you organize unclassified content into groups.
+    3) Similar documents can be found based on term similarity.
+    4) Clustering can help you organize unclassified content into groups.
 
 How it works?
 =============
@@ -46,6 +47,7 @@ At the moment there exist the following type of utilities:
     trains itself using the terms and tags as an input. Then, for new content,
     the classifier will provide suggestions for tags according to the
     extracted terms of the content.
+  * Utilities that find *similar content* based on the extracted terms.
   * *Clusterers*, utilities that without prior knowledge of content
     classification can group content into groups according to feature
     similarity. At the moment NLTK's `k-means`_ clusterer is used.
@@ -82,6 +84,8 @@ How to use it?
     come up with suggestions, choose the ones that seem appropriate and apply.
     You will need to have the right to edit the document in order to call the
     view.
+  * You can find similar content for some content based on its terms by
+    calling the *@@similar-items* view. 
   * For clustering you can just call the *@@clusterize* view from anywhere.
     The result is not deterministic but hopefully helpful;). You need manager
     rights for this so as to not allow your users to DOS your site!
