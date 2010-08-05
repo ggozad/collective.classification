@@ -3,9 +3,9 @@ Changelog
 0.1b2
 -------------------
 - Removed the persistent noun storage altogether. Now noun and noun-phrase
-  terms are stored directly in the catalog using plone.indexer. 
+  terms are stored directly in the catalog using plone.indexer.
   [ggozad, stefan]
-- Using BTrees instead of PersistenDict. Should make writes to ZODB lighter. 
+- Using BTrees instead of PersistenDict. Should make writes to ZODB lighter.
   [ggozad]
 - Noun-phrase grammar and normalization is now a property of the
   language-dependent tagger.
