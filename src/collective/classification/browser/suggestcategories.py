@@ -5,12 +5,14 @@ from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.formlib import form
 from plone.app.form.interfaces import IPlonePageForm
-from Products.Five.formlib import formbase
 from Products.statusmessages.interfaces import IStatusMessage
 from collective.classification.interfaces import IContentClassifier, \
     IClassifiable
 from collective.classification import ClassificationMessageFactory as _
-
+try:
+    from five.formlib import formbase
+except ImportError:
+    from Products.Five.formlib import formbase
 
 class ISuggestCategories(Interface):
     """

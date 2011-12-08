@@ -2,12 +2,14 @@ from zope.interface import Interface
 from zope.component import getUtility
 from zope import schema
 from zope.formlib import form
-from Products.Five.formlib import formbase
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.CMFCore.utils import getToolByName
 from collective.classification.interfaces import IContentClassifier
 from collective.classification import ClassificationMessageFactory as _
-
+try:
+    from five.formlib import formbase
+except ImportError:
+    from Products.Five.formlib import formbase
 
 class IStats(Interface):
     no_features = schema.Int(
