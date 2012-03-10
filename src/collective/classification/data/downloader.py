@@ -30,3 +30,9 @@ def downloadNLTKAlpinoCorpus():
     logger = logging.getLogger('collective.classification')
     logger.info("Downloading NLTK's Alpino corpus")
     download('alpino')
+
+def downloadNLTKEurParlRaw():
+    logger = logging.getLogger('collective.classification')
+    logger.info("Downloading NLTK's Sample European Parliament Proceedings "
+                "Parallel Corpus")
+    download('europarl_raw')

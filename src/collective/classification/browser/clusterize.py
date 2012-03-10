@@ -2,11 +2,13 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from zope.formlib import form
 from zope import schema
 from zope.interface import Interface
-from Products.Five.formlib import formbase
 from Products.CMFCore.utils import getToolByName
 from collective.classification import ClassificationMessageFactory as _
 from collective.classification.classifiers.clustering import KMeans
-
+try:
+    from five.formlib import formbase
+except ImportError:
+    from Products.Five.formlib import formbase
 
 class IClusterize(Interface):
 

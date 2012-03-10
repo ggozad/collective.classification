@@ -30,3 +30,13 @@ def dutch():
     tagger = BrillTrigramTagger()
     tagger.train(alpino_sents)
     dump(tagger.tagger, "dutch_tagger.pickle")
+
+def romanian():
+    from collective.classification.data.downloader import\
+        downloadNLTKEurParlRaw
+    downloadNLTKEurParlRaw()
+    from nltk.corpus import europarl_raw
+    europarl_sents = europarl_raw.romanian.sents()
+    tagger = BrillTrigramTagger()
+    tagger.train(europarl_sents)
+    dump(tagger.tagger, "romanian_tagger.pickle")
